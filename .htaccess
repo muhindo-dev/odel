@@ -1,0 +1,5 @@
+RewriteEngine On
+
+# Rewrite all requests to the public/ subdirectory
+RewriteCond %{REQUEST_URI} !^/odel/public/
+RewriteRule ^(.*)$ public/$1 [L]

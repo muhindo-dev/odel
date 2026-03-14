@@ -649,7 +649,7 @@ h4 { font-size: .88rem; }
 // LOGIN PAGE
 // ═════════════════════════════════════════════════════════════════════════════
 .path-login {
-    background: var(--mru-darker);
+    background: #f0f2f5;
 
     #page-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
     #page { padding-top: 0; }
@@ -660,63 +660,73 @@ h4 { font-size: .88rem; }
         @media (max-width: 991.98px) { grid-template-columns: 1fr; }
     }
 
+    // ── Photo panel (left) ──
     .mru-login-brand {
-        background: linear-gradient(160deg, var(--mru-darker), var(--mru-primary));
-        padding: 2.5rem 2rem;
-        display: flex; flex-direction: column; justify-content: center;
         position: relative; overflow: hidden;
+        background-size: cover; background-position: center;
+        display: flex; flex-direction: column; justify-content: space-between;
+        padding: 2.5rem;
 
-        &::before {
-            content: ''; position: absolute; bottom: -50px; right: -50px;
-            width: 240px; height: 240px;
-            border: 35px solid rgba(242,169,0,.06);
+        .brand-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(160deg, rgba(7,26,62,.85), rgba(23,77,164,.7));
+            z-index: 1;
         }
-        &::after {
-            content: ''; position: absolute; top: 30px; right: 30px;
-            width: 80px; height: 2px; background: var(--mru-gold);
-        }
-        @media (max-width: 991.98px) { padding: 2rem 1.25rem; min-height: 180px; }
+
+        .brand-top, .brand-bottom { position: relative; z-index: 2; }
 
         .login-logo {
-            font-size: 2rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 1.25rem;
+            font-size: 2.25rem; font-weight: 900; color: #fff; line-height: 1;
             .accent { color: var(--mru-gold); }
         }
+
+        .login-university {
+            font-size: .78rem; color: rgba(255,255,255,.55);
+            letter-spacing: .1em; text-transform: uppercase; margin-top: .5rem;
+        }
+
         .login-motto {
-            font-size: .75rem; color: rgba(255,255,255,.5);
-            font-style: italic; margin-bottom: 1.5rem;
-            border-left: 3px solid var(--mru-gold); padding-left: .6rem;
-        }
-        .login-tagline { font-size: .8rem; color: rgba(255,255,255,.6); line-height: 1.65; margin-bottom: 1.5rem; }
-
-        .login-stats {
-            display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 1.25rem;
-            @media (max-width: 991.98px) { display: none; }
-            .login-stat {
-                .number { display: block; font-size: 1.2rem; font-weight: 800; color: var(--mru-gold); line-height: 1; }
-                .label { display: block; font-size: .58rem; font-weight: 600; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .08em; margin-top: .1rem; }
-            }
+            font-size: .8rem; color: rgba(255,255,255,.6);
+            font-style: italic; line-height: 1.6;
+            border-left: 3px solid var(--mru-gold); padding-left: .75rem;
+            margin-bottom: 1rem;
+            .fa-quote-left { font-size: .55rem; color: var(--mru-gold); margin-right: .25rem; vertical-align: top; }
         }
 
-        .login-features {
-            display: flex; flex-direction: column; gap: .4rem;
-            @media (max-width: 991.98px) { display: none; }
-            .feature-item {
-                display: flex; align-items: center; gap: .4rem;
-                font-size: .72rem; color: rgba(255,255,255,.5);
-                .feature-check { color: var(--mru-gold); font-size: .55rem; width: 14px; flex-shrink: 0; }
-            }
+        .login-badges {
+            display: flex; gap: .6rem; flex-wrap: wrap;
+        }
+        .login-badge {
+            display: inline-flex; align-items: center; gap: .35rem;
+            background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+            padding: .3rem .7rem; font-size: .68rem; font-weight: 600;
+            color: rgba(255,255,255,.8); letter-spacing: .03em;
+            i { color: var(--mru-gold); font-size: .6rem; }
         }
     }
 
+    // ── Form panel (right) ──
     .mru-login-form {
         background: #fff; padding: 2.5rem 2rem;
         display: flex; flex-direction: column; justify-content: center;
-        @media (max-width: 991.98px) { padding: 1.5rem 1.25rem; }
+        @media (max-width: 991.98px) { padding: 2rem 1.25rem; }
 
-        .login-form-inner { width: 100%; max-width: 380px; margin: 0 auto; }
+        .login-form-inner { width: 100%; max-width: 400px; margin: 0 auto; }
 
-        .login-heading { font-size: 1.25rem; font-weight: 800; color: var(--mru-dark); margin-bottom: .25rem; }
-        .login-subheading { font-size: .75rem; color: #9a9ab0; margin-bottom: 1.5rem; }
+        .login-mobile-icon {
+            width: 36px; height: 36px; background: var(--mru-gold);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 16px;
+            color: var(--mru-dark);
+        }
+        .login-mobile-brand {
+            font-size: 1.25rem; font-weight: 800; color: var(--mru-primary); line-height: 1;
+            .accent { color: var(--mru-gold); }
+        }
+        .login-mobile-sub { color: #94a3b8; font-size: .7rem; }
+
+        .login-heading { font-size: 1.4rem; font-weight: 800; color: var(--mru-dark); margin-bottom: .25rem; }
+        .login-subheading { font-size: .8rem; color: #9a9ab0; margin-bottom: 1.75rem; }
 
         #page-content, #region-main-box, #region-main {
             background: transparent !important; border: none !important;
@@ -724,20 +734,27 @@ h4 { font-size: .88rem; }
         }
 
         .login-form {
-            .form-group { margin-bottom: .8rem; }
-            .btn-primary {
-                width: 100%; padding: .5rem;
-                font-size: .82rem; font-weight: 700;
-                letter-spacing: .02em;
-                &:hover { box-shadow: 0 3px 12px rgba(23,77,164,.3); }
+            .form-group { margin-bottom: .85rem; }
+            label { font-size: .78rem; font-weight: 600; color: var(--mru-dark); margin-bottom: .3rem; }
+            .form-control {
+                padding: .55rem .75rem; font-size: .82rem;
+                border: 1px solid #d8dce6;
+                &:focus { border-color: var(--mru-primary); box-shadow: 0 0 0 3px rgba(23,77,164,.1); }
             }
-            a { color: var(--mru-primary); font-size: .73rem; font-weight: 500; }
+            .btn-primary {
+                width: 100%; padding: .6rem;
+                font-size: .85rem; font-weight: 700;
+                letter-spacing: .02em;
+                &:hover { box-shadow: 0 4px 14px rgba(23,77,164,.25); }
+            }
+            a { color: var(--mru-primary); font-size: .75rem; font-weight: 500; }
         }
 
         .login-footer-note {
-            margin-top: 1.5rem; padding-top: 1rem;
+            margin-top: 2rem; padding-top: 1rem;
             border-top: 1px solid var(--mru-border); text-align: center;
-            p { font-size: .68rem; color: #b5b8c8; }
+            p { font-size: .7rem; color: #b5b8c8; margin: 0; }
+            p + p { margin-top: .25rem; }
             a { color: var(--mru-primary); }
         }
     }

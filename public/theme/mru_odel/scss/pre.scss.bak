@@ -1,0 +1,133 @@
+// =============================================================================
+// MRU ODEL — Design System Variables (Bootstrap overrides)
+// Muteesa I Royal University | Open & Distance E-Learning
+// Design: Flat • Squared • Tight spacing • Professional
+// =============================================================================
+
+// ── Brand palette ─────────────────────────────────────────────────────────────
+$mru-primary:    #174DA4;
+$mru-secondary:  #F2A900;
+$mru-dark:       #0d2e68;
+$mru-darker:     #071a3e;
+$mru-navy:       #0a2240;
+$mru-gold:       #F2A900;
+$mru-gold-dark:  #c98b00;
+$mru-light:      #f5f6fa;
+$mru-border:     #dde1ea;
+$mru-text:       #525271;
+$mru-text-dark:  #0d2e68;
+$mru-white:      #ffffff;
+$mru-success:    #1a7c3e;
+$mru-danger:     #c0392b;
+$mru-warning:    #e67e22;
+
+// ── Bootstrap variable overrides (MUST come before Bootstrap imports) ─────────
+$primary:        $mru-primary;
+$secondary:      $mru-secondary;
+$success:        $mru-success;
+$danger:         $mru-danger;
+$warning:        $mru-warning;
+$dark:           $mru-dark;
+$light:          $mru-light;
+$body-bg:        $mru-light;
+$body-color:     $mru-text;
+
+// ── Squared corners — the core design principle ───────────────────────────────
+$border-radius:         0;
+$border-radius-sm:      0;
+$border-radius-lg:      0;
+$border-radius-xl:      0;
+$border-radius-2xl:     0;
+$border-radius-pill:    0;
+
+// ── Typography ────────────────────────────────────────────────────────────────
+$font-family-sans-serif: 'Poppins', 'Segoe UI', -apple-system, sans-serif;
+$font-size-base:   0.875rem;       // 14px base
+$line-height-base: 1.65;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold:   600;
+$headings-font-weight: 700;
+$headings-color: $mru-dark;
+$headings-line-height: 1.25;
+
+// ── Spacing — tight ───────────────────────────────────────────────────────────
+$spacer: 1rem;
+$spacers: (
+    0: 0,
+    1: .25rem,
+    2: .5rem,
+    3: .75rem,
+    4: 1rem,
+    5: 1.5rem,
+    6: 2rem,
+    7: 3rem
+);
+
+// ── Navbar ────────────────────────────────────────────────────────────────────
+$navbar-padding-y:  0;
+$navbar-padding-x:  0;
+
+// ── Buttons — squared, flat ───────────────────────────────────────────────────
+$btn-border-radius:    0;
+$btn-border-radius-sm: 0;
+$btn-border-radius-lg: 0;
+$btn-font-weight:      600;
+$btn-font-size:        0.8125rem;
+$btn-padding-x:        1.1rem;
+$btn-padding-y:        0.45rem;
+$btn-transition:       color .15s ease, background-color .15s ease, box-shadow .15s ease, transform .1s ease;
+
+// ── Forms ─────────────────────────────────────────────────────────────────────
+$input-border-radius:    0;
+$input-border-radius-sm: 0;
+$input-border-radius-lg: 0;
+$input-border-color:     #cdd2de;
+$input-focus-border-color: $mru-primary;
+$input-focus-box-shadow: 0 0 0 2px rgba($mru-primary, .15);
+$input-font-size:        0.875rem;
+$input-padding-x:        0.75rem;
+$input-padding-y:        0.5rem;
+
+// ── Cards ─────────────────────────────────────────────────────────────────────
+$card-border-radius:     0;
+$card-border-color:      $mru-border;
+$card-cap-bg:            $mru-white;
+$card-box-shadow:        none;
+
+// ── Tables ────────────────────────────────────────────────────────────────────
+$table-striped-bg-factor: .03;
+$table-border-color:      $mru-border;
+
+// ── Links ─────────────────────────────────────────────────────────────────────
+$link-color:         $mru-primary;
+$link-hover-color:   $mru-dark;
+$link-decoration:    none;
+
+// ── Badges ────────────────────────────────────────────────────────────────────
+$badge-border-radius:  0;
+$badge-font-size:      0.7rem;
+$badge-font-weight:    600;
+$badge-padding-x:      0.55em;
+$badge-padding-y:      0.3em;
+
+// ── Dropdowns ─────────────────────────────────────────────────────────────────
+$dropdown-border-radius:  0;
+$dropdown-border-color:   $mru-border;
+$dropdown-box-shadow:     0 4px 16px rgba(0,0,0,.12);
+$dropdown-link-hover-bg:  $mru-light;
+$dropdown-link-hover-color: $mru-primary;
+$dropdown-font-size:      0.8125rem;
+
+// ── Modals ────────────────────────────────────────────────────────────────────
+$modal-border-radius:       0;
+$modal-content-border-radius: 0;
+$modal-header-border-color:   $mru-border;
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+$pagination-border-radius:    0;
+$pagination-active-bg:        $mru-primary;
+$pagination-active-border-color: $mru-primary;
+
+// ── Alerts ────────────────────────────────────────────────────────────────────
+$alert-border-radius: 0;

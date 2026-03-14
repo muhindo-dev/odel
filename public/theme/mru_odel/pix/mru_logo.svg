@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" role="img" aria-label="MRU ODEL">
+  <rect width="200" height="60" fill="#174DA4" rx="4"/>
+  <text x="12" y="42" font-family="'Inter','Segoe UI',Arial,sans-serif" font-size="32" font-weight="800" fill="#ffffff" letter-spacing="-1">MRU</text>
+  <text x="100" y="42" font-family="'Inter','Segoe UI',Arial,sans-serif" font-size="32" font-weight="800" fill="#CB9C2C" letter-spacing="-1">ODEL</text>
+  <rect x="0" y="50" width="200" height="4" fill="#CB9C2C" rx="2"/>
+</svg>

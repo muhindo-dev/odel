@@ -1,0 +1,362 @@
+{{!
+    @template theme_mru_odel/frontpage
+    MRU ODEL — Academic homepage (no course listing)
+}}
+{{> theme_mru_odel/head }}
+
+<body {{{ bodyattributes }}}>
+{{> core/local/toast/wrapper}}
+<a href="#mru-main-content" id="mru-skip-link" class="visually-hidden-focusable">Skip to main content</a>
+
+<div id="page-wrapper">
+    {{{ output.standard_top_of_body_html }}}
+
+    {{> theme_mru_odel/navbar }}
+
+    {{! Course index drawer }}
+    {{#courseindex}}
+        {{< theme_boost/drawer }}
+            {{$id}}theme_boost-drawers-courseindex{{/id}}
+            {{$drawerheadercontent}}{{> theme_boost/courseindexdrawercontrols}}{{/drawerheadercontent}}
+            {{$drawerclasses}}drawer drawer-left {{#courseindexopen}}show{{/courseindexopen}}{{/drawerclasses}}
+            {{$drawercontent}}{{{courseindex}}}{{/drawercontent}}
+            {{$drawerpreferencename}}drawer-open-index{{/drawerpreferencename}}
+            {{$drawerstate}}show-drawer-left{{/drawerstate}}
+            {{$tooltipplacement}}right{{/tooltipplacement}}
+            {{$closebuttontext}}{{#str}}closecourseindex, core{{/str}}{{/closebuttontext}}
+        {{/ theme_boost/drawer}}
+    {{/courseindex}}
+
+    {{#hasblocks}}
+        {{< theme_boost/drawer }}
+            {{$id}}theme_boost-drawers-blocks{{/id}}
+            {{$drawerclasses}}drawer drawer-right{{#blockdraweropen}} show{{/blockdraweropen}}{{/drawerclasses}}
+            {{$drawercontent}}
+                <div class="d-print-none">
+                    {{{ addblockbutton }}}
+                    {{{ sidepreblocks }}}
+                </div>
+            {{/drawercontent}}
+            {{$drawerpreferencename}}drawer-open-block{{/drawerpreferencename}}
+            {{$forceopen}}{{#forceblockdraweropen}}1{{/forceblockdraweropen}}{{/forceopen}}
+            {{$drawerstate}}show-drawer-right{{/drawerstate}}
+            {{$tooltipplacement}}left{{/tooltipplacement}}
+            {{$drawercloseonresize}}1{{/drawercloseonresize}}
+            {{$closebuttontext}}{{#str}}closeblockdrawer, core{{/str}}{{/closebuttontext}}
+        {{/ theme_boost/drawer}}
+    {{/hasblocks}}
+
+    <div id="page" data-region="mainpage" data-usertour="scroller"
+         class="drawers {{#courseindexopen}}show-drawer-left{{/courseindexopen}} {{#blockdraweropen}}show-drawer-right{{/blockdraweropen}} drag-container">
+        <div id="topofscroll" class="main-inner">
+
+            {{! Drawer toggles }}
+            {{#isloggedin}}
+            <div class="drawer-toggles d-flex d-print-none">
+                {{#courseindex}}
+                    <div class="drawer-toggler drawer-left-toggle open-nav">
+                        <button class="btn icon-no-margin" data-toggler="drawers" data-action="toggle"
+                                data-target="theme_boost-drawers-courseindex"
+                                data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="{{#str}}opendrawerindex, core{{/str}}">
+                            <span class="visually-hidden">{{#str}}opendrawerindex, core{{/str}}</span>
+                            {{#pix}}t/index_drawer, moodle{{/pix}}
+                        </button>
+                    </div>
+                {{/courseindex}}
+                {{#hasblocks}}
+                    <div class="drawer-toggler drawer-right-toggle ms-auto">
+                        <button class="btn icon-no-margin" data-toggler="drawers" data-action="toggle"
+                                data-target="theme_boost-drawers-blocks"
+                                data-bs-toggle="tooltip" data-bs-placement="left"
+                                title="{{#str}}opendrawerblocks, core{{/str}}">
+                            <span class="visually-hidden">{{#str}}opendrawerblocks, core{{/str}}</span>
+                            <span class="dir-rtl-hide">{{#pix}}t/blocks_drawer, core{{/pix}}</span>
+                            <span class="dir-ltr-hide">{{#pix}}t/blocks_drawer_rtl, core{{/pix}}</span>
+                        </button>
+                    </div>
+                {{/hasblocks}}
+            </div>
+            {{/isloggedin}}
+
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{! HERO }}
+            {{! ══════════════════════════════════════════════════════════ }}
+            <section class="mru-hero d-print-none" aria-label="Welcome to MRU ODEL">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-7 col-xl-6">
+                            <div class="mru-hero-eyebrow">
+                                <span class="dot"></span>
+                                Open &amp; Distance E-Learning Platform
+                            </div>
+
+                            {{#isloggedin}}
+                            <h1>Welcome back,<br><span class="highlight">{{firstname}}</span></h1>
+                            {{/isloggedin}}
+                            {{^isloggedin}}
+                            <h1>Muteesa I<br><span class="highlight">Royal University</span></h1>
+                            {{/isloggedin}}
+
+                            <p class="mru-hero-sub">
+                                Uganda's premier open and distance learning institution — delivering quality, accredited higher education to students across East Africa and beyond.
+                            </p>
+
+                            <p class="mru-hero-motto">
+                                Seeking Greater Horizon In Thoughts and Actions
+                            </p>
+
+                            <div class="mru-hero-actions">
+                                {{#isloggedin}}
+                                <a href="{{{dashboardurl}}}" class="btn-hero-primary">
+                                    My Dashboard
+                                </a>
+                                <a href="{{{coursesurl}}}" class="btn-hero-outline">
+                                    Browse Programmes
+                                </a>
+                                {{/isloggedin}}
+                                {{^isloggedin}}
+                                <a href="{{{coursesurl}}}" class="btn-hero-primary">
+                                    Explore Programmes
+                                </a>
+                                <a href="{{{loginurl}}}" class="btn-hero-outline">
+                                    Student Login
+                                </a>
+                                {{/isloggedin}}
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5 col-xl-6 d-none d-lg-block">
+                            <div class="mru-hero-panel">
+                                <div class="panel-label">Accredited &amp; Recognised By</div>
+                                <div class="panel-badges">
+                                    <span class="panel-badge">NCHE</span>
+                                    <span class="panel-badge">NEMRA</span>
+                                    <span class="panel-badge">RENU</span>
+                                    <span class="panel-badge">GENSS</span>
+                                    <span class="panel-badge">AAU</span>
+                                </div>
+                                <div class="panel-divider"></div>
+                                <div class="panel-label">Available On All Devices</div>
+                                <div class="panel-devices">
+                                    <span>Desktop</span>
+                                    <span>Mobile</span>
+                                    <span>Tablet</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{! STATS BAR }}
+            {{! ══════════════════════════════════════════════════════════ }}
+            <div class="mru-stats-bar d-print-none">
+                <div class="container-fluid px-0">
+                    <div class="mru-stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-num" data-count="{{totalstudents}}">{{totalstudents}}</span>
+                            <span class="stat-lbl">Enrolled Students</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num" data-count="{{totalcourses}}">{{totalcourses}}</span>
+                            <span class="stat-lbl">Active Courses</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num" data-count="{{totalcategories}}">{{totalcategories}}</span>
+                            <span class="stat-lbl">Programmes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num">148</span>
+                            <span class="stat-lbl">Academic Staff</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mru-main-content">
+
+            {{! Hidden main content output required by Moodle core }}
+            <div class="sr-only" aria-hidden="true">{{{ maincontent }}}</div>
+
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{! FACULTIES & DEPARTMENTS }}
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{#hasfaculties}}
+            <div class="mru-section mru-section-light d-print-none">
+                <div class="container">
+                    <div class="mru-section-header">
+                        <div class="section-label">Our Faculties</div>
+                        <h2>Academic Departments &amp; Schools</h2>
+                        <p>Explore our faculties offering accredited programmes in distance and blended learning modes.</p>
+                    </div>
+                    <div class="mru-dept-grid">
+                        {{#faculties}}
+                        <a href="{{{url}}}" class="dept-item" style="text-decoration:none;">
+                            <div class="dept-icon"><i class="fa {{{icon}}}" aria-hidden="true"></i></div>
+                            <div class="dept-name">{{name}}</div>
+                            <div class="dept-desc">{{description}}</div>
+                            <div class="dept-count">{{coursecount}} courses</div>
+                        </a>
+                        {{/faculties}}
+                    </div>
+                </div>
+            </div>
+            {{/hasfaculties}}
+
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{! WHY CHOOSE MRU ODEL }}
+            {{! ══════════════════════════════════════════════════════════ }}
+            <div class="mru-section mru-section-white d-print-none">
+                <div class="container">
+                    <div class="mru-section-header">
+                        <div class="section-label">Why MRU ODEL</div>
+                        <h2>A Learning Experience Designed for You</h2>
+                        <p>Everything you need for flexible, quality higher education — all in one platform.</p>
+                    </div>
+                    <div class="mru-feature-grid">
+                        {{#features}}
+                        <div class="mru-feature-item">
+                            <div class="feature-icon"><i class="fa {{{icon}}}" aria-hidden="true"></i></div>
+                            <h3>{{title}}</h3>
+                            <p>{{desc}}</p>
+                        </div>
+                        {{/features}}
+                    </div>
+                </div>
+            </div>
+
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{! NOTICES & QUICK ACCESS }}
+            {{! ══════════════════════════════════════════════════════════ }}
+            <div class="mru-section d-print-none" style="background:var(--mru-light);">
+                <div class="container">
+                    <div class="row g-0" style="gap:1px;background:var(--mru-border);border:1px solid var(--mru-border);">
+
+                        {{! Notices }}
+                        <div class="col-lg-7" style="background:#fff;padding:1.25rem;">
+                            <div class="mru-section-header">
+                                <div class="section-label">Announcements</div>
+                                <h2>Latest Notices</h2>
+                            </div>
+                            <ul class="mru-notice-list">
+                                {{#notices}}
+                                <li>
+                                    <div class="notice-date">
+                                        <span class="day">{{day}}</span>
+                                        <span class="mon">{{mon}}</span>
+                                    </div>
+                                    <div class="notice-content">
+                                        <h4>{{title}}</h4>
+                                        <p>{{desc}}</p>
+                                    </div>
+                                    <span class="notice-tag">{{tag}}</span>
+                                </li>
+                                {{/notices}}
+                            </ul>
+                        </div>
+
+                        {{! Quick access }}
+                        <div class="col-lg-5" style="background:#fff;padding:1.25rem;">
+                            <div class="mru-section-header">
+                                <div class="section-label">Resources</div>
+                                <h2>Quick Access</h2>
+                            </div>
+
+                            <div class="mru-quick-links">
+                                <a href="{{{loginurl}}}" class="quick-link">
+                                    <span class="ql-icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span>
+                                    <span class="ql-text">
+                                        <span class="ql-title">Student Portal Login</span>
+                                        <span class="ql-desc">Access your courses and grades</span>
+                                    </span>
+                                    <span class="ql-arrow">→</span>
+                                </a>
+                                <a href="{{{coursesurl}}}" class="quick-link">
+                                    <span class="ql-icon"><i class="fa fa-book" aria-hidden="true"></i></span>
+                                    <span class="ql-text">
+                                        <span class="ql-title">Course Catalogue</span>
+                                        <span class="ql-desc">Browse all available programmes</span>
+                                    </span>
+                                    <span class="ql-arrow">→</span>
+                                </a>
+                                <a href="https://mru.ac.ug/admissions" target="_blank" rel="noopener" class="quick-link ql-gold">
+                                    <span class="ql-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+                                    <span class="ql-text">
+                                        <span class="ql-title">Apply for Admission</span>
+                                        <span class="ql-desc">Undergraduate &amp; postgraduate</span>
+                                    </span>
+                                    <span class="ql-arrow">→</span>
+                                </a>
+                                <a href="mailto:odel@mru.ac.ug" class="quick-link">
+                                    <span class="ql-icon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                    <span class="ql-text">
+                                        <span class="ql-title">ODEL Support</span>
+                                        <span class="ql-desc">odel@mru.ac.ug</span>
+                                    </span>
+                                    <span class="ql-arrow">→</span>
+                                </a>
+                                <a href="https://mru.ac.ug" target="_blank" rel="noopener" class="quick-link">
+                                    <span class="ql-icon"><i class="fa fa-globe" aria-hidden="true"></i></span>
+                                    <span class="ql-text">
+                                        <span class="ql-title">University Website</span>
+                                        <span class="ql-desc">mru.ac.ug</span>
+                                    </span>
+                                    <span class="ql-arrow">↗</span>
+                                </a>
+                            </div>
+
+                            <div class="mru-contact-strip">
+                                <span class="contact-icon"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
+                                <div>
+                                    <div class="contact-name">Muteesa I Royal University</div>
+                                    <div class="contact-addr">Masulita, Wakiso District, Uganda</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{! CTA BANNER }}
+            {{! ══════════════════════════════════════════════════════════ }}
+            {{^isloggedin}}
+            <div class="mru-cta d-print-none">
+                <div class="container">
+                    <h2>Ready to Start Your Academic Journey?</h2>
+                    <p>Join thousands of students already learning on MRU ODEL — flexible, accredited, and career-focused.</p>
+                    <div class="mru-cta-actions">
+                        <a href="{{{coursesurl}}}" class="btn-hero-primary">Explore Programmes</a>
+                        <a href="https://mru.ac.ug/admissions" target="_blank" rel="noopener" class="btn-hero-outline">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            {{/isloggedin}}
+
+            </div>{{! end #mru-main-content }}
+
+            {{! Footer }}
+            {{> theme_mru_odel/footer }}
+
+        </div>{{! end #topofscroll }}
+    </div>{{! end #page }}
+
+    {{{ output.standard_after_main_region_html }}}
+</div>
+
+{{! Back to top }}
+<button class="mru-back-to-top" id="mru-back-to-top" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>
+{{#js}}
+M.util.js_pending('theme_boost/loader');
+require(['theme_boost/loader', 'theme_boost/drawer', 'theme_mru_odel/theme'], function(Loader, Drawer, MRUTheme) {
+    Drawer.init();
+    MRUTheme.init();
+    M.util.js_complete('theme_boost/loader');
+});
+{{/js}}

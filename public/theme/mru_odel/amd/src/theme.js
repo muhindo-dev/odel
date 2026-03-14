@@ -1,0 +1,391 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * MRU ODEL Theme JavaScript — Interactive enhancements.
+ *
+ * @module     theme_mru_odel/theme
+ * @copyright  2026 Mutesar I Royal University
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+define(['jquery', 'core/log'], function($, Log) {
+
+    'use strict';
+
+    /**
+     * Initialise scroll effects on the navbar.
+     * Adds a compact class when user scrolls down.
+     */
+    const initNavbarScroll = () => {
+        const navbar = document.querySelector('.navbar.fixed-top');
+        if (!navbar) {
+            return;
+        }
+
+        let lastScrollY = window.scrollY;
+
+        const onScroll = () => {
+            const currentY = window.scrollY;
+
+            if (currentY > 60) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+
+            // Auto-hide on scroll down, show on scroll up (mobile only).
+            // Use matchMedia for reliable mobile detection (not affected by DevTools width).
+            if (window.matchMedia('(max-width: 767.98px) and (pointer: coarse)').matches) {
+                if (currentY > lastScrollY && currentY > 120) {
+                    navbar.classList.add('mru-navbar-hidden');
+                } else {
+                    navbar.classList.remove('mru-navbar-hidden');
+                }
+            } else {
+                navbar.classList.remove('mru-navbar-hidden');
+            }
+
+            lastScrollY = currentY;
+        };
+
+        window.addEventListener('scroll', onScroll, {passive: true});
+    };
+
+    /**
+     * Add smooth entrance animation to cards and course boxes on scroll.
+     */
+    const initScrollAnimations = () => {
+        if (!('IntersectionObserver' in window)) {
+            return;
+        }
+
+        const targets = document.querySelectorAll(
+            '.card, .coursebox, .block, .activity, .section-summary'
+        );
+
+        if (!targets.length) {
+            return;
+        }
+
+        // Add base animation class.
+        targets.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(16px)';
+            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, idx) => {
+                if (entry.isIntersecting) {
+                    // Stagger the animation for adjacent elements.
+                    const delay = Math.min(idx * 60, 300);
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, delay);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.08,
+            rootMargin: '0px 0px -40px 0px',
+        });
+
+        targets.forEach(el => observer.observe(el));
+    };
+
+    /**
+     * Enhance course listing with interactive hover cards.
+     */
+    const initCourseCards = () => {
+        const courseBoxes = document.querySelectorAll('.coursebox');
+
+        courseBoxes.forEach(box => {
+            // Ensure the whole card is clickable if it has a course link.
+            const courseLink = box.querySelector('.coursename a');
+            if (courseLink) {
+                box.style.cursor = 'pointer';
+                box.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON') {
+                        courseLink.click();
+                    }
+                });
+            }
+
+            // Add progress indicator if completion data is available.
+            const completionEl = box.querySelector('.completion-info');
+            if (completionEl) {
+                const text = completionEl.textContent;
+                const match = text.match(/(\d+)/);
+                if (match) {
+                    const percent = Math.min(parseInt(match[1], 10), 100);
+                    const bar = document.createElement('div');
+                    bar.className = 'mru-course-progress';
+                    const bgStyle = 'height:4px;margin-top:0.75rem;border-radius:50px;background:rgba(23,77,164,0.1);';
+                    const barStyle = `width:${percent}%;background:linear-gradient(90deg,#174DA4,#CB9C2C);`;
+                    bar.innerHTML = `
+                        <div class="progress" style="${bgStyle}">
+                            <div class="progress-bar" role="progressbar"
+                                 style="${barStyle}"
+                                 aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    `;
+                    box.querySelector('.info')?.appendChild(bar);
+                }
+            }
+        });
+    };
+
+    /**
+     * Real-time notification badge pulse animation.
+     */
+    const initNotificationPulse = () => {
+        const badges = document.querySelectorAll('.count-container');
+        badges.forEach(badge => {
+            const count = parseInt(badge.textContent, 10);
+            if (count > 0) {
+                badge.style.animation = 'mruPulse 2s infinite';
+            }
+        });
+
+        // Inject pulse keyframe if not already present.
+        if (!document.getElementById('mru-pulse-style')) {
+            const style = document.createElement('style');
+            style.id = 'mru-pulse-style';
+            style.textContent = `
+                @keyframes mruPulse {
+                    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(242,169,0,0.5); }
+                    50%       { transform: scale(1.1); box-shadow: 0 0 0 4px rgba(242,169,0,0); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    };
+
+    /**
+     * Active nav link highlighting based on current URL.
+     */
+    const initActiveNavLinks = () => {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.primary-navigation .nav-link, .nav-drawer .nav-link');
+
+        navLinks.forEach(link => {
+            try {
+                const linkPath = new URL(link.href).pathname;
+                if (linkPath === currentPath || (linkPath !== '/' && currentPath.startsWith(linkPath))) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            } catch (e) {
+                // Ignore invalid URLs.
+            }
+        });
+    };
+
+    /**
+     * Add "back to top" button.
+     */
+    const initBackToTop = () => {
+        const btn = document.getElementById('mru-back-to-top');
+        if (!btn) {
+            return;
+        }
+
+        btn.addEventListener('click', () => {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        }, {passive: true});
+    };
+
+    /**
+     * Enhance table accessibility and sorting visual cues.
+     */
+    const initTableEnhancements = () => {
+        const tables = document.querySelectorAll('#region-main table:not(.mru-enhanced)');
+        tables.forEach(table => {
+            table.classList.add('mru-enhanced');
+            // Add hover rows.
+            table.querySelectorAll('tbody tr').forEach(row => {
+                row.addEventListener('mouseenter', () => {
+                    row.style.background = 'rgba(23,77,164,0.04)';
+                });
+                row.addEventListener('mouseleave', () => {
+                    row.style.background = '';
+                });
+            });
+        });
+    };
+
+    /**
+     * Add icon prefix to navigation items for better visual hierarchy.
+     */
+    const initNavIcons = () => {
+        const iconMap = {
+            'Dashboard':   '<i class="fa fa-th-large" aria-hidden="true"></i>',
+            'My courses':  '<i class="fa fa-book" aria-hidden="true"></i>',
+            'Site home':   '<i class="fa fa-home" aria-hidden="true"></i>',
+            'Calendar':    '<i class="fa fa-calendar" aria-hidden="true"></i>',
+            'Messages':    '<i class="fa fa-comments" aria-hidden="true"></i>',
+            'Grades':      '<i class="fa fa-bar-chart" aria-hidden="true"></i>',
+            'Profile':     '<i class="fa fa-user" aria-hidden="true"></i>',
+            'Reports':     '<i class="fa fa-clipboard" aria-hidden="true"></i>',
+        };
+
+        document.querySelectorAll('.primary-navigation .nav-link').forEach(link => {
+            const text = link.textContent.trim();
+            const icon = iconMap[text];
+            if (icon && !link.querySelector('.mru-nav-icon')) {
+                const span = document.createElement('span');
+                span.className = 'mru-nav-icon';
+                span.setAttribute('aria-hidden', 'true');
+                span.style.marginRight = '0.35rem';
+                span.style.fontSize = '0.85em';
+                span.innerHTML = icon + ' ';
+                link.prepend(span);
+            }
+        });
+    };
+
+    /**
+     * Dashboard greeting based on time of day.
+     */
+    const initDashboardGreeting = () => {
+        const pageHeader = document.querySelector('.page-header-headings h1');
+        if (!pageHeader) {
+            return;
+        }
+
+        const hour = new Date().getHours();
+        let greeting = 'Good morning';
+        if (hour >= 12 && hour < 17) {
+            greeting = 'Good afternoon';
+        } else if (hour >= 17) {
+            greeting = 'Good evening';
+        }
+
+        // Only on the dashboard.
+        if (document.body.classList.contains('path-my') ||
+            document.body.classList.contains('page-my-index')) {
+            pageHeader.setAttribute('title', greeting + '!');
+        }
+    };
+
+    /**
+     * Initialise all theme enhancements for logged-in pages.
+     */
+    const init = () => {
+        try {
+            initNavbarScroll();
+            initScrollAnimations();
+            initCourseCards();
+            initNotificationPulse();
+            initActiveNavLinks();
+            initBackToTop();
+            initTableEnhancements();
+            initNavIcons();
+            initDashboardGreeting();
+
+            Log.debug('MRU ODEL Theme: Initialised successfully');
+        } catch (e) {
+            Log.warn('MRU ODEL Theme: Error during initialisation', e);
+        }
+    };
+
+    /**
+     * Initialise login page specific enhancements.
+     */
+    const initLogin = () => {
+        try {
+            // Auto-focus username field.
+            const usernameField = document.getElementById('username');
+            if (usernameField) {
+                usernameField.focus();
+            }
+
+            // Add floating label effect.
+            const formGroups = document.querySelectorAll('.login-form .form-group');
+            formGroups.forEach(group => {
+                const input = group.querySelector('input');
+                const label = group.querySelector('label');
+                if (input && label) {
+                    input.addEventListener('focus', () => {
+                        label.style.color = '#174DA4';
+                    });
+                    input.addEventListener('blur', () => {
+                        label.style.color = '';
+                    });
+                }
+            });
+
+            // Show/hide password toggle.
+            const pwField = document.getElementById('password');
+            if (pwField) {
+                const toggle = document.createElement('button');
+                toggle.type = 'button';
+                toggle.className = 'btn btn-sm';
+                toggle.setAttribute('aria-label', 'Toggle password visibility');
+                toggle.style.cssText = `
+                    position: absolute;
+                    right: 0.75rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    border: none;
+                    color: #6c757d;
+                    padding: 0;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    z-index: 5;
+                `;
+                toggle.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+
+                const wrapper = pwField.parentElement;
+                if (wrapper) {
+                    wrapper.style.position = 'relative';
+                    wrapper.appendChild(toggle);
+
+                    toggle.addEventListener('click', () => {
+                        if (pwField.type === 'password') {
+                            pwField.type = 'text';
+                            toggle.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
+                        } else {
+                            pwField.type = 'password';
+                            toggle.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+                        }
+                        pwField.focus();
+                    });
+                }
+            }
+
+            Log.debug('MRU ODEL Theme: Login page initialised');
+        } catch (e) {
+            Log.warn('MRU ODEL Theme: Error during login init', e);
+        }
+    };
+
+    return {
+        init: init,
+        initLogin: initLogin,
+    };
+});

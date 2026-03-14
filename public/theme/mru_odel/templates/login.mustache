@@ -1,0 +1,139 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    @template theme_mru_odel/login
+
+    MRU ODEL Login page template — split layout with brand panel + form panel.
+
+    Example context (json):
+    {
+        "sitename": "MRU ODEL",
+        "output": {
+            "doctype": "<!DOCTYPE html>",
+            "page_title": "Login",
+            "favicon": "favicon.ico",
+            "main_content": "<h1>Login form</h1>"
+        },
+        "bodyattributes": "",
+        "loginheading": "Welcome Back",
+        "loginsubheading": "Mutesar I Royal University",
+        "siteyear": "2026"
+    }
+}}
+{{> theme_boost/head }}
+
+<body {{{ bodyattributes }}}>
+{{> core/local/toast/wrapper}}
+{{{ output.standard_top_of_body_html }}}
+
+<div class="mru-login-wrapper" id="page-wrapper">
+
+        {{! ── Left brand panel ── }}
+        <div class="mru-login-brand d-none d-lg-flex">
+            <div class="brand-content">
+
+                <div class="login-logo">
+                    MRU<span class="accent">ODEL</span>
+                </div>
+                <small style="color:rgba(255,255,255,0.55);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:2rem;">
+                    Muteesa I Royal University
+                </small>
+
+                <div class="login-motto">
+                    <span style="color:#CB9C2C;">Seeking Greater Horizon</span><br>
+                    In Thoughts and Actions
+                </div>
+
+                <p class="login-tagline">
+                    Access world-class academic resources, interact with expert faculty, and advance your career — anytime, anywhere.
+                </p>
+
+                {{! Stats }}
+                <div class="login-stats">
+                    <div class="login-stat">
+                        <span class="number">5,000+</span>
+                        <span class="label">Students</span>
+                    </div>
+                    <div class="login-stat">
+                        <span class="number">200+</span>
+                        <span class="label">Courses</span>
+                    </div>
+                    <div class="login-stat">
+                        <span class="number">50+</span>
+                        <span class="label">Programmes</span>
+                    </div>
+                </div>
+
+                {{! Features }}
+                <div class="login-features">
+                    <div class="feature-item">
+                        <span class="feature-check"><i class="fa fa-check"></i></span>
+                        Self-paced online learning
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-check"><i class="fa fa-check"></i></span>
+                        NCHE-accredited degrees
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-check"><i class="fa fa-check"></i></span>
+                        Study from anywhere in the world
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{! ── Right form panel ── }}
+        <div class="mru-login-form">
+            <div class="login-form-inner">
+
+                {{! Mobile logo (shown only on small screens) }}
+                <div class="d-flex d-lg-none align-items-center gap-2 mb-4">
+                    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px;">
+                        <rect width="36" height="36" rx="8" fill="#CB9C2C"/>
+                        <text x="50%" y="55%" dominant-baseline="central" text-anchor="middle"
+                              font-family="Poppins,sans-serif" font-weight="800" font-size="16" fill="#0d2e68">M</text>
+                    </svg>
+                    <div>
+                        <div style="font-size:1.25rem;font-weight:800;color:#174DA4;line-height:1;">
+                            MRU<span style="color:#CB9C2C;">ODEL</span>
+                        </div>
+                        <small style="color:#94a3b8;font-size:0.7rem;">Muteesa I Royal University</small>
+                    </div>
+                </div>
+
+                <h1 class="login-heading">{{loginheading}}</h1>
+                <p class="login-subheading">{{loginsubheading}}</p>
+
+                {{! Moodle injects the login form here }}
+                <div id="page-content" class="login-form">
+                    <div id="region-main-box">
+                        <div id="region-main">
+                            {{{ output.main_content }}}
+                        </div>
+                    </div>
+                </div>
+
+                {{! Footer note }}
+                <div class="login-footer-note">
+                    <p style="margin:0;">&copy; {{siteyear}} Muteesa I Royal University</p>
+                    <p style="margin:0.25rem 0 0;">
+                        Need help? <a href="mailto:odel@mru.ac.ug">odel@mru.ac.ug</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+</div>
+
+{{{ output.standard_end_of_body_html }}}
+{{{ output.standard_footer_html }}}
+
+</body>
+</html>
+{{#js}}
+M.util.js_pending('theme_boost/loader');
+require(['theme_boost/loader', 'theme_mru_odel/theme'], function(Loader, MRUTheme) {
+    MRUTheme.initLogin();
+    M.util.js_complete('theme_boost/loader');
+});
+{{/js}}

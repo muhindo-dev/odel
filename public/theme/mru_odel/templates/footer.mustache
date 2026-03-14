@@ -1,0 +1,118 @@
+{{!
+    @template theme_mru_odel/footer
+    MRU ODEL — Professional flat footer
+}}
+
+<footer class="mru-main-footer d-print-none" role="contentinfo">
+    <div class="container">
+        <div class="mru-footer-grid">
+
+            <div class="footer-brand">
+                <div class="brand-name">MRU<span class="gold">ODEL</span></div>
+                <div class="brand-full">Muteesa I Royal University</div>
+                <p>Delivering quality, accredited higher education through open and distance e-learning to students across East Africa and beyond.</p>
+                <p class="footer-motto">
+                    "Seeking Greater Horizon In Thoughts and Actions"
+                </p>
+                <div class="footer-social">
+                    <a href="https://mru.ac.ug" target="_blank" rel="noopener" aria-label="Website"><i class="fa fa-globe"></i></a>
+                    <a href="mailto:odel@mru.ac.ug" aria-label="Email"><i class="fa fa-envelope"></i></a>
+                    <a href="tel:+256393103841" aria-label="Phone"><i class="fa fa-phone"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{{ config.wwwroot }}}">Home</a></li>
+                    <li><a href="{{{ config.wwwroot }}}/my/">Dashboard</a></li>
+                    <li><a href="{{{ config.wwwroot }}}/course/">All Courses</a></li>
+                    <li><a href="{{{ config.wwwroot }}}/calendar/view.php">Calendar</a></li>
+                    <li><a href="{{{ config.wwwroot }}}/user/profile.php">My Profile</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Academic</h4>
+                <ul>
+                    <li><a href="https://mru.ac.ug" target="_blank" rel="noopener">University Website</a></li>
+                    <li><a href="https://mru.ac.ug" target="_blank" rel="noopener">Admissions</a></li>
+                    <li><a href="https://mru.ac.ug" target="_blank" rel="noopener">Research</a></li>
+                    <li><a href="{{{ config.wwwroot }}}/mod/forum/">Forums</a></li>
+                    <li><a href="https://mru.ac.ug" target="_blank" rel="noopener">Library</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="mailto:odel@mru.ac.ug">Technical Support</a></li>
+                    <li><a href="mailto:admissions@mru.ac.ug">Admissions Office</a></li>
+                    <li><a href="{{{ config.wwwroot }}}/user/policy.php">Privacy Policy</a></li>
+                </ul>
+                <div class="footer-address">
+                    <i class="fa fa-map-marker"></i> Masulita, Wakiso District<br>
+                    <span>Uganda, East Africa</span>
+                </div>
+            </div>
+
+        </div>
+
+        {{#footertext}}
+        <div class="footer-custom-text">
+            {{{ footertext }}}
+        </div>
+        {{/footertext}}
+
+        <div class="mru-footer-bottom">
+            <span>&copy; {{siteyear}} Muteesa I Royal University. All rights reserved.</span>
+            <div class="footer-links">
+                <a href="{{{ config.wwwroot }}}/user/policy.php">Privacy</a>
+                <a href="https://mru.ac.ug" target="_blank" rel="noopener">mru.ac.ug</a>
+                <span class="footer-login-info">{{{ output.login_info }}}</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div id="page-footer" class="footer-popover d-print-none" style="background:#fff;">
+    <div data-region="footer-container-popover">
+        {{#output.has_communication_links}}
+            <button onclick="window.open('{{output.communication_url}}', '_blank', 'noreferrer')"
+                    class="btn btn-icon btn-footer-communication"
+                    aria-label="{{#str}}communicationroomlink, course{{/str}}">
+                {{#pix}}t/messages-o, core{{/pix}}
+            </button>
+        {{/output.has_communication_links}}
+        <button class="btn btn-icon btn-footer-popover"
+                data-action="footer-popover"
+                aria-label="{{#str}}showfooter, theme_boost{{/str}}">
+            {{#pix}}e/question, core{{/pix}}
+        </button>
+    </div>
+    <div class="footer-content-popover container" data-region="footer-content-popover">
+        {{#output.has_popover_links}}
+            <div class="footer-section p-3 border-bottom">
+                {{#output.page_doc_link}}<div class="footer-support-link">{{{ output.page_doc_link }}}</div>{{/output.page_doc_link}}
+                {{#output.services_support_link}}<div class="footer-support-link">{{{ output.services_support_link }}}</div>{{/output.services_support_link}}
+                {{#output.supportemail}}<div class="footer-support-link">{{{ output.supportemail }}}</div>{{/output.supportemail}}
+            </div>
+        {{/output.has_popover_links}}
+        <div class="footer-section p-3 border-bottom">
+            <div class="logininfo">{{{ output.login_info }}}</div>
+            <div class="tool_usertours-resettourcontainer"></div>
+            {{{ output.standard_footer_html }}}
+            {{{ output.standard_end_of_body_html }}}
+        </div>
+        <div class="footer-section p-3">
+            <div>{{#str}}poweredbymoodle, core{{/str}}</div>
+            {{#output.moodle_release}}<div>{{#str}}version, core{{/str}} {{{ output.moodle_release }}}</div>{{/output.moodle_release}}
+        </div>
+    </div>
+    <div class="footer-content-debugging footer-dark bg-dark text-light">
+        <div class="container-fluid footer-dark-inner">{{{ output.debug_footer_html }}}</div>
+    </div>
+</div>
+{{#js}}
+require(['theme_boost/footer-popover'], function(FooterPopover) { FooterPopover.init(); });
+{{/js}}

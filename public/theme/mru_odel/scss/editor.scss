@@ -1,0 +1,56 @@
+// =============================================================================
+// MRU ODEL Theme — Editor SCSS (styles for TinyMCE / Atto editors)
+// =============================================================================
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #1a1a2e;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #0d2d62;
+    font-weight: 700;
+}
+
+a {
+    color: #174DA4;
+}
+
+blockquote {
+    border-left: 4px solid #174DA4;
+    padding-left: 1rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+code,
+pre {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    background: #f4f7fb;
+    border-radius: 4px;
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th {
+        background: #0d2d62;
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: left;
+    }
+
+    td {
+        border: 1px solid #dee2e6;
+        padding: 0.6rem 1rem;
+    }
+
+    tr:nth-child(even) td {
+        background: #f4f7fb;
+    }
+}

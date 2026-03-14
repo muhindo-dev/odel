@@ -1,0 +1,64 @@
+{{!
+    @template theme_mru_odel/navbar
+    MRU ODEL — Professional flat navbar
+}}
+<nav class="navbar fixed-top navbar-dark" aria-label="{{#str}}sitemenubar, admin{{/str}}" id="mru-navbar">
+    <div class="container">
+
+        <button class="navbar-toggler d-flex d-md-none"
+                data-toggler="drawers" data-action="toggle"
+                data-target="theme_boost-drawers-primary"
+                aria-label="{{#str}}sidepanel, core{{/str}}">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a href="{{{ config.homeurl }}}" class="navbar-brand d-none d-md-flex" aria-label="MRU ODEL Home">
+            {{#output.should_display_navbar_logo}}
+                <img src="{{output.get_compact_logo_url}}" alt="MRU">
+            {{/output.should_display_navbar_logo}}
+            <span class="mru-brand-text">
+                <span class="mru-brand-main">MRU<span class="accent">ODEL</span></span>
+                <span class="mru-brand-sub">Open &amp; Distance E-Learning</span>
+            </span>
+        </a>
+
+        <a href="{{{ config.homeurl }}}" class="navbar-brand d-flex d-md-none" aria-label="MRU ODEL">
+            <span class="mru-brand-text">
+                <span class="mru-brand-main" style="font-size:.78rem;">MRU<span class="accent">ODEL</span></span>
+            </span>
+        </a>
+
+        {{#primarymoremenu}}
+            <div class="primary-navigation d-none d-md-flex">
+                {{> core/moremenu}}
+            </div>
+        {{/primarymoremenu}}
+
+        {{#output.page_heading_menu}}
+            <ul class="navbar-nav d-none d-md-flex">{{{ output.page_heading_menu }}}</ul>
+        {{/output.page_heading_menu}}
+
+        <div id="usernavigation" class="navbar-nav ms-auto d-flex align-items-center">
+            {{#output.search_box}}
+                {{{ output.search_box }}}
+                <div class="divider border-start align-self-center mx-1"></div>
+            {{/output.search_box}}
+            {{#langmenu}}
+                {{> theme_boost/language_menu }}
+                <div class="divider border-start align-self-center mx-1"></div>
+            {{/langmenu}}
+            {{{ output.navbar_plugin_output }}}
+            <div class="d-flex align-items-stretch usermenu-container" data-region="usermenu">
+                {{#usermenu}}
+                    {{> core/user_menu }}
+                {{/usermenu}}
+            </div>
+            {{{ output.edit_switch }}}
+        </div>
+
+    </div>
+</nav>
+
+{{! Mobile primary drawer }}
+
+{{> theme_boost/primary-drawer-mobile }}

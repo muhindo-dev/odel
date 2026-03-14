@@ -47,7 +47,7 @@
         "siteyear": "2026"
     }
 }}
-{{> theme_boost/head }}
+{{> theme_mru_odel/head }}
 
 <body {{{ bodyattributes }}}>
 {{> core/local/toast/wrapper}}
@@ -142,6 +142,7 @@
             </div>
 
             {{! Page header }}
+            <div class="mru-page-wrap">
             {{{ output.full_header }}}
 
             {{! Secondary navigation }}
@@ -179,6 +180,7 @@
                         {{{ output.course_content_footer }}}
                     </section>
                 </div>
+            </div>
             </div>
         </div>
 

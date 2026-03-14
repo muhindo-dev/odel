@@ -99,11 +99,11 @@
                             {{/isloggedin}}
 
                             <p class="mru-hero-sub">
-                                Uganda's premier open and distance learning institution — delivering quality, accredited higher education to students across East Africa and beyond.
+                                Chartered university established under the Buganda Kingdom. Providing training, research and technical guidance responsive to social-economic needs.
                             </p>
 
                             <p class="mru-hero-motto">
-                                Seeking Greater Horizon In Thoughts and Actions
+                                Seeking Greater Horizons In Thoughts And Actions
                             </p>
 
                             <div class="mru-hero-actions">
@@ -126,22 +126,12 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-5 col-xl-6 d-none d-lg-block">
-                            <div class="mru-hero-panel">
-                                <div class="panel-label">Accredited &amp; Recognised By</div>
-                                <div class="panel-badges">
-                                    <span class="panel-badge">NCHE</span>
-                                    <span class="panel-badge">NEMRA</span>
-                                    <span class="panel-badge">RENU</span>
-                                    <span class="panel-badge">GENSS</span>
-                                    <span class="panel-badge">AAU</span>
-                                </div>
-                                <div class="panel-divider"></div>
-                                <div class="panel-label">Available On All Devices</div>
-                                <div class="panel-devices">
-                                    <span>Desktop</span>
-                                    <span>Mobile</span>
-                                    <span>Tablet</span>
+                        <div class="col-lg-5 col-xl-6 d-none d-lg-flex align-items-center justify-content-center">
+                            <div class="mru-hero-image">
+                                <img src="{{{wwwroot}}}/theme/mru_odel/pix/frontpage/students.jpg" alt="MRU students" loading="eager">
+                                <div class="hero-img-caption">
+                                    <span class="caption-badge">Chartered 2024</span>
+                                    <span class="caption-badge">NCHE Licensed</span>
                                 </div>
                             </div>
                         </div>
@@ -188,8 +178,7 @@
                 <div class="container">
                     <div class="mru-section-header">
                         <div class="section-label">Our Faculties</div>
-                        <h2>Academic Departments &amp; Schools</h2>
-                        <p>Explore our faculties offering accredited programmes in distance and blended learning modes.</p>
+                        <h2>Schools &amp; Faculties</h2>
                     </div>
                     <div class="mru-dept-grid">
                         {{#faculties}}
@@ -212,8 +201,7 @@
                 <div class="container">
                     <div class="mru-section-header">
                         <div class="section-label">Why MRU ODEL</div>
-                        <h2>A Learning Experience Designed for You</h2>
-                        <p>Everything you need for flexible, quality higher education — all in one platform.</p>
+                        <h2>Online &amp; Distance Learning</h2>
                     </div>
                     <div class="mru-feature-grid">
                         {{#features}}
@@ -232,86 +220,93 @@
             {{! ══════════════════════════════════════════════════════════ }}
             <div class="mru-section d-print-none" style="background:var(--mru-light);">
                 <div class="container">
-                    <div class="row g-0" style="gap:1px;background:var(--mru-border);border:1px solid var(--mru-border);">
+                    <div class="mru-twin-panels">
 
-                        {{! Notices }}
-                        <div class="col-lg-7" style="background:#fff;padding:1.25rem;">
-                            <div class="mru-section-header">
-                                <div class="section-label">Announcements</div>
-                                <h2>Latest Notices</h2>
+                        {{! Notices panel }}
+                        <div class="mru-panel">
+                            <div class="mru-panel-header">
+                                <div class="mru-section-header">
+                                    <div class="section-label">Announcements</div>
+                                    <h2>Latest Notices</h2>
+                                </div>
                             </div>
-                            <ul class="mru-notice-list">
-                                {{#notices}}
-                                <li>
-                                    <div class="notice-date">
-                                        <span class="day">{{day}}</span>
-                                        <span class="mon">{{mon}}</span>
-                                    </div>
-                                    <div class="notice-content">
-                                        <h4>{{title}}</h4>
-                                        <p>{{desc}}</p>
-                                    </div>
-                                    <span class="notice-tag">{{tag}}</span>
-                                </li>
-                                {{/notices}}
-                            </ul>
+                            <div class="mru-panel-body">
+                                <ul class="mru-notice-list">
+                                    {{#notices}}
+                                    <li>
+                                        <div class="notice-date">
+                                            <span class="day">{{day}}</span>
+                                            <span class="mon">{{mon}}</span>
+                                        </div>
+                                        <div class="notice-content">
+                                            <span class="notice-tag">{{tag}}</span>
+                                            <h4>{{title}}</h4>
+                                            <p>{{desc}}</p>
+                                        </div>
+                                    </li>
+                                    {{/notices}}
+                                </ul>
+                            </div>
                         </div>
 
-                        {{! Quick access }}
-                        <div class="col-lg-5" style="background:#fff;padding:1.25rem;">
-                            <div class="mru-section-header">
-                                <div class="section-label">Resources</div>
-                                <h2>Quick Access</h2>
+                        {{! Quick access panel }}
+                        <div class="mru-panel">
+                            <div class="mru-panel-header">
+                                <div class="mru-section-header">
+                                    <div class="section-label">Resources</div>
+                                    <h2>Quick Access</h2>
+                                </div>
                             </div>
+                            <div class="mru-panel-body">
+                                <div class="mru-quick-links">
+                                    <a href="{{{loginurl}}}" class="quick-link">
+                                        <span class="ql-icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span>
+                                        <span class="ql-text">
+                                            <span class="ql-title">Student Portal Login</span>
+                                            <span class="ql-desc">Access your courses and grades</span>
+                                        </span>
+                                        <span class="ql-arrow"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                                    </a>
+                                    <a href="{{{coursesurl}}}" class="quick-link">
+                                        <span class="ql-icon"><i class="fa fa-book" aria-hidden="true"></i></span>
+                                        <span class="ql-text">
+                                            <span class="ql-title">Course Catalogue</span>
+                                            <span class="ql-desc">Browse all available programmes</span>
+                                        </span>
+                                        <span class="ql-arrow"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                                    </a>
+                                    <a href="http://eadmissions.mru.ac.ug/" target="_blank" rel="noopener" class="quick-link ql-gold">
+                                        <span class="ql-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+                                        <span class="ql-text">
+                                            <span class="ql-title">Apply for Admission</span>
+                                            <span class="ql-desc">Undergraduate &amp; postgraduate</span>
+                                        </span>
+                                        <span class="ql-arrow"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                                    </a>
+                                    <a href="mailto:odel@mru.ac.ug" class="quick-link">
+                                        <span class="ql-icon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                        <span class="ql-text">
+                                            <span class="ql-title">ODEL Support</span>
+                                            <span class="ql-desc">odel@mru.ac.ug</span>
+                                        </span>
+                                        <span class="ql-arrow"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                                    </a>
+                                    <a href="https://mru.ac.ug" target="_blank" rel="noopener" class="quick-link">
+                                        <span class="ql-icon"><i class="fa fa-globe" aria-hidden="true"></i></span>
+                                        <span class="ql-text">
+                                            <span class="ql-title">University Website</span>
+                                            <span class="ql-desc">mru.ac.ug</span>
+                                        </span>
+                                        <span class="ql-arrow"><i class="fa fa-external-link" aria-hidden="true"></i></span>
+                                    </a>
+                                </div>
 
-                            <div class="mru-quick-links">
-                                <a href="{{{loginurl}}}" class="quick-link">
-                                    <span class="ql-icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span>
-                                    <span class="ql-text">
-                                        <span class="ql-title">Student Portal Login</span>
-                                        <span class="ql-desc">Access your courses and grades</span>
-                                    </span>
-                                    <span class="ql-arrow">→</span>
-                                </a>
-                                <a href="{{{coursesurl}}}" class="quick-link">
-                                    <span class="ql-icon"><i class="fa fa-book" aria-hidden="true"></i></span>
-                                    <span class="ql-text">
-                                        <span class="ql-title">Course Catalogue</span>
-                                        <span class="ql-desc">Browse all available programmes</span>
-                                    </span>
-                                    <span class="ql-arrow">→</span>
-                                </a>
-                                <a href="https://mru.ac.ug/admissions" target="_blank" rel="noopener" class="quick-link ql-gold">
-                                    <span class="ql-icon"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
-                                    <span class="ql-text">
-                                        <span class="ql-title">Apply for Admission</span>
-                                        <span class="ql-desc">Undergraduate &amp; postgraduate</span>
-                                    </span>
-                                    <span class="ql-arrow">→</span>
-                                </a>
-                                <a href="mailto:odel@mru.ac.ug" class="quick-link">
-                                    <span class="ql-icon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-                                    <span class="ql-text">
-                                        <span class="ql-title">ODEL Support</span>
-                                        <span class="ql-desc">odel@mru.ac.ug</span>
-                                    </span>
-                                    <span class="ql-arrow">→</span>
-                                </a>
-                                <a href="https://mru.ac.ug" target="_blank" rel="noopener" class="quick-link">
-                                    <span class="ql-icon"><i class="fa fa-globe" aria-hidden="true"></i></span>
-                                    <span class="ql-text">
-                                        <span class="ql-title">University Website</span>
-                                        <span class="ql-desc">mru.ac.ug</span>
-                                    </span>
-                                    <span class="ql-arrow">↗</span>
-                                </a>
-                            </div>
-
-                            <div class="mru-contact-strip">
-                                <span class="contact-icon"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
-                                <div>
-                                    <div class="contact-name">Muteesa I Royal University</div>
-                                    <div class="contact-addr">Masulita, Wakiso District, Uganda</div>
+                                <div class="mru-contact-strip">
+                                    <span class="contact-icon"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
+                                    <div>
+                                        <div class="contact-name">Muteesa I Royal University</div>
+                                        <div class="contact-addr">Kakeeka, Mengo &middot; Kirumba, Masaka &middot; +256 414 670109 &middot; info@mru.ac.ug</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -326,11 +321,11 @@
             {{^isloggedin}}
             <div class="mru-cta d-print-none">
                 <div class="container">
-                    <h2>Ready to Start Your Academic Journey?</h2>
-                    <p>Join thousands of students already learning on MRU ODEL — flexible, accredited, and career-focused.</p>
+                    <h2>Start Learning Today</h2>
+                    <p>Apply online at eadmissions.mru.ac.ug or visit our campuses in Kakeeka (Mengo) and Kirumba (Masaka).</p>
                     <div class="mru-cta-actions">
                         <a href="{{{coursesurl}}}" class="btn-hero-primary">Explore Programmes</a>
-                        <a href="https://mru.ac.ug/admissions" target="_blank" rel="noopener" class="btn-hero-outline">Apply Now</a>
+                        <a href="http://eadmissions.mru.ac.ug/" target="_blank" rel="noopener" class="btn-hero-outline">Apply Online</a>
                     </div>
                 </div>
             </div>

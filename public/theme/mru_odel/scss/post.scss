@@ -343,6 +343,7 @@ h4 { font-size: .88rem; }
     border-bottom: 1px solid var(--mru-border);
     padding: .3rem .9rem; min-height: 36px;
     display: flex; align-items: center;
+    max-width: 1140px; margin: 0 auto;
     .btn {
         color: var(--mru-primary) !important;
         border: 1px solid var(--mru-border) !important;
@@ -353,17 +354,26 @@ h4 { font-size: .88rem; }
     }
 }
 
+// Main content wrapper — mirrors frontpage container width
+.mru-page-wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 .75rem;
+    @media (max-width: 575.98px) { padding: 0 .5rem; }
+}
+
 // Main content
 #topofscroll { background: var(--mru-light); }
-#page-content { padding-bottom: 1rem; }
+#page-content { padding-bottom: 1.25rem; }
 
 #region-main {
     background: #fff;
     border: 1px solid var(--mru-border);
     border-top: none;
-    padding: 1rem 1.25rem;
+    padding: 1.25rem 1.5rem;
     min-height: 350px;
     box-shadow: none;
+    @media (max-width: 575.98px) { padding: .75rem; }
 }
 
 // Page header
@@ -371,7 +381,8 @@ h4 { font-size: .88rem; }
     background: #fff;
     border-bottom: 1px solid var(--mru-border);
     border-left: 3px solid var(--mru-primary);
-    padding: .6rem 1.25rem;
+    padding: .75rem 1.5rem;
+    margin-top: 1rem;
     .page-header-headings h1 { font-size: 1.05rem; font-weight: 700; color: var(--mru-dark); margin: 0; }
     .btn-secondary { font-size: .7rem; padding: .25rem .6rem; }
 }
@@ -397,7 +408,7 @@ h4 { font-size: .88rem; }
 .breadcrumb-nav, nav[aria-label="Navigation bar"] {
     background: var(--mru-light);
     border-bottom: 1px solid var(--mru-border);
-    padding: .35rem 1.25rem; font-size: .72rem;
+    padding: .35rem 0; font-size: .72rem;
     .breadcrumb {
         margin: 0; background: none; padding: 0;
         .breadcrumb-item {
@@ -817,43 +828,45 @@ h4 { font-size: .88rem; }
 
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
 
-// ── Hero right panel ──────────────────────────────────────────────────────────
-.mru-hero-panel {
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.1);
-    padding: 1.5rem; margin-left: 2rem;
+// ── Hero student image ────────────────────────────────────────────────────────
+.mru-hero-image {
+    position: relative;
+    max-width: 380px; margin-left: auto;
 
-    .panel-label {
-        font-size: .65rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .1em;
-        color: rgba(255,255,255,.4); margin-bottom: .75rem;
+    img {
+        width: 100%; height: auto; display: block;
+        object-fit: cover;
+        border: 3px solid rgba(255,255,255,.12);
+        box-shadow: 0 12px 40px rgba(0,0,0,.4);
     }
-    .panel-badges {
-        display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem;
-        .panel-badge {
+    .hero-img-caption {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        display: flex; gap: .4rem; padding: .5rem .65rem;
+        background: linear-gradient(transparent, rgba(7,26,62,.85));
+
+        .caption-badge {
+            font-size: .55rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .06em;
+            padding: .15rem .45rem;
+            background: rgba(255,255,255,.12);
             border: 1px solid rgba(255,255,255,.2);
-            color: rgba(255,255,255,.6);
-            padding: .25rem .6rem; font-size: .65rem;
-            font-weight: 700; letter-spacing: .05em;
+            color: rgba(255,255,255,.85);
         }
-    }
-    .panel-divider {
-        border-top: 1px solid rgba(255,255,255,.07);
-        padding-top: 1rem; margin-bottom: .25rem;
-    }
-    .panel-devices {
-        display: flex; gap: .75rem;
-        span { color: rgba(255,255,255,.5); font-size: .75rem; }
     }
 }
 
 // ── Contact strip ─────────────────────────────────────────────────────────────
 .mru-contact-strip {
-    margin-top: 1px; background: var(--mru-darker);
-    padding: .85rem 1rem; display: flex;
-    align-items: center; gap: .7rem;
+    margin-top: auto; background: var(--mru-darker);
+    padding: .75rem 1rem; display: flex;
+    align-items: center; gap: .65rem;
 
-    .contact-icon { font-size: 1.1rem; color: var(--mru-gold); }
+    .contact-icon {
+        width: 30px; height: 30px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: .9rem; color: var(--mru-gold);
+        background: rgba(255,255,255,.08);
+    }
     .contact-name { font-size: .72rem; font-weight: 700; color: #fff; }
     .contact-addr { font-size: .68rem; color: rgba(255,255,255,.45); }
 }
@@ -958,32 +971,65 @@ h4 { font-size: .88rem; }
     }
 }
 
+// ── Twin panels layout (Notices & Quick Access) ──────────────────────────────
+.mru-twin-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    @media (max-width: 991.98px) { grid-template-columns: 1fr; }
+}
+
+.mru-panel {
+    background: #fff;
+    border: 1px solid var(--mru-border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+
+    .mru-panel-header {
+        padding: 1.25rem 1.25rem 0;
+        .mru-section-header { margin-bottom: 1rem; }
+    }
+    .mru-panel-body {
+        padding: 0 1.25rem 1.25rem;
+        flex: 1; display: flex; flex-direction: column;
+    }
+}
+
 // ── Notice list ───────────────────────────────────────────────────────────────
 .mru-notice-list {
     list-style: none; padding: 0; margin: 0;
+    flex: 1; display: flex; flex-direction: column;
+
     li {
-        display: flex; gap: .85rem; align-items: flex-start;
-        padding: .7rem .9rem; background: #fff;
-        border: 1px solid var(--mru-border);
-        border-left: 3px solid var(--mru-primary);
-        margin-bottom: 1px; transition: var(--mru-t);
-        &:hover { box-shadow: var(--mru-shadow-xs); transform: translateX(2px); }
+        display: flex; gap: .75rem; align-items: flex-start;
+        padding: .75rem 0;
+        border-bottom: 1px solid var(--mru-border);
+        transition: var(--mru-t);
+        &:first-child { padding-top: 0; }
+        &:last-child { border-bottom: none; padding-bottom: 0; }
+        &:hover {
+            .notice-date .day { color: var(--mru-gold); }
+        }
 
         .notice-date {
-            flex-shrink: 0; width: 38px; text-align: center;
-            .day { display: block; font-size: 1rem; font-weight: 900; color: var(--mru-primary); line-height: 1; }
-            .mon { display: block; font-size: .55rem; font-weight: 700; text-transform: uppercase; color: #9a9ab0; }
+            flex-shrink: 0; width: 42px; text-align: center;
+            background: rgba(23,77,164,.04); padding: .4rem 0;
+            border-top: 2px solid var(--mru-primary);
+            .day { display: block; font-size: 1.05rem; font-weight: 900; color: var(--mru-primary); line-height: 1; transition: var(--mru-t); }
+            .mon { display: block; font-size: .55rem; font-weight: 700; text-transform: uppercase; color: #9a9ab0; margin-top: .1rem; }
         }
         .notice-content {
-            flex: 1;
-            h4 { font-size: .78rem; font-weight: 700; color: var(--mru-dark); margin: 0 0 .15rem; }
-            p  { font-size: .7rem; color: #9a9ab0; margin: 0; }
-        }
-        .notice-tag {
-            flex-shrink: 0; font-size: .55rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: .06em;
-            padding: .15rem .4rem;
-            background: rgba(23,77,164,.06); color: var(--mru-primary);
+            flex: 1; min-width: 0;
+            .notice-tag {
+                display: inline-block; font-size: .52rem; font-weight: 700;
+                text-transform: uppercase; letter-spacing: .06em;
+                padding: .1rem .4rem; margin-bottom: .25rem;
+                background: rgba(23,77,164,.06); color: var(--mru-primary);
+            }
+            h4 { font-size: .78rem; font-weight: 700; color: var(--mru-dark); margin: 0 0 .15rem; line-height: 1.35;
+                 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            p  { font-size: .7rem; color: #9a9ab0; margin: 0; line-height: 1.45;
+                 display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         }
     }
 }
@@ -991,29 +1037,40 @@ h4 { font-size: .88rem; }
 // ── Quick access links ────────────────────────────────────────────────────────
 .mru-quick-links {
     display: flex; flex-direction: column;
-    gap: 1px; background: var(--mru-border); border: 1px solid var(--mru-border);
+    flex: 1;
 
     .quick-link {
         display: flex; align-items: center; gap: .7rem;
-        padding: .65rem .85rem; background: #fff;
+        padding: .6rem .75rem; background: #fff;
         text-decoration: none !important; transition: var(--mru-t);
-        &:hover { background: var(--mru-light); }
+        border-bottom: 1px solid var(--mru-border);
+        &:last-child { border-bottom: none; }
+        &:hover {
+            background: rgba(23,77,164,.03);
+            .ql-icon { background: var(--mru-primary); color: #fff; border-color: var(--mru-primary); }
+            .ql-arrow { transform: translateX(3px); color: var(--mru-primary); }
+        }
 
         .ql-icon {
-            width: 32px; height: 32px; flex-shrink: 0;
+            width: 34px; height: 34px; flex-shrink: 0;
             background: rgba(23,77,164,.06);
             display: flex; align-items: center; justify-content: center;
-            font-size: .88rem; border-left: 3px solid var(--mru-primary);
+            font-size: .85rem; border-left: 3px solid var(--mru-primary);
             color: var(--mru-primary);
+            transition: var(--mru-t);
         }
         .ql-text {
-            flex: 1;
-            .ql-title { font-size: .75rem; font-weight: 700; color: var(--mru-dark); }
-            .ql-desc  { font-size: .65rem; color: #9a9ab0; }
+            flex: 1; min-width: 0;
+            .ql-title { display: block; font-size: .75rem; font-weight: 700; color: var(--mru-dark); }
+            .ql-desc  { display: block; font-size: .65rem; color: #9a9ab0; }
         }
-        .ql-arrow { color: var(--mru-primary); font-size: .75rem; margin-left: auto; }
+        .ql-arrow {
+            color: #c0c0d0; font-size: .65rem; margin-left: auto;
+            flex-shrink: 0; transition: var(--mru-t);
+        }
 
         &.ql-gold .ql-icon { border-left-color: var(--mru-gold); }
+        &.ql-gold:hover .ql-icon { background: var(--mru-gold); border-color: var(--mru-gold); }
     }
 }
 

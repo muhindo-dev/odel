@@ -94,14 +94,14 @@ $totalcategories = $DB->count_records('course_categories');
 $topcats = $DB->get_records('course_categories', ['parent' => 0, 'visible' => 1], 'sortorder ASC', '*', 0, 8);
 $facicons  = ['fa-graduation-cap', 'fa-balance-scale', 'fa-briefcase', 'fa-flask', 'fa-laptop', 'fa-heartbeat', 'fa-book', 'fa-paint-brush'];
 $facdesc = [
-    'Explore cutting-edge programmes designed for leadership and innovation.',
-    'Build expertise with industry-relevant courses from experienced professionals.',
-    'Gain practical skills and knowledge for a successful career path.',
-    'Discover programmes blending academic rigour with real-world application.',
-    'Develop competencies through comprehensive and flexible learning modules.',
-    'Advance your career with specialised courses tailored to market demands.',
-    'Master your field with depth, breadth, and professional development.',
-    'Transform your future with quality education and hands-on training.',
+    'Nurturing educators, researchers and leaders transforming the education landscape.',
+    'Understanding society, governance and community development.',
+    'Building expertise in commerce, accounting and organisational management.',
+    'Engineering, technology, art and design for practical application.',
+    'Health sciences and community well-being programmes.',
+    'Law, environment and natural resource management.',
+    'Research, postgraduate studies and academic development.',
+    'Interdisciplinary studies and continuing education.',
 ];
 $faculties = [];
 $fi = 0;
@@ -146,12 +146,12 @@ $notices = [
 
 // ── Why choose MRU ───────────────────────────────────────────────────────────
 $features = [
-    ['icon' => 'fa-university', 'title' => 'Accredited Programmes',  'desc' => 'All programmes approved by NCHE and recognised internationally for academic excellence.'],
-    ['icon' => 'fa-globe', 'title' => 'Study From Anywhere',     'desc' => 'Fully online delivery with live sessions, recorded lectures, and downloadable e-resources.'],
-    ['icon' => 'fa-users', 'title' => 'Expert Faculty',         'desc' => 'Learn from qualified academics and industry professionals with real-world experience.'],
-    ['icon' => 'fa-mobile', 'title' => 'Mobile-Friendly Platform', 'desc' => 'Access courses, assignments, and grades from any device — desktop, tablet, or phone.'],
-    ['icon' => 'fa-trophy', 'title' => 'Career-Focused Curricula', 'desc' => 'Programmes designed with industry partners to maximise graduate employability.'],
-    ['icon' => 'fa-comments', 'title' => 'Collaborative Learning',  'desc' => 'Interactive forums, group projects, and peer-to-peer support across all programmes.'],
+    ['icon' => 'fa-university', 'title' => 'Chartered University',     'desc' => 'Licensed by NCHE in 2005. Granted a Charter by the President of Uganda on 11th March 2024.'],
+    ['icon' => 'fa-globe', 'title' => 'Online Learning',              'desc' => 'Access lectures, assignments and e-resources from anywhere via the ODEL platform.'],
+    ['icon' => 'fa-users', 'title' => 'Qualified Faculty',            'desc' => 'Academics and industry professionals delivering training responsive to social-economic needs.'],
+    ['icon' => 'fa-mobile', 'title' => 'Multi-Device Access',          'desc' => 'Study on desktop, tablet or phone. All course materials available on any device.'],
+    ['icon' => 'fa-trophy', 'title' => 'Two Campuses',                 'desc' => 'Kakeeka Campus in Mengo, Kampala and Kirumba Campus in Masaka City.'],
+    ['icon' => 'fa-comments', 'title' => 'Student Support',            'desc' => 'Discussion forums, live sessions and direct access to lecturers and academic advisors.'],
 ];
 
 $templatecontext = [

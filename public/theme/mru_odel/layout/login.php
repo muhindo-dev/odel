@@ -28,7 +28,7 @@ $bodyattributes = $OUTPUT->body_attributes();
 
 $theme = theme_config::load('mru_odel');
 $loginheading    = !empty($theme->settings->loginheading)    ? $theme->settings->loginheading    : 'Welcome Back';
-$loginsubheading = !empty($theme->settings->loginsubheading) ? $theme->settings->loginsubheading : 'Muteesa I Royal University — Open &amp; Distance E-Learning';
+$loginsubheading = !empty($theme->settings->loginsubheading) ? $theme->settings->loginsubheading : 'Sign in to your learning portal';
 
 $templatecontext = [
     'sitename'        => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),

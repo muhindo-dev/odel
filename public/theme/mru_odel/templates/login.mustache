@@ -1,19 +1,14 @@
 {{!
     @template theme_mru_odel/login
-    MRU ODEL Login — clean split layout with photo panel + form panel.
+    MRU ODEL Login — split layout with photo panel + form panel.
 
     Example context (json):
     {
         "sitename": "MRU ODEL",
-        "output": {
-            "doctype": "<!DOCTYPE html>",
-            "page_title": "Login",
-            "favicon": "favicon.ico",
-            "main_content": "<h1>Login form</h1>"
-        },
+        "output": {},
         "bodyattributes": "",
         "loginheading": "Welcome Back",
-        "loginsubheading": "Muteesa I Royal University",
+        "loginsubheading": "Sign in to your learning portal",
         "siteyear": "2026",
         "wwwroot": ""
     }
@@ -34,15 +29,19 @@
             <div class="login-logo">MRU<span class="accent">ODEL</span></div>
             <p class="login-university">Muteesa I Royal University</p>
         </div>
+        <div class="brand-center">
+            <h2 class="brand-tagline">Your Learning,<br>Anywhere, Anytime</h2>
+            <p class="brand-desc">Access your courses, assignments and resources through the Open &amp; Distance E-Learning portal.</p>
+        </div>
         <div class="brand-bottom">
-            <p class="login-motto">
-                <i class="fa fa-quote-left"></i>
-                Seeking Greater Horizon — In Thoughts and Actions
-            </p>
             <div class="login-badges">
                 <span class="login-badge"><i class="fa fa-shield"></i> Chartered 2024</span>
                 <span class="login-badge"><i class="fa fa-certificate"></i> NCHE Licensed</span>
             </div>
+            <p class="login-motto">
+                <i class="fa fa-quote-left"></i>
+                Seeking Greater Horizon — In Thoughts and Actions
+            </p>
         </div>
     </div>
 
@@ -50,17 +49,24 @@
     <div class="mru-login-form">
         <div class="login-form-inner">
 
-            {{! Mobile logo }}
-            <div class="login-mobile-header d-flex d-lg-none align-items-center gap-2 mb-4">
-                <div class="login-mobile-icon">M</div>
-                <div>
-                    <div class="login-mobile-brand">MRU<span class="accent">ODEL</span></div>
-                    <small class="login-mobile-sub">Muteesa I Royal University</small>
+            {{! Mobile header }}
+            <div class="login-mobile-header d-lg-none">
+                <div class="login-mobile-bar">
+                    <div class="login-mobile-icon">M</div>
+                    <div>
+                        <div class="login-mobile-brand">MRU<span class="accent">ODEL</span></div>
+                    </div>
+                </div>
+                <div class="login-mobile-badges">
+                    <span class="login-badge-sm"><i class="fa fa-shield"></i> Chartered</span>
+                    <span class="login-badge-sm"><i class="fa fa-certificate"></i> NCHE Licensed</span>
                 </div>
             </div>
 
-            <h1 class="login-heading">{{loginheading}}</h1>
-            <p class="login-subheading">{{loginsubheading}}</p>
+            <div class="login-form-header">
+                <h1 class="login-heading">{{loginheading}}</h1>
+                <p class="login-subheading">{{loginsubheading}}</p>
+            </div>
 
             {{! Moodle login form }}
             <div id="page-content" class="login-form">
@@ -74,7 +80,7 @@
             {{! Footer }}
             <div class="login-footer-note">
                 <p>&copy; {{siteyear}} Muteesa I Royal University</p>
-                <p>Need help? <a href="mailto:odel@mru.ac.ug">odel@mru.ac.ug</a></p>
+                <p>Need help? <a href="mailto:odel@mru.ac.ug">odel@mru.ac.ug</a> &middot; <a href="tel:+256414670109">+256 414 670109</a></p>
             </div>
 
         </div>

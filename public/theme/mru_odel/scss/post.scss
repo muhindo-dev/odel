@@ -656,7 +656,7 @@ h4 { font-size: .88rem; }
 
     .mru-login-wrapper {
         min-height: 100vh; display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.1fr .9fr;
         @media (max-width: 991.98px) { grid-template-columns: 1fr; }
     }
 
@@ -665,54 +665,73 @@ h4 { font-size: .88rem; }
         position: relative; overflow: hidden;
         background-size: cover; background-position: center;
         display: flex; flex-direction: column; justify-content: space-between;
-        padding: 2.5rem;
+        padding: 2.5rem 3rem;
 
         .brand-overlay {
             position: absolute; inset: 0;
-            background: linear-gradient(160deg, rgba(7,26,62,.85), rgba(23,77,164,.7));
+            background: linear-gradient(170deg, rgba(7,26,62,.92) 0%, rgba(23,77,164,.75) 50%, rgba(7,26,62,.85) 100%);
             z-index: 1;
         }
 
-        .brand-top, .brand-bottom { position: relative; z-index: 2; }
+        .brand-top, .brand-center, .brand-bottom { position: relative; z-index: 2; }
 
         .login-logo {
-            font-size: 2.25rem; font-weight: 900; color: #fff; line-height: 1;
+            font-size: 1.75rem; font-weight: 900; color: #fff; line-height: 1;
+            letter-spacing: -.02em;
             .accent { color: var(--mru-gold); }
         }
 
         .login-university {
-            font-size: .78rem; color: rgba(255,255,255,.55);
-            letter-spacing: .1em; text-transform: uppercase; margin-top: .5rem;
+            font-size: .7rem; color: rgba(255,255,255,.45);
+            letter-spacing: .12em; text-transform: uppercase; margin-top: .35rem;
         }
 
-        .login-motto {
-            font-size: .8rem; color: rgba(255,255,255,.6);
-            font-style: italic; line-height: 1.6;
-            border-left: 3px solid var(--mru-gold); padding-left: .75rem;
-            margin-bottom: 1rem;
-            .fa-quote-left { font-size: .55rem; color: var(--mru-gold); margin-right: .25rem; vertical-align: top; }
+        .brand-center { margin: auto 0; padding: 2rem 0; }
+
+        .brand-tagline {
+            font-size: 2rem; font-weight: 800; color: #fff;
+            line-height: 1.2; margin: 0 0 1rem;
+        }
+
+        .brand-desc {
+            font-size: .85rem; color: rgba(255,255,255,.6);
+            line-height: 1.7; max-width: 360px; margin: 0;
         }
 
         .login-badges {
-            display: flex; gap: .6rem; flex-wrap: wrap;
+            display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .75rem;
         }
         .login-badge {
-            display: inline-flex; align-items: center; gap: .35rem;
-            background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
-            padding: .3rem .7rem; font-size: .68rem; font-weight: 600;
-            color: rgba(255,255,255,.8); letter-spacing: .03em;
-            i { color: var(--mru-gold); font-size: .6rem; }
+            display: inline-flex; align-items: center; gap: .3rem;
+            background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+            padding: .3rem .65rem; font-size: .65rem; font-weight: 600;
+            color: rgba(255,255,255,.7); letter-spacing: .03em;
+            backdrop-filter: blur(4px);
+            i { color: var(--mru-gold); font-size: .55rem; }
+        }
+
+        .login-motto {
+            font-size: .72rem; color: rgba(255,255,255,.4);
+            font-style: italic; line-height: 1.6; margin: 0;
+            .fa-quote-left { font-size: .45rem; color: var(--mru-gold); margin-right: .2rem; vertical-align: top; }
         }
     }
 
     // ── Form panel (right) ──
     .mru-login-form {
-        background: #fff; padding: 2.5rem 2rem;
+        background: #fff; padding: 3rem 2.5rem;
         display: flex; flex-direction: column; justify-content: center;
         @media (max-width: 991.98px) { padding: 2rem 1.25rem; }
 
-        .login-form-inner { width: 100%; max-width: 400px; margin: 0 auto; }
+        .login-form-inner { width: 100%; max-width: 380px; margin: 0 auto; }
 
+        // Mobile header
+        .login-mobile-header {
+            margin-bottom: 2rem;
+            .login-mobile-bar {
+                display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem;
+            }
+        }
         .login-mobile-icon {
             width: 36px; height: 36px; background: var(--mru-gold);
             display: flex; align-items: center; justify-content: center;
@@ -720,42 +739,151 @@ h4 { font-size: .88rem; }
             color: var(--mru-dark);
         }
         .login-mobile-brand {
-            font-size: 1.25rem; font-weight: 800; color: var(--mru-primary); line-height: 1;
+            font-size: 1.3rem; font-weight: 800; color: var(--mru-primary); line-height: 1;
             .accent { color: var(--mru-gold); }
         }
-        .login-mobile-sub { color: #94a3b8; font-size: .7rem; }
+        .login-mobile-badges {
+            display: flex; gap: .4rem; flex-wrap: wrap;
+        }
+        .login-badge-sm {
+            display: inline-flex; align-items: center; gap: .25rem;
+            background: #f0f4fa; padding: .2rem .5rem;
+            font-size: .6rem; font-weight: 600; color: var(--mru-primary);
+            i { color: var(--mru-gold); font-size: .5rem; }
+        }
 
-        .login-heading { font-size: 1.4rem; font-weight: 800; color: var(--mru-dark); margin-bottom: .25rem; }
-        .login-subheading { font-size: .8rem; color: #9a9ab0; margin-bottom: 1.75rem; }
+        // Form header
+        .login-form-header { margin-bottom: 1.75rem; }
+        .login-heading {
+            font-size: 1.5rem; font-weight: 800; color: var(--mru-dark);
+            margin: 0 0 .3rem; line-height: 1.2;
+        }
+        .login-subheading { font-size: .82rem; color: #9a9ab0; margin: 0; }
 
+        // Strip Moodle chrome from inner containers
         #page-content, #region-main-box, #region-main {
             background: transparent !important; border: none !important;
             box-shadow: none !important; padding: 0 !important;
         }
 
-        .login-form {
-            .form-group { margin-bottom: .85rem; }
-            label { font-size: .78rem; font-weight: 600; color: var(--mru-dark); margin-bottom: .3rem; }
-            .form-control {
-                padding: .55rem .75rem; font-size: .82rem;
-                border: 1px solid #d8dce6;
-                &:focus { border-color: var(--mru-primary); box-shadow: 0 0 0 3px rgba(23,77,164,.1); }
+        // Moodle-generated .loginform wrapper
+        .loginform {
+            > .login-heading.mb-4 {
+                // Hide Moodle's duplicate "Log in to …" heading
+                display: none !important;
             }
-            .btn-primary {
-                width: 100%; padding: .6rem;
-                font-size: .85rem; font-weight: 700;
-                letter-spacing: .02em;
-                &:hover { box-shadow: 0 4px 14px rgba(23,77,164,.25); }
-            }
-            a { color: var(--mru-primary); font-size: .75rem; font-weight: 500; }
         }
 
+        // ── Form fields ──
+        .login-form {
+            .login-form-username,
+            .login-form-password {
+                position: relative; margin-bottom: 1rem;
+
+                &::before {
+                    font-family: 'Font Awesome 6 Free', 'FontAwesome';
+                    font-weight: 900; position: absolute;
+                    left: .85rem; top: 50%; transform: translateY(-50%);
+                    font-size: .8rem; color: #b0b8c9; z-index: 2;
+                    pointer-events: none;
+                }
+            }
+            .login-form-username::before { content: '\f007'; }
+            .login-form-password::before { content: '\f023'; }
+
+            .form-control {
+                padding: .65rem .75rem .65rem 2.4rem;
+                font-size: .85rem; border: 1.5px solid #e2e6ee;
+                background: #f8f9fc; transition: all .2s;
+                &::placeholder { color: #b0b8c9; font-weight: 400; }
+                &:focus {
+                    background: #fff; border-color: var(--mru-primary);
+                    box-shadow: 0 0 0 3px rgba(23,77,164,.08);
+                }
+            }
+            .form-control-lg { font-size: .85rem; }
+
+            .login-form-submit {
+                margin-top: .25rem; margin-bottom: 0;
+                .btn-primary {
+                    width: 100%; padding: .7rem;
+                    font-size: .88rem; font-weight: 700;
+                    letter-spacing: .02em;
+                    background: var(--mru-primary); border-color: var(--mru-primary);
+                    transition: all .2s;
+                    &:hover {
+                        background: var(--mru-dark); border-color: var(--mru-dark);
+                        box-shadow: 0 4px 16px rgba(23,77,164,.25);
+                        transform: translateY(-1px);
+                    }
+                }
+                .btn-lg { padding: .7rem; }
+            }
+
+            .login-form-forgotpassword {
+                text-align: right; margin-bottom: 0 !important; margin-top: .5rem;
+                a {
+                    color: var(--mru-primary); font-size: .75rem; font-weight: 500;
+                    text-decoration: none;
+                    &:hover { text-decoration: underline; }
+                }
+            }
+        }
+
+        // ── Dividers ──
+        .login-divider {
+            display: flex; align-items: center; gap: .75rem;
+            margin: 1.25rem 0; color: #c8cdd8; font-size: .72rem; font-weight: 500;
+            &::before, &::after {
+                content: ''; flex: 1; height: 1px; background: #e8ebf0;
+            }
+        }
+
+        // ── Guest section ──
+        .loginform > h2.login-heading {
+            font-size: .78rem; font-weight: 600; color: #8892a6;
+            text-align: center; margin: 0 0 .6rem;
+        }
+        #guestlogin {
+            .btn-secondary {
+                width: 100%; padding: .55rem;
+                font-size: .78rem; font-weight: 600;
+                background: transparent; color: var(--mru-primary);
+                border: 1.5px solid #e2e6ee;
+                transition: all .2s;
+                &:hover {
+                    background: #f0f4fa; border-color: var(--mru-primary);
+                }
+                &::before {
+                    content: '\f2bd'; font-family: 'Font Awesome 6 Free', 'FontAwesome';
+                    font-weight: 400; margin-right: .4rem; font-size: .75rem;
+                }
+            }
+        }
+
+        // ── Cookies notice ──
+        .loginform > .login-divider:last-of-type { margin-top: 1rem; }
+        .loginform > .d-flex {
+            justify-content: center;
+            .btn-secondary {
+                font-size: .68rem; padding: .3rem .6rem;
+                color: #b0b8c9; border: 1px solid #e8ebf0; background: transparent;
+                &:hover { color: var(--mru-primary); border-color: var(--mru-primary); }
+                &::before {
+                    content: '\f06a'; font-family: 'Font Awesome 6 Free', 'FontAwesome';
+                    font-weight: 900; margin-right: .3rem; font-size: .6rem;
+                }
+            }
+        }
+
+        // Footer
         .login-footer-note {
             margin-top: 2rem; padding-top: 1rem;
-            border-top: 1px solid var(--mru-border); text-align: center;
+            border-top: 1px solid #edf0f4; text-align: center;
             p { font-size: .7rem; color: #b5b8c8; margin: 0; }
-            p + p { margin-top: .25rem; }
-            a { color: var(--mru-primary); }
+            p + p { margin-top: .2rem; }
+            a { color: var(--mru-primary); text-decoration: none; font-weight: 500;
+                &:hover { text-decoration: underline; } }
         }
     }
 }

@@ -364,4 +364,120 @@ The MRU ODEL plugin (`local/mru/`) provides:
 
 ---
 
-*Document generated: 8 April 2026*
+## 16. Database Migration System
+
+The plugin includes a Laravel-style migration system for managing database schema changes safely and reproducibly.
+
+### Architecture
+
+| Component | Path | Purpose |
+|---|---|---|
+| Base class | `classes/migration/base_migration.php` | Abstract class with XMLDB helper methods |
+| Runner | `classes/migration/runner.php` | Discovers, executes, rolls back, tracks migrations |
+| CLI tool | `cli/migrate.php` | Command-line interface (6 actions) |
+| Web admin | `migrations.php` | Browser-based status & actions page |
+| Tracking table | `local_mru_migrations` | Records migration state, batch, checksum, timing |
+| Event | `classes/event/migration_executed.php` | Moodle event for audit logging |
+| Migration files | `db/migrations/YYYYMMDDHHMMSS_name.php` | Individual migration classes |
+
+### CLI Usage
+
+```bash
+# Show status of all migrations
+php local/mru/cli/migrate.php --action=status
+
+# Run all pending migrations
+php local/mru/cli/migrate.php --action=migrate
+
+# Rollback the last batch
+php local/mru/cli/migrate.php --action=rollback
+
+# Rollback the last N batches
+php local/mru/cli/migrate.php --action=rollback --steps=3
+
+# Reset: rollback all + re-run (development only — requires confirmation)
+php local/mru/cli/migrate.php --action=reset
+
+# Retry a specific failed migration
+php local/mru/cli/migrate.php --action=retry --migration=20260408120100_add_phone_to_registrations
+
+# Create a new migration file from template
+php local/mru/cli/migrate.php --action=create --name=add_status_column
+```
+
+On the VPS, prefix with the full PHP path:
+```bash
+/usr/local/apps/php83/bin/php /home/muhindo/odel_repo/public/local/mru/cli/migrate.php --action=status
+```
+
+### Web Admin
+
+Navigate to **Site administration → MRU ODEL → Migrations** (or visit `/local/mru/migrations.php`).
+Requires the `local/mru:manage` capability. Supports "Run pending" and "Rollback last" actions.
+
+### Creating a New Migration
+
+1. Generate the stub:
+   ```bash
+   php local/mru/cli/migrate.php --action=create --name=add_status_column
+   ```
+2. Edit the generated file in `db/migrations/`. Implement `up()` and `down()`:
+   ```php
+   public function up(): void {
+       $table = new xmldb_table('local_mru_registrations');
+       $field = new xmldb_field('status', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'pending');
+       $this->add_field($table, $field);
+   }
+
+   public function down(): void {
+       $table = new xmldb_table('local_mru_registrations');
+       $field = new xmldb_field('status');
+       $this->drop_field($table, $field);
+   }
+   ```
+3. Commit and push. On the server, run `--action=migrate`.
+
+### Available Helper Methods (base_migration)
+
+| Method | Purpose |
+|---|---|
+| `table_exists($table)` | Check if a table exists |
+| `field_exists($table, $field)` | Check if a field exists |
+| `index_exists($table, $index)` | Check if an index exists |
+| `create_table($table)` | Create a new table |
+| `drop_table($table)` | Drop a table |
+| `add_field($table, $field)` | Add a column |
+| `drop_field($table, $field)` | Remove a column |
+| `rename_field($table, $field, $newname)` | Rename a column |
+| `change_field($table, $field)` | Change column type/default/null |
+| `add_index($table, $index)` | Add an index |
+| `drop_index($table, $index)` | Remove an index |
+| `add_key($table, $key)` | Add a key (foreign, unique) |
+| `drop_key($table, $key)` | Remove a key |
+| `execute_sql($sql, $params)` | Execute raw SQL |
+| `insert_record($table, $record)` | Insert a data record |
+| `count_records($table, $conditions)` | Count records |
+
+### How It Works
+
+1. **Discovery**: The runner scans `db/migrations/` for files matching `YYYYMMDDHHMMSS_name.php` and sorts them chronologically.
+2. **Execution**: Each migration's `up()` runs inside a database transaction. Success/failure is recorded in `local_mru_migrations`.
+3. **Batching**: All migrations in a single `--action=migrate` run share the same batch number, enabling batch rollback.
+4. **Checksums**: SHA-256 file checksums detect if a migration file changed after being applied (warns during rollback).
+5. **Resilience**: If a migration fails, the runner uses upsert logic so the same migration can be retried without duplicate-key errors.
+6. **Audit**: Every migrate/rollback action fires a Moodle event for the standard logs.
+
+### Deployment Workflow
+
+```
+Local: php cli/migrate.php --action=create --name=my_change
+Local: # edit the migration file
+Local: php cli/migrate.php --action=migrate  (test locally)
+Local: git add -A && git commit && git push
+VPS:   cd /home/muhindo/odel_repo && git pull origin main
+VPS:   /usr/local/apps/php83/bin/php public/local/mru/cli/migrate.php --action=migrate
+```
+
+---
+
+*Document updated: 8 April 2026*

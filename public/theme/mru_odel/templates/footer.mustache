@@ -45,18 +45,31 @@
                 </ul>
             </div>
 
-            <div class="footer-col">
+            <div class="footer-col footer-support">
                 <h4>Support</h4>
                 <ul>
                     <li><a href="mailto:odel@mru.ac.ug">Technical Support</a></li>
                     <li><a href="mailto:admissions@mru.ac.ug">Admissions Office</a></li>
                     <li><a href="{{{ config.wwwroot }}}/user/policy.php">Privacy Policy</a></li>
                 </ul>
-                <div class="footer-address">
-                    <i class="fa fa-map-marker"></i> Kakeeka Campus — P.O. Box 14002, Mengo<br>
-                    <i class="fa fa-map-marker"></i> Kirumba Campus — P.O. Box 322, Masaka City<br>
-                    <span><i class="fa fa-phone"></i> +256 414 670109 / +256 706 870275</span><br>
-                    <span><i class="fa fa-envelope"></i> info@mru.ac.ug</span>
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <div class="contact-item">
+                        <i class="fa fa-map-marker"></i>
+                        <span>Kakeeka Campus — P.O. Box 14002, Mengo</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa fa-map-marker"></i>
+                        <span>Kirumba Campus — P.O. Box 322, Masaka City</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa fa-phone"></i>
+                        <span>+256 414 670109 / +256 706 870275</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa fa-envelope"></i>
+                        <a href="mailto:info@mru.ac.ug">info@mru.ac.ug</a>
+                    </div>
                 </div>
             </div>
 
@@ -72,6 +85,10 @@
             <span>&copy; {{siteyear}} Muteesa I Royal University. All rights reserved.</span>
             <div class="footer-links">
                 <a href="{{{ config.wwwroot }}}/user/policy.php">Privacy</a>
+                <button type="button" class="footer-cookie-notice"
+                        data-modal="alert"
+                        data-modal-title-str='["cookiesenabled", "core"]'
+                        data-modal-content-str='["cookiesenabled_help_html", "core"]'>Cookies</button>
                 <a href="https://mru.ac.ug" target="_blank" rel="noopener">mru.ac.ug</a>
                 <span class="footer-login-info">{{{ output.login_info }}}</span>
             </div>

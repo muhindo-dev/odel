@@ -85,13 +85,14 @@ h4 { font-size: .88rem; }
     box-shadow: 0 1px 8px rgba(7,26,62,.4);
     z-index: 1030;
 
+    // Container — just visual, NO overflow control
     .container {
         max-width: 1140px;
         padding: 0 1rem;
         height: 100%;
         display: flex;
         align-items: center;
-        gap: .15rem;
+        gap: .5rem;
     }
 
     // Toggle — purely white on all sizes
@@ -101,7 +102,8 @@ h4 { font-size: .88rem; }
         padding: .35rem .45rem;
         color: #fff !important;
         .navbar-toggler-icon {
-            filter: invert(1) brightness(2);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            filter: none;
             opacity: 1;
         }
         &:hover { background: rgba(255,255,255,.1) !important; }
@@ -136,10 +138,12 @@ h4 { font-size: .88rem; }
         }
     }
 
-    // Primary nav
+    // Primary nav — only colors
     .primary-navigation {
         flex: 1;
         .moremenu.navigation { display: flex; align-items: center; height: var(--mru-nav-h); }
+        // Force the dropdown parent to be a positioning anchor
+        .nav-item.dropdownmoremenu { position: relative; }
         .nav-link {
             color: rgba(255,255,255,.75) !important;
             font-size: .75rem; font-weight: 500;
@@ -162,14 +166,18 @@ h4 { font-size: .88rem; }
                 font-weight: 600;
             }
         }
+        // "More" dropdown — force absolute so it doesn't push content
         .dropdown-menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0;
             background: var(--mru-darker);
-            border: 1px solid rgba(255,255,255,.08);
-            box-shadow: var(--mru-shadow-lg);
-            min-width: 190px; padding: .2rem 0;
+            border: 1px solid rgba(255,255,255,.1);
+            box-shadow: 0 8px 30px rgba(0,0,0,.25);
+            z-index: 1050;
             .dropdown-item {
                 color: rgba(255,255,255,.7);
-                font-size: .75rem; padding: .4rem .9rem;
+                font-size: .75rem; padding: .5rem 1rem;
                 transition: var(--mru-t);
                 &:hover, &:focus { background: rgba(255,255,255,.06); color: #fff; }
             }
@@ -177,87 +185,186 @@ h4 { font-size: .88rem; }
         }
     }
 
-    // Right side
+    // ═══════════════════════════════════════════════════════════
+    // RIGHT SIDE — #usernavigation
+    // Only style colors/appearance. Let Moodle handle positioning.
+    // ═══════════════════════════════════════════════════════════
     #usernavigation {
-        display: flex; align-items: center; gap: .1rem;
-        height: var(--mru-nav-h); margin-left: auto;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center;
+        gap: .35rem;
+        height: var(--mru-nav-h);
+        margin-left: auto;
+        flex-shrink: 0;
 
-        // Ensure all text/icons in usernavigation are white
-        a, .btn, span, .nav-link { color: #fff !important; }
-
-        // Login link — clear white, prominent
-        .login {
-            a {
+        // ── Popover toggle icons (bell, message) — color only ──
+        .popover-region-toggle,
+        .nav-link.popover-region-toggle,
+        a.nav-link.popover-region-toggle {
+            color: rgba(255,255,255,.8) !important;
+            background: transparent !important;
+            border: none !important;
+            padding: .5rem;
+            .icon, .fa, i {
+                color: rgba(255,255,255,.8) !important;
+                filter: none !important;
+            }
+            img.icon { filter: brightness(0) invert(1) !important; }
+            &:hover {
                 color: #fff !important;
-                font-weight: 700;
-                font-size: .8rem;
-                letter-spacing: .01em;
-                padding: .3rem .7rem;
-                border: 1.5px solid rgba(255,255,255,.25);
-                transition: var(--mru-t);
-                text-decoration: none;
-                &:hover {
-                    background: var(--mru-gold);
-                    color: var(--mru-darker) !important;
-                    border-color: var(--mru-gold);
+                .icon, .fa, i { color: #fff !important; }
+            }
+            // Badge
+            .count-container {
+                background: var(--mru-gold) !important;
+                color: var(--mru-darker) !important;
+                font-weight: 800;
+                font-size: .55rem;
+            }
+            // Hide triangle pointers
+            &::before, &::after { display: none !important; }
+        }
+
+        // ── Popover dropdown panel — color reset only ──
+        .popover-region-container {
+            background: #fff !important;
+            border: 1px solid var(--mru-border);
+            box-shadow: 0 8px 30px rgba(0,0,0,.15);
+
+            // Reset all colors inside to dark text
+            &, *, a, span, div, p, h1, h2, h3, h4, h5, h6, label, i {
+                color: var(--mru-text) !important;
+                filter: none !important;
+            }
+            a:hover { color: var(--mru-primary) !important; }
+            .popover-region-header-container {
+                background: var(--mru-light);
+                border-bottom: 1px solid var(--mru-border);
+                .popover-region-header-text {
+                    font-weight: 700;
+                    color: var(--mru-dark) !important;
                 }
             }
-        }
-        a[href*="login"] {
-            color: #fff !important;
-            font-weight: 600;
+            .popover-region-footer-container {
+                background: var(--mru-light);
+                border-top: 1px solid var(--mru-border);
+            }
+            .content-item-container {
+                border-bottom: 1px solid var(--mru-border);
+                &:hover { background: var(--mru-light); }
+            }
+            .empty-message { color: #9a9ab0 !important; }
         }
 
+        // ── Generic icon buttons — color only ──
+        .btn.icon-no-margin,
+        a.icon-no-margin {
+            color: rgba(255,255,255,.8) !important;
+            background: transparent !important;
+            border: none !important;
+            .icon, .fa, i {
+                color: rgba(255,255,255,.8) !important;
+                filter: none !important;
+            }
+            img.icon { filter: brightness(0) invert(1) !important; }
+            &:hover {
+                color: #fff !important;
+                .icon, .fa, i { color: #fff !important; }
+            }
+        }
+
+        // ── Login link ──
+        .login a,
+        a[href*="login"] {
+            color: #fff !important;
+            font-weight: 700;
+            font-size: .78rem;
+            padding: .3rem .7rem;
+            border: 1.5px solid rgba(255,255,255,.3);
+            text-decoration: none;
+            &:hover {
+                background: var(--mru-gold);
+                color: var(--mru-darker) !important;
+                border-color: var(--mru-gold);
+            }
+        }
+
+        // ── Search input ──
         .search-input-wrapper input {
             background: rgba(255,255,255,.08);
             border: 1px solid rgba(255,255,255,.15) !important;
-            color: #fff; font-size: .75rem; padding: .3rem .6rem;
+            color: #fff; font-size: .75rem;
             &::placeholder { color: rgba(255,255,255,.4); }
             &:focus { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.3) !important; box-shadow: none !important; }
         }
 
-        .btn.icon-no-margin, .popover-region-toggle {
-            color: rgba(255,255,255,.75) !important;
-            width: 34px; height: 34px;
-            display: flex; align-items: center; justify-content: center;
-            background: transparent !important;
-            border: none !important;
-            transition: var(--mru-t);
-            .icon { filter: invert(1) brightness(2); width: 16px; height: 16px; }
-            &:hover { background: rgba(255,255,255,.1) !important; color: #fff !important; }
-            .count-container {
-                background: var(--mru-gold) !important;
-                color: var(--mru-darker) !important;
-                font-weight: 800; font-size: .5rem;
-                min-width: 14px; height: 14px; line-height: 14px;
-                top: 3px; right: 3px;
-                border: 1px solid var(--mru-darker);
+        // ── Dividers ──
+        .divider {
+            border-color: rgba(255,255,255,.15) !important;
+        }
+
+        // ── Language menu ──
+        .langmenu .btn { color: rgba(255,255,255,.75) !important; font-size: .7rem; }
+
+        // ── Edit mode switch ──
+        .editmode-switch-form {
+            .form-check-label {
+                color: rgba(255,255,255,.7) !important;
+                font-size: .72rem; font-weight: 500; white-space: nowrap;
+                &.text-primary { color: var(--mru-gold) !important; }
+            }
+            .form-check-input {
+                background-color: rgba(255,255,255,.2);
+                border-color: rgba(255,255,255,.3) !important;
+                &:checked { background-color: var(--mru-gold); border-color: var(--mru-gold) !important; }
             }
         }
 
-        .divider { border-color: rgba(255,255,255,.12) !important; height: 24px !important; margin: 0 .25rem; }
-
-        .langmenu .btn { color: rgba(255,255,255,.7) !important; font-size: .7rem; }
-
-        label.custom-control-label { color: rgba(255,255,255,.6); font-size: .7rem; }
-
+        // ── User menu toggle — avatar styling ──
         .usermenu-container {
-            .dropdown-toggle, [data-region="usermenu"] > .btn {
+            .usermenu .dropdown-toggle {
                 color: #fff !important;
-                background: rgba(255,255,255,.1) !important;
-                border: 1px solid rgba(255,255,255,.2) !important;
-                font-size: .75rem; font-weight: 600;
-                padding: .25rem .6rem; height: 30px; gap: .3rem;
-                transition: var(--mru-t);
-                &:hover { background: rgba(255,255,255,.18) !important; color: #fff !important; }
-                img.userpicture { width: 20px; height: 20px; }
+                background: transparent !important;
+                border: none !important;
+                display: flex; align-items: center; gap: .4rem;
+
+                .usertext, .userbutton, .meta, span { color: #fff !important; }
+                .userinitials {
+                    width: 30px !important; height: 30px !important;
+                    line-height: 30px !important;
+                    font-size: .7rem !important; font-weight: 700 !important;
+                    background: var(--mru-gold) !important;
+                    color: var(--mru-darker) !important;
+                    border: 2px solid rgba(255,255,255,.25);
+                    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+                }
+                img.userpicture {
+                    width: 30px; height: 30px; object-fit: cover;
+                    border: 2px solid rgba(255,255,255,.25);
+                    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+                }
+                &::after { color: rgba(255,255,255,.5); }
             }
+
+            // User dropdown — colors only, Bootstrap positions it
             .dropdown-menu {
-                background: #fff; border: 1px solid var(--mru-border);
-                box-shadow: var(--mru-shadow-lg); min-width: 200px; padding: .2rem 0;
-                .dropdown-item { color: var(--mru-text); font-size: .75rem; padding: .45rem .9rem; &:hover { background: var(--mru-light); color: var(--mru-primary); } }
+                background: #fff !important;
+                border: 1px solid var(--mru-border);
+                box-shadow: 0 8px 30px rgba(0,0,0,.15);
+
+                // Reset all colors to dark
+                &, *, a, span, div, label, .icon, .fa {
+                    color: var(--mru-text) !important;
+                    filter: none !important;
+                }
+                .dropdown-item {
+                    color: var(--mru-text) !important;
+                    font-size: .75rem; padding: .45rem .9rem;
+                    &:hover { background: var(--mru-light); color: var(--mru-primary) !important; }
+                }
                 .dropdown-divider { border-color: var(--mru-border); }
-                .dropdown-header { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #9a9ab0; padding: .4rem .9rem .15rem; }
             }
         }
     }
@@ -300,6 +407,7 @@ h4 { font-size: .88rem; }
     padding: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
+    position: relative;
 }
 .main-inner { max-width: 100%; }
 
@@ -350,6 +458,25 @@ h4 { font-size: .88rem; }
         font-size: .7rem; padding: .2rem .4rem; height: 28px;
         .icon { width: 13px; height: 13px; }
         &:hover { background: var(--mru-light) !important; border-color: var(--mru-primary) !important; }
+    }
+}
+
+// On frontpage, overlay the drawer toggles on the hero so no white gap
+body.pagelayout-frontpage .drawer-toggles {
+    position: absolute;
+    right: 0;
+    z-index: 10;
+    background: transparent;
+    border: none;
+    .btn {
+        background: rgba(255,255,255,.15) !important;
+        border-color: rgba(255,255,255,.25) !important;
+        color: #fff !important;
+        backdrop-filter: blur(4px);
+        &:hover {
+            background: rgba(255,255,255,.25) !important;
+            border-color: rgba(255,255,255,.4) !important;
+        }
     }
 }
 
@@ -646,245 +773,1481 @@ h4 { font-size: .88rem; }
 .progress { height: 4px; background: #e8eaf2; .progress-bar { background: linear-gradient(90deg, var(--mru-primary), var(--mru-gold)); } }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// LOGIN PAGE
+// GLOBAL REUSABLE FORM STYLES (.mru-form)
+// Apply .mru-form to any container to get consistent MRU form styling.
 // ═════════════════════════════════════════════════════════════════════════════
-.path-login {
-    background: #f0f2f5;
+.mru-form {
 
-    #page-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
-    #page { padding-top: 0; }
-
-    .mru-login-wrapper {
-        min-height: 100vh; display: grid;
-        grid-template-columns: 1.1fr .9fr;
-        @media (max-width: 991.98px) { grid-template-columns: 1fr; }
+    // Reset Moodle chrome
+    #page-content, #region-main-box, #region-main {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        min-height: 0 !important;
     }
 
-    // ── Photo panel (left) ──
+    // ── Labels ──
+    label {
+        font-size: .75rem;
+        font-weight: 600;
+        color: var(--mru-dark);
+        margin-bottom: .3rem;
+        letter-spacing: .01em;
+    }
+
+    // ── Text inputs, selects, textareas ──
+    .form-control,
+    .form-select {
+        padding: .6rem .75rem;
+        font-size: .84rem;
+        border: 1.5px solid var(--mru-border);
+        background: #f8f9fc;
+        color: var(--mru-dark);
+        transition: border-color .2s, box-shadow .2s, background .2s;
+
+        &::placeholder { color: #b0b8c9; font-weight: 400; }
+
+        &:focus {
+            background: #fff;
+            border-color: var(--mru-primary);
+            box-shadow: 0 0 0 3px rgba(23,77,164,.08);
+            outline: none;
+        }
+
+        &:disabled,
+        &[readonly] {
+            background: #f0f2f5;
+            color: #9a9ab0;
+            cursor: not-allowed;
+        }
+    }
+
+    .form-control-lg {
+        padding: .7rem .85rem;
+        font-size: .85rem;
+    }
+
+    // ── Primary button ──
+    .btn-primary {
+        background: var(--mru-primary);
+        border-color: var(--mru-primary);
+        font-weight: 700;
+        font-size: .84rem;
+        letter-spacing: .02em;
+        padding: .6rem 1.25rem;
+        transition: background .2s, border-color .2s, box-shadow .2s, transform .15s;
+
+        &:hover,
+        &:focus-visible {
+            background: var(--mru-dark);
+            border-color: var(--mru-dark);
+            box-shadow: 0 4px 16px rgba(23,77,164,.2);
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(23,77,164,.15);
+        }
+    }
+
+    // ── Secondary / outline button ──
+    .btn-secondary {
+        background: transparent;
+        color: var(--mru-primary);
+        border: 1.5px solid var(--mru-border);
+        font-weight: 600;
+        font-size: .8rem;
+        padding: .5rem 1rem;
+        transition: all .2s;
+
+        &:hover,
+        &:focus-visible {
+            background: #f0f4fa;
+            border-color: var(--mru-primary);
+            color: var(--mru-primary);
+        }
+    }
+
+    // ── Checkbox / radio ──
+    .form-check-input {
+        border: 1.5px solid var(--mru-border);
+        &:checked {
+            background-color: var(--mru-primary);
+            border-color: var(--mru-primary);
+        }
+        &:focus { box-shadow: 0 0 0 3px rgba(23,77,164,.1); }
+    }
+    .form-check-label { font-size: .8rem; color: var(--mru-text); }
+
+    // ── Alerts ──
+    .alert {
+        font-size: .8rem;
+        padding: .6rem .85rem;
+        border-width: 1.5px;
+        margin-bottom: 1rem;
+    }
+
+    // ── Links ──
+    a {
+        color: var(--mru-primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color .15s;
+        &:hover { color: var(--mru-dark); text-decoration: underline; }
+    }
+
+    // ── Divider ──
+    .login-divider {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        margin: 1.25rem 0;
+        color: #c8cdd8;
+        font-size: .72rem;
+        font-weight: 500;
+        &::before,
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--mru-border);
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// LOGIN PAGE + REGISTRATION WIZARD (shared layout)
+// ═════════════════════════════════════════════════════════════════════════════
+.path-login,
+.path-register {
+    background: #f0f2f5;
+
+    #page { padding-top: 0; }
+
+    // ── Split wrapper ──
+    .mru-login-wrapper {
+        min-height: 100vh;
+        display: block !important;
+
+        @media (max-width: 991.98px) { display: block !important; }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // BRAND PANEL (left)
+    // ────────────────────────────────────────────────────────────────────────
     .mru-login-brand {
-        position: relative; overflow: hidden;
-        background-size: cover; background-position: center;
-        display: flex; flex-direction: column; justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 55%;
+        height: 100vh;
+        overflow: hidden;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         padding: 2.5rem 3rem;
+        z-index: 1;
 
         .brand-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(170deg, rgba(7,26,62,.92) 0%, rgba(23,77,164,.75) 50%, rgba(7,26,62,.85) 100%);
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                165deg,
+                rgba(7,26,62,.97) 0%,
+                rgba(13,46,104,.92) 45%,
+                rgba(7,26,62,.95) 100%
+            );
             z-index: 1;
         }
 
-        .brand-top, .brand-center, .brand-bottom { position: relative; z-index: 2; }
+        .brand-top,
+        .brand-center,
+        .brand-bottom {
+            position: relative;
+            z-index: 2;
+        }
 
         .login-logo {
-            font-size: 1.75rem; font-weight: 900; color: #fff; line-height: 1;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1;
             letter-spacing: -.02em;
+            text-decoration: none;
+            display: inline-block;
+            &:hover { color: #fff; text-decoration: none; opacity: .85; }
             .accent { color: var(--mru-gold); }
         }
 
         .login-university {
-            font-size: .7rem; color: rgba(255,255,255,.45);
-            letter-spacing: .12em; text-transform: uppercase; margin-top: .35rem;
+            font-size: .68rem;
+            color: rgba(255,255,255,.4);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-top: .35rem;
         }
 
-        .brand-center { margin: auto 0; padding: 2rem 0; }
+        .brand-center {
+            margin: auto 0;
+            padding: 2.5rem 0;
+        }
 
         .brand-tagline {
-            font-size: 2rem; font-weight: 800; color: #fff;
-            line-height: 1.2; margin: 0 0 1rem;
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.15;
+            margin: 0 0 1rem;
         }
 
         .brand-desc {
-            font-size: .85rem; color: rgba(255,255,255,.6);
-            line-height: 1.7; max-width: 360px; margin: 0;
+            font-size: .84rem;
+            color: rgba(255,255,255,.55);
+            line-height: 1.7;
+            max-width: 360px;
+            margin: 0 0 1.5rem;
         }
 
         .login-badges {
-            display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .75rem;
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
         }
+
         .login-badge {
-            display: inline-flex; align-items: center; gap: .3rem;
-            background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
-            padding: .3rem .65rem; font-size: .65rem; font-weight: 600;
-            color: rgba(255,255,255,.7); letter-spacing: .03em;
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.1);
+            padding: .3rem .65rem;
+            font-size: .65rem;
+            font-weight: 600;
+            color: rgba(255,255,255,.65);
+            letter-spacing: .03em;
             backdrop-filter: blur(4px);
             i { color: var(--mru-gold); font-size: .55rem; }
         }
 
         .login-motto {
-            font-size: .72rem; color: rgba(255,255,255,.4);
-            font-style: italic; line-height: 1.6; margin: 0;
-            .fa-quote-left { font-size: .45rem; color: var(--mru-gold); margin-right: .2rem; vertical-align: top; }
+            font-size: .72rem;
+            color: rgba(255,255,255,.35);
+            line-height: 1.6;
+            margin: 0 0 .75rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+
+            .motto-line {
+                display: inline-block;
+                width: 24px;
+                height: 2px;
+                background: var(--mru-gold);
+                flex-shrink: 0;
+            }
+
+            em { font-style: italic; }
+        }
+
+        .login-campus-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .3rem 1.25rem;
+            font-size: .65rem;
+            color: rgba(255,255,255,.3);
+
+            i {
+                color: rgba(255,255,255,.2);
+                margin-right: .25rem;
+                font-size: .55rem;
+            }
+        }
+
+        // Subtle decorative circles
+        &::before {
+            content: '';
+            position: absolute;
+            right: -80px;
+            top: -80px;
+            width: 350px;
+            height: 350px;
+            border: 50px solid rgba(203,156,44,.04);
+            z-index: 1;
+        }
+        &::after {
+            content: '';
+            position: absolute;
+            left: -40px;
+            bottom: -50px;
+            width: 220px;
+            height: 220px;
+            border: 35px solid rgba(255,255,255,.015);
+            z-index: 1;
         }
     }
 
-    // ── Form panel (right) ──
+    // ────────────────────────────────────────────────────────────────────────
+    // FORM PANEL (right)
+    // ────────────────────────────────────────────────────────────────────────
     .mru-login-form {
-        background: #fff; padding: 3rem 2.5rem;
-        display: flex; flex-direction: column; justify-content: center;
-        @media (max-width: 991.98px) { padding: 2rem 1.25rem; }
+        margin-left: 55%;
+        width: 45%;
+        min-height: 100vh;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 2;
 
-        .login-form-inner { width: 100%; max-width: 380px; margin: 0 auto; }
-
-        // Mobile header
-        .login-mobile-header {
-            margin-bottom: 2rem;
-            .login-mobile-bar {
-                display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem;
-            }
+        @media (max-width: 991.98px) {
+            margin-left: 0;
+            width: 100%;
         }
-        .login-mobile-icon {
-            width: 36px; height: 36px; background: var(--mru-gold);
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 16px;
+    }
+
+    .login-form-scroll {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 3rem 2.5rem;
+
+        @media (max-width: 991.98px) { padding: 2rem 1.5rem; }
+        @media (max-width: 575.98px) { padding: 1.5rem 1.15rem; }
+    }
+
+    .login-form-inner {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    // ── Mobile header ──
+    .login-mobile-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .login-mobile-bar {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+    }
+
+    .login-mobile-icon {
+        width: 38px;
+        height: 38px;
+        background: var(--mru-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        span {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
             color: var(--mru-dark);
+            line-height: 1;
         }
-        .login-mobile-brand {
-            font-size: 1.3rem; font-weight: 800; color: var(--mru-primary); line-height: 1;
-            .accent { color: var(--mru-gold); }
-        }
-        .login-mobile-badges {
-            display: flex; gap: .4rem; flex-wrap: wrap;
-        }
-        .login-badge-sm {
-            display: inline-flex; align-items: center; gap: .25rem;
-            background: #f0f4fa; padding: .2rem .5rem;
-            font-size: .6rem; font-weight: 600; color: var(--mru-primary);
-            i { color: var(--mru-gold); font-size: .5rem; }
-        }
+    }
 
-        // Form header
-        .login-form-header { margin-bottom: 1.75rem; }
-        .login-heading {
-            font-size: 1.5rem; font-weight: 800; color: var(--mru-dark);
-            margin: 0 0 .3rem; line-height: 1.2;
-        }
-        .login-subheading { font-size: .82rem; color: #9a9ab0; margin: 0; }
+    .login-mobile-text { line-height: 1.2; }
 
-        // Strip Moodle chrome from inner containers
-        #page-content, #region-main-box, #region-main {
-            background: transparent !important; border: none !important;
-            box-shadow: none !important; padding: 0 !important;
-        }
+    .login-mobile-brand {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--mru-primary);
+        line-height: 1;
+        text-decoration: none;
+        display: inline-block;
+        &:hover { color: var(--mru-primary); text-decoration: none; opacity: .8; }
+        .accent { color: var(--mru-gold); }
+    }
 
-        // Moodle-generated .loginform wrapper
-        .loginform {
-            > .login-heading.mb-4 {
-                // Hide Moodle's duplicate "Log in to …" heading
-                display: none !important;
+    .login-mobile-uni {
+        font-size: .6rem;
+        color: #9a9ab0;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        margin-top: .15rem;
+    }
+
+    // ── Form header ──
+    .login-form-header {
+        margin-bottom: 1.75rem;
+    }
+
+    .login-heading {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--mru-dark);
+        margin: 0 0 .3rem;
+        line-height: 1.2;
+    }
+
+    .login-subheading {
+        font-size: .82rem;
+        color: #9a9ab0;
+        margin: 0;
+    }
+
+    // ── Inner Moodle containers — strip all chrome ──
+    .mru-form #page-content,
+    .mru-form #region-main-box,
+    .mru-form #region-main,
+    #page-content,
+    #region-main-box,
+    #region-main {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+    }
+
+    // ── Hide Moodle's built-in heading ("Log in to …") ──
+    .loginform > .login-heading.mb-4,
+    .loginform > h1.login-heading {
+        display: none !important;
+    }
+
+    // ── Form field styling (login-specific, extends .mru-form) ──
+    .login-form {
+        .login-form-username,
+        .login-form-password {
+            position: relative;
+            margin-bottom: 1.1rem;
+
+            label {
+                display: block;
+                font-size: .72rem;
+                font-weight: 600;
+                color: var(--mru-dark);
+                margin-bottom: .3rem;
+                letter-spacing: .01em;
             }
-        }
-
-        // ── Form fields ──
-        .login-form {
-            .login-form-username,
-            .login-form-password {
-                position: relative; margin-bottom: 1rem;
-
-                &::before {
-                    font-family: 'Font Awesome 6 Free', 'FontAwesome';
-                    font-weight: 900; position: absolute;
-                    left: .85rem; top: 50%; transform: translateY(-50%);
-                    font-size: .8rem; color: #b0b8c9; z-index: 2;
-                    pointer-events: none;
-                }
-            }
-            .login-form-username::before { content: '\f007'; }
-            .login-form-password::before { content: '\f023'; }
 
             .form-control {
-                padding: .65rem .75rem .65rem 2.4rem;
-                font-size: .85rem; border: 1.5px solid #e2e6ee;
-                background: #f8f9fc; transition: all .2s;
+                padding: .65rem .75rem .65rem 2.5rem;
+                font-size: .85rem;
+                border: 1.5px solid #e2e6ee;
+                background: #f8f9fc;
+                height: auto;
+                transition: border-color .2s, box-shadow .2s, background .2s;
+
                 &::placeholder { color: #b0b8c9; font-weight: 400; }
+
                 &:focus {
-                    background: #fff; border-color: var(--mru-primary);
+                    background: #fff;
+                    border-color: var(--mru-primary);
                     box-shadow: 0 0 0 3px rgba(23,77,164,.08);
                 }
             }
-            .form-control-lg { font-size: .85rem; }
 
-            .login-form-submit {
-                margin-top: .25rem; margin-bottom: 0;
-                .btn-primary {
-                    width: 100%; padding: .7rem;
-                    font-size: .88rem; font-weight: 700;
-                    letter-spacing: .02em;
-                    background: var(--mru-primary); border-color: var(--mru-primary);
-                    transition: all .2s;
-                    &:hover {
-                        background: var(--mru-dark); border-color: var(--mru-dark);
-                        box-shadow: 0 4px 16px rgba(23,77,164,.25);
-                        transform: translateY(-1px);
-                    }
-                }
-                .btn-lg { padding: .7rem; }
+            .form-control-lg { font-size: .85rem; padding: .65rem .75rem .65rem 2.5rem; }
+
+            // Field icons
+            &::before {
+                font-family: 'Font Awesome 6 Free', 'FontAwesome';
+                font-weight: 900;
+                position: absolute;
+                left: .85rem;
+                bottom: .7rem;
+                font-size: .78rem;
+                color: #b0b8c9;
+                z-index: 2;
+                pointer-events: none;
+                transition: color .2s;
             }
 
-            .login-form-forgotpassword {
-                text-align: right; margin-bottom: 0 !important; margin-top: .5rem;
-                a {
-                    color: var(--mru-primary); font-size: .75rem; font-weight: 500;
-                    text-decoration: none;
-                    &:hover { text-decoration: underline; }
-                }
+            &:focus-within::before {
+                color: var(--mru-primary);
             }
         }
 
-        // ── Dividers ──
-        .login-divider {
-            display: flex; align-items: center; gap: .75rem;
-            margin: 1.25rem 0; color: #c8cdd8; font-size: .72rem; font-weight: 500;
-            &::before, &::after {
-                content: ''; flex: 1; height: 1px; background: #e8ebf0;
-            }
-        }
+        .login-form-username::before { content: '\f007'; }
+        .login-form-password::before { content: '\f023'; }
 
-        // ── Guest section ──
-        .loginform > h2.login-heading {
-            font-size: .78rem; font-weight: 600; color: #8892a6;
-            text-align: center; margin: 0 0 .6rem;
-        }
-        #guestlogin {
-            .btn-secondary {
-                width: 100%; padding: .55rem;
-                font-size: .78rem; font-weight: 600;
-                background: transparent; color: var(--mru-primary);
-                border: 1.5px solid #e2e6ee;
-                transition: all .2s;
+        // Submit button
+        .login-form-submit {
+            margin-top: .5rem;
+            margin-bottom: 0;
+
+            .btn-primary {
+                width: 100%;
+                padding: .72rem;
+                font-size: .88rem;
+                font-weight: 700;
+                letter-spacing: .02em;
+                background: var(--mru-primary);
+                border-color: var(--mru-primary);
+                transition: background .2s, border-color .2s, box-shadow .2s, transform .15s;
+
                 &:hover {
-                    background: #f0f4fa; border-color: var(--mru-primary);
+                    background: var(--mru-dark);
+                    border-color: var(--mru-dark);
+                    box-shadow: 0 4px 16px rgba(23,77,164,.25);
+                    transform: translateY(-1px);
                 }
-                &::before {
-                    content: '\f2bd'; font-family: 'Font Awesome 6 Free', 'FontAwesome';
-                    font-weight: 400; margin-right: .4rem; font-size: .75rem;
+
+                &:active {
+                    transform: translateY(0);
+                    box-shadow: 0 2px 6px rgba(23,77,164,.15);
                 }
             }
+
+            .btn-lg { padding: .72rem; }
         }
 
-        // ── Cookies notice ──
-        .loginform > .login-divider:last-of-type { margin-top: 1rem; }
-        .loginform > .d-flex {
+        // Forgot password
+        .login-form-forgotpassword {
+            text-align: right;
+            margin-bottom: 0 !important;
+            margin-top: .6rem;
+
+            a {
+                color: var(--mru-primary);
+                font-size: .75rem;
+                font-weight: 500;
+                text-decoration: none;
+                &:hover { text-decoration: underline; color: var(--mru-dark); }
+            }
+        }
+    }
+
+    // ── Dividers ──
+    .login-divider {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        margin: 1.25rem 0;
+        color: #c8cdd8;
+        font-size: .72rem;
+        font-weight: 500;
+
+        &::before,
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e8ebf0;
+        }
+    }
+
+    // ── Identity providers (OAuth) ──
+    .login-identityproviders {
+        .login-heading {
+            font-size: .78rem;
+            font-weight: 600;
+            color: #8892a6;
+            text-align: center;
+            margin: 0 0 .6rem;
+        }
+
+        .login-identityprovider-btn {
+            display: flex;
+            align-items: center;
             justify-content: center;
-            .btn-secondary {
-                font-size: .68rem; padding: .3rem .6rem;
-                color: #b0b8c9; border: 1px solid #e8ebf0; background: transparent;
-                &:hover { color: var(--mru-primary); border-color: var(--mru-primary); }
-                &::before {
-                    content: '\f06a'; font-family: 'Font Awesome 6 Free', 'FontAwesome';
-                    font-weight: 900; margin-right: .3rem; font-size: .6rem;
+            gap: .5rem;
+            padding: .55rem;
+            font-size: .8rem;
+            font-weight: 600;
+            background: #f8f9fc;
+            border: 1.5px solid #e2e6ee;
+            color: var(--mru-dark);
+            margin-bottom: .5rem;
+            transition: all .2s;
+
+            &:hover {
+                background: #f0f4fa;
+                border-color: var(--mru-primary);
+            }
+
+            img { width: 20px; height: 20px; }
+        }
+    }
+
+    // ── Instructions / Signup ──
+    .login-instructions {
+        font-size: .8rem;
+        color: var(--mru-text);
+        line-height: 1.6;
+
+        .login-heading {
+            font-size: .78rem;
+            font-weight: 600;
+            color: #8892a6;
+            margin: 0 0 .4rem;
+        }
+    }
+
+    .login-signup {
+        .btn-secondary {
+            width: 100%;
+            padding: .55rem;
+            font-size: .8rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--mru-primary);
+            border: 1.5px solid #e2e6ee;
+            transition: all .2s;
+
+            &:hover {
+                background: #f0f4fa;
+                border-color: var(--mru-primary);
+            }
+        }
+    }
+
+    // ── Guest login ──
+    .loginform > h2.login-heading {
+        font-size: .78rem;
+        font-weight: 600;
+        color: #8892a6;
+        text-align: center;
+        margin: 0 0 .6rem;
+    }
+
+    #guestlogin {
+        .btn-secondary {
+            width: 100%;
+            padding: .55rem;
+            font-size: .78rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--mru-primary);
+            border: 1.5px solid #e2e6ee;
+            transition: all .2s;
+
+            &:hover {
+                background: #f0f4fa;
+                border-color: var(--mru-primary);
+            }
+
+            &::before {
+                content: '\f2bd';
+                font-family: 'Font Awesome 6 Free', 'FontAwesome';
+                font-weight: 400;
+                margin-right: .4rem;
+                font-size: .75rem;
+            }
+        }
+    }
+
+    // ── Hide Moodle's built-in cookie bar, signup, guest & dividers ──
+    .loginform > .login-divider,
+    .loginform > .d-flex,
+    .loginform > .login-signup,
+    .loginform > #guestlogin,
+    .loginform > h2.login-heading:last-of-type {
+        display: none !important;
+    }
+
+    // ── Registration link ──
+    .login-register-link {
+        text-align: center;
+        margin-bottom: .5rem;
+
+        p {
+            font-size: .78rem;
+            color: #9a9ab0;
+            margin: 0 0 .5rem;
+        }
+
+        .btn-register {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .45rem;
+            width: 100%;
+            padding: .6rem;
+            font-size: .82rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--mru-gold);
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background .2s, box-shadow .2s, transform .15s;
+
+            &:hover {
+                background: #b88a1e;
+                box-shadow: 0 4px 12px rgba(203,156,44,.3);
+                transform: translateY(-1px);
+                color: #fff;
+                text-decoration: none;
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+
+            i { font-size: .78rem; }
+        }
+    }
+
+    // ── Footer ──
+    .login-footer-note {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #edf0f4;
+        text-align: center;
+
+        p {
+            font-size: .7rem;
+            color: #b5b8c8;
+            margin: 0;
+        }
+        p + p { margin-top: .2rem; }
+
+        a {
+            color: var(--mru-primary);
+            text-decoration: none;
+            font-weight: 500;
+            &:hover { text-decoration: underline; }
+        }
+    }
+
+    // ─── RESPONSIVE ─────────────────────────────────────────────────────────
+    @media (max-width: 991.98px) {
+        .mru-login-brand { display: none; }
+        .mru-login-form { min-height: 100vh; }
+        .login-form-inner { max-width: 420px; }
+    }
+
+    @media (max-width: 575.98px) {
+        .login-form-inner { max-width: 100%; }
+
+        .login-heading { font-size: 1.3rem; }
+        .login-subheading { font-size: .78rem; }
+
+        .login-mobile-header { margin-bottom: 1.5rem; padding-bottom: 1.25rem; }
+        .login-mobile-icon { width: 34px; height: 34px; span { font-size: 14px; } }
+        .login-mobile-brand { font-size: 1.15rem; }
+
+        .login-form {
+            .login-form-username,
+            .login-form-password {
+                margin-bottom: .9rem;
+
+                .form-control {
+                    padding: .6rem .7rem .6rem 2.3rem;
+                    font-size: .82rem;
                 }
+            }
+
+            .login-form-submit .btn-primary { padding: .65rem; font-size: .84rem; }
+        }
+
+        .login-footer-note { margin-top: 1.5rem; }
+    }
+
+    @media (max-width: 359.98px) {
+        .login-heading { font-size: 1.15rem; }
+        .login-form-scroll { padding: 1.25rem 1rem; }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// REGISTRATION WIZARD (wizard-specific styles)
+// ═════════════════════════════════════════════════════════════════════════════
+.path-register {
+    // Allow form inner to be wider for wizard
+    .login-form-inner { max-width: 480px; }
+
+    // ── Step indicator ──
+    .wizard-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .15rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .wizard-step {
+        display: flex;
+        align-items: center;
+        gap: .35rem;
+
+        &:not(:last-child)::after {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: #e2e6ee;
+            margin: 0 .25rem;
+            transition: background .3s;
+        }
+
+        &.is-done:not(:last-child)::after {
+            background: var(--mru-primary);
+        }
+    }
+
+    .step-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .7rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        transition: all .3s;
+        background: #f0f2f5;
+        color: #b0b8c9;
+        border: 2px solid #e2e6ee;
+
+        .is-active & {
+            background: var(--mru-primary);
+            color: #fff;
+            border-color: var(--mru-primary);
+            box-shadow: 0 2px 8px rgba(23,77,164,.25);
+        }
+
+        .is-done & {
+            background: var(--mru-primary);
+            color: #fff;
+            border-color: var(--mru-primary);
+
+            i { font-size: .6rem; }
+        }
+    }
+
+    .step-label {
+        font-size: .62rem;
+        font-weight: 600;
+        color: #b0b8c9;
+        letter-spacing: .01em;
+        white-space: nowrap;
+
+        .is-active & { color: var(--mru-primary); }
+        .is-done & { color: var(--mru-dark); }
+    }
+
+    // ── Wizard panel ──
+    .wizard-panel {
+        animation: wizardFadeIn .35s ease;
+    }
+
+    @keyframes wizardFadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .wizard-header {
+        margin-bottom: 1.5rem;
+
+        .login-heading { margin-bottom: .3rem; }
+    }
+
+    .wizard-body {
+        margin-bottom: 1.5rem;
+    }
+
+    .wizard-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid #edf0f4;
+    }
+
+    // ── Wizard buttons ──
+    .btn-wizard-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .45rem;
+        width: 100%;
+        padding: .72rem 1.25rem;
+        font-size: .85rem;
+        font-weight: 700;
+        color: #fff;
+        background: var(--mru-primary);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        letter-spacing: .02em;
+        transition: background .2s, box-shadow .2s, transform .15s;
+
+        &:hover {
+            background: var(--mru-dark);
+            box-shadow: 0 4px 16px rgba(23,77,164,.25);
+            transform: translateY(-1px);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        &:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(23,77,164,.15);
+        }
+    }
+
+    .btn-wizard-next {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .6rem 1.25rem;
+        font-size: .82rem;
+        font-weight: 700;
+        color: #fff;
+        background: var(--mru-primary);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background .2s, box-shadow .2s, transform .15s;
+
+        &:hover {
+            background: var(--mru-dark);
+            box-shadow: 0 4px 12px rgba(23,77,164,.2);
+            transform: translateY(-1px);
+        }
+    }
+
+    .btn-wizard-back {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .6rem 1rem;
+        font-size: .78rem;
+        font-weight: 600;
+        color: #9a9ab0;
+        background: transparent;
+        border: 1.5px solid #e2e6ee;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all .2s;
+
+        &:hover {
+            color: var(--mru-primary);
+            border-color: var(--mru-primary);
+            background: #f0f4fa;
+            text-decoration: none;
+        }
+    }
+
+    .btn-wizard-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .45rem;
+        width: 100%;
+        padding: .65rem 1.25rem;
+        font-size: .82rem;
+        font-weight: 700;
+        color: var(--mru-primary);
+        background: transparent;
+        border: 1.5px solid #e2e6ee;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all .2s;
+
+        &:hover {
+            border-color: var(--mru-primary);
+            background: #f0f4fa;
+            color: var(--mru-primary);
+            text-decoration: none;
+        }
+    }
+
+    .btn-link-subtle {
+        background: none;
+        border: none;
+        color: var(--mru-primary);
+        font-size: .78rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0;
+        margin-left: .35rem;
+
+        &:hover { text-decoration: underline; color: var(--mru-dark); }
+    }
+
+    // ── Info cards (Step 1) ──
+    .reg-info-card {
+        background: #f8f9fc;
+        border: 1px solid #edf0f4;
+        border-radius: 8px;
+        padding: 1.25rem 1.35rem;
+        margin-bottom: 1rem;
+
+        h3 {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--mru-dark);
+            margin: 0 0 .75rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+
+            i { color: var(--mru-primary); font-size: .75rem; }
+        }
+
+        ul, ol {
+            margin: 0;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        ul li {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .4rem 0;
+            font-size: .8rem;
+            color: var(--mru-text);
+
+            i {
+                color: var(--mru-primary);
+                font-size: .65rem;
+                width: 16px;
+                text-align: center;
+                flex-shrink: 0;
             }
         }
 
-        // Footer
-        .login-footer-note {
-            margin-top: 2rem; padding-top: 1rem;
-            border-top: 1px solid #edf0f4; text-align: center;
-            p { font-size: .7rem; color: #b5b8c8; margin: 0; }
-            p + p { margin-top: .2rem; }
-            a { color: var(--mru-primary); text-decoration: none; font-weight: 500;
-                &:hover { text-decoration: underline; } }
+        ol {
+            counter-reset: reg-steps;
+
+            li {
+                counter-increment: reg-steps;
+                padding: .45rem 0;
+                padding-left: 1.6rem;
+                position: relative;
+                font-size: .8rem;
+                color: var(--mru-text);
+
+                &::before {
+                    content: counter(reg-steps);
+                    position: absolute;
+                    left: 0;
+                    top: .45rem;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: var(--mru-primary);
+                    color: #fff;
+                    font-size: .6rem;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
         }
+    }
+
+    .reg-info-note {
+        background: #fff8e5;
+        border: 1px solid #f0e1a8;
+        border-radius: 6px;
+        padding: .85rem 1rem;
+        font-size: .78rem;
+        color: #7a6520;
+        display: flex;
+        align-items: flex-start;
+        gap: .5rem;
+        margin-bottom: 1rem;
+
+        i { color: #CB9C2C; margin-top: .15rem; flex-shrink: 0; }
+    }
+
+    // ── Field groups (Step 2 & 4) ──
+    .mru-field-group {
+        margin-bottom: 1.1rem;
+
+        label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--mru-dark);
+            margin-bottom: .3rem;
+            letter-spacing: .01em;
+        }
+
+        .form-control {
+            padding: .65rem .75rem .65rem 2.5rem;
+            font-size: .85rem;
+            border: 1.5px solid #e2e6ee;
+            background: #f8f9fc;
+            border-radius: 6px;
+            height: auto;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+
+            &::placeholder { color: #b0b8c9; font-weight: 400; }
+
+            &:focus {
+                background: #fff;
+                border-color: var(--mru-primary);
+                box-shadow: 0 0 0 3px rgba(23,77,164,.08);
+                outline: none;
+            }
+        }
+    }
+
+    .mru-input-icon {
+        position: relative;
+
+        > i:first-child {
+            position: absolute;
+            left: .85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: .78rem;
+            color: #b0b8c9;
+            z-index: 2;
+            pointer-events: none;
+            transition: color .2s;
+        }
+
+        &:focus-within > i:first-child {
+            color: var(--mru-primary);
+        }
+
+        .form-control {
+            padding-left: 2.5rem;
+        }
+    }
+
+    .mru-field-hint {
+        font-size: .68rem;
+        color: #9a9ab0;
+        margin-top: .25rem;
+    }
+
+    .mru-field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1rem;
+
+        @media (max-width: 575.98px) {
+            grid-template-columns: 1fr;
+        }
+
+        .mru-field-group .form-control {
+            padding-left: .75rem;
+        }
+    }
+
+    // ── OTP inputs (Step 2) ──
+    .otp-input-row {
+        display: flex;
+        gap: .5rem;
+        justify-content: center;
+        margin: .75rem 0;
+    }
+
+    .otp-digit {
+        width: 46px;
+        height: 52px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+        font-family: 'Poppins', monospace;
+        border: 2px solid #e2e6ee;
+        border-radius: 8px;
+        background: #f8f9fc;
+        color: var(--mru-dark);
+        transition: border-color .2s, box-shadow .2s, background .2s;
+        outline: none;
+
+        &:focus {
+            border-color: var(--mru-primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(23,77,164,.1);
+        }
+    }
+
+    .reg-divider {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        margin: 1.5rem 0;
+        color: #c8cdd8;
+        font-size: .72rem;
+        font-weight: 500;
+        text-align: center;
+
+        span {
+            white-space: nowrap;
+        }
+
+        &::before,
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e8ebf0;
+        }
+    }
+
+    .reg-resend-row {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: .75rem;
+        color: #9a9ab0;
+    }
+
+    // ── Account email badge (Step 4) ──
+    .reg-account-email {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        background: #f0f7ff;
+        border: 1px solid #d0e1f9;
+        border-radius: 6px;
+        padding: .6rem 1rem;
+        margin-bottom: 1.25rem;
+        font-size: .8rem;
+        color: var(--mru-dark);
+        font-weight: 500;
+
+        > i:first-child { color: var(--mru-primary); font-size: .75rem; }
+    }
+
+    .verified-badge {
+        margin-left: auto;
+        font-size: .68rem;
+        font-weight: 600;
+        color: #198754;
+        display: flex;
+        align-items: center;
+        gap: .25rem;
+
+        i { font-size: .6rem; }
+    }
+
+    // ── Password strength meter (Step 4) ──
+    .pwd-strength {
+        margin-top: .5rem;
+    }
+
+    .pwd-bar {
+        height: 4px;
+        background: #e8ebf0;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: .5rem;
+
+        span {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 3px;
+            transition: width .3s, background-color .3s;
+        }
+    }
+
+    .pwd-reqs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .2rem .75rem;
+    }
+
+    .pwd-req {
+        font-size: .65rem;
+        font-weight: 500;
+        color: #b0b8c9;
+        display: flex;
+        align-items: center;
+        gap: .25rem;
+        transition: color .2s;
+
+        i { font-size: .35rem; }
+
+        &.met {
+            color: #198754;
+            i { color: #198754; }
+        }
+
+        &.unmet {
+            color: #dc3545;
+            i { color: #dc3545; }
+        }
+    }
+
+    // ── Password toggle ──
+    .pwd-toggle {
+        position: absolute;
+        right: .75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #b0b8c9;
+        cursor: pointer;
+        padding: .25rem;
+        font-size: .78rem;
+        transition: color .2s;
+        z-index: 2;
+
+        &:hover { color: var(--mru-primary); }
+    }
+
+    // ── Password match message ──
+    .pwd-match-msg {
+        font-size: .7rem;
+        font-weight: 600;
+        margin-top: .3rem;
+        min-height: 1em;
+        transition: color .2s;
+
+        &.match-ok { color: #198754; }
+        &.match-fail { color: #dc3545; }
+    }
+
+    // ── Sync status card (Step 3) ──
+    .reg-sync-status {
+        text-align: center;
+        padding: 2rem 1.5rem;
+
+        .sync-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, rgba(23,77,164,.08), rgba(23,77,164,.15));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            i { font-size: 1.4rem; color: var(--mru-primary); }
+        }
+
+        h3 { justify-content: center; }
+
+        p {
+            font-size: .8rem;
+            color: #9a9ab0;
+            max-width: 340px;
+            margin: 0 auto .5rem;
+            line-height: 1.65;
+        }
+
+        .sync-note {
+            font-size: .72rem;
+            color: #b0b8c9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            margin-top: .75rem;
+        }
+    }
+
+    // ── Success page (Step 5) ──
+    .wizard-success {
+        text-align: center;
+        padding-top: 1rem;
+
+        .login-heading { margin-bottom: .5rem; }
+        .login-subheading { margin-bottom: 2rem; }
+    }
+
+    .success-icon {
+        margin-bottom: 1.5rem;
+
+        i {
+            font-size: 3.5rem;
+            color: #198754;
+            animation: successPop .5s cubic-bezier(.68, -.55, .27, 1.55);
+        }
+    }
+
+    @keyframes successPop {
+        0%   { transform: scale(0); opacity: 0; }
+        60%  { transform: scale(1.15); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-actions {
+        display: flex;
+        flex-direction: column;
+        gap: .65rem;
+        margin-bottom: 2rem;
+    }
+
+    .success-help {
+        border-top: 1px solid #edf0f4;
+        padding-top: 1.5rem;
+
+        h3 {
+            font-size: .78rem;
+            font-weight: 600;
+            color: #9a9ab0;
+            margin: 0 0 .75rem;
+        }
+    }
+
+    .success-links {
+        display: flex;
+        flex-direction: column;
+        gap: .4rem;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .78rem;
+            font-weight: 500;
+            color: var(--mru-primary);
+            text-decoration: none;
+
+            &:hover { text-decoration: underline; color: var(--mru-dark); }
+
+            i {
+                width: 16px;
+                text-align: center;
+                font-size: .7rem;
+                color: #b0b8c9;
+            }
+        }
+    }
+
+    // ── Client-side validation errors ──
+    .reg-client-errors {
+        font-size: .8rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    // ── Alert messages (from server) ──
+    .wizard-panel .alert {
+        font-size: .8rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    // ── Responsive ──
+    @media (max-width: 575.98px) {
+        .wizard-steps { gap: .1rem; }
+        .step-circle { width: 26px; height: 26px; font-size: .62rem; }
+        .wizard-step:not(:last-child)::after { width: 16px; }
+        .step-label { display: none !important; }
+
+        .otp-digit { width: 40px; height: 46px; font-size: 1.05rem; }
+        .otp-input-row { gap: .35rem; }
+
+        .wizard-footer { flex-direction: column-reverse; }
+        .btn-wizard-back, .btn-wizard-next { width: 100%; justify-content: center; }
     }
 }
 
@@ -1258,53 +2621,120 @@ h4 { font-size: .88rem; }
 // ═════════════════════════════════════════════════════════════════════════════
 .mru-main-footer {
     background: var(--mru-darker); color: rgba(255,255,255,.6);
-    padding: 2.5rem 0 0; font-size: .75rem;
+    padding: 3rem 0 0; font-size: .75rem;
 
-    .container { max-width: 1140px; }
+    .container { max-width: 1140px; padding: 0 1.25rem; }
 
     .mru-footer-grid {
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr;
-        gap: 1.5rem; padding-bottom: 1.5rem;
+        grid-template-columns: 2fr 1fr 1fr 1.4fr;
+        gap: 2rem;
+        padding-bottom: 2rem;
         border-bottom: 1px solid rgba(255,255,255,.06);
-        @media (max-width: 991.98px) { grid-template-columns: 1fr 1fr; }
-        @media (max-width: 575.98px) { grid-template-columns: 1fr; }
+        @media (max-width: 991.98px) {
+            grid-template-columns: 1fr 1fr;
+            gap: 1.75rem;
+        }
+        @media (max-width: 575.98px) {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            text-align: center;
+        }
     }
 
     .footer-brand {
-        .brand-name { font-size: 1.15rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: .3rem; .gold { color: var(--mru-gold); } }
-        .brand-full { font-size: .65rem; color: rgba(255,255,255,.4); margin-bottom: .75rem; text-transform: uppercase; letter-spacing: .06em; }
-        p { font-size: .72rem; color: rgba(255,255,255,.5); line-height: 1.6; margin-bottom: .75rem; }
+        .brand-name {
+            font-size: 1.2rem; font-weight: 900; color: #fff;
+            line-height: 1; margin-bottom: .3rem;
+            .gold { color: var(--mru-gold); }
+        }
+        .brand-full {
+            font-size: .65rem; color: rgba(255,255,255,.4);
+            margin-bottom: .85rem; text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+        p {
+            font-size: .73rem; color: rgba(255,255,255,.5);
+            line-height: 1.65; margin-bottom: .75rem;
+        }
         .footer-motto {
-            font-size: .65rem; color: rgba(255,255,255,.35);
-            font-style: italic; margin-bottom: .75rem;
-            border-left: 2px solid rgba(242,169,0,.3); padding-left: .5rem;
+            font-size: .68rem; color: rgba(255,255,255,.35);
+            font-style: italic; margin-bottom: .85rem;
+            border-left: 2px solid rgba(242,169,0,.3); padding-left: .6rem;
         }
         .footer-social {
-            display: flex; gap: .3rem; margin-top: .5rem;
+            display: flex; gap: .4rem; margin-top: .6rem;
+            @media (max-width: 575.98px) { justify-content: center; }
             a {
-                width: 28px; height: 28px;
-                display: flex; align-items: center; justify-content: center;
+                width: 30px; height: 30px;
+                display: inline-flex; align-items: center; justify-content: center;
                 border: 1px solid rgba(255,255,255,.12);
-                color: rgba(255,255,255,.45); font-size: .68rem;
+                color: rgba(255,255,255,.45); font-size: .7rem;
                 text-decoration: none; transition: var(--mru-t);
-                &:hover { background: var(--mru-gold); border-color: var(--mru-gold); color: var(--mru-darker); }
+                &:hover {
+                    background: var(--mru-gold); border-color: var(--mru-gold);
+                    color: var(--mru-darker);
+                }
             }
         }
     }
 
     .footer-col {
-        h4 { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--mru-gold); margin-bottom: .7rem; }
+        h4 {
+            font-size: .62rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .1em;
+            color: var(--mru-gold); margin-bottom: .75rem;
+        }
         ul {
             list-style: none; padding: 0; margin: 0;
-            li { margin-bottom: .35rem; }
-            a { color: rgba(255,255,255,.55); font-size: .72rem; text-decoration: none; transition: var(--mru-t); &:hover { color: #fff; } }
+            li { margin-bottom: .4rem; }
+            a {
+                color: rgba(255,255,255,.55); font-size: .73rem;
+                text-decoration: none; transition: var(--mru-t);
+                &:hover { color: #fff; }
+            }
         }
-        .footer-address {
-            margin-top: .6rem; font-size: .65rem;
-            color: rgba(255,255,255,.4); line-height: 1.55;
-            .fa-map-marker { color: var(--mru-gold); margin-right: .25rem; }
-            span { padding-left: 1rem; }
+
+        // Contact details block inside the Support column
+        .footer-contact {
+            margin-top: 1rem;
+            padding-top: .75rem;
+            border-top: 1px solid rgba(255,255,255,.06);
+
+            h4 {
+                font-size: .58rem;
+                margin-bottom: .6rem;
+            }
+
+            .contact-item {
+                display: flex;
+                align-items: flex-start;
+                gap: .5rem;
+                margin-bottom: .45rem;
+                font-size: .68rem;
+                color: rgba(255,255,255,.45);
+                line-height: 1.5;
+
+                @media (max-width: 575.98px) {
+                    justify-content: center;
+                    text-align: left;
+                }
+
+                .fa {
+                    color: var(--mru-gold);
+                    width: 14px;
+                    text-align: center;
+                    flex-shrink: 0;
+                    margin-top: 2px;
+                    font-size: .65rem;
+                }
+                span, a {
+                    color: rgba(255,255,255,.45);
+                    text-decoration: none;
+                    transition: var(--mru-t);
+                }
+                a:hover { color: #fff; }
+            }
         }
     }
 
@@ -1316,13 +2746,32 @@ h4 { font-size: .88rem; }
 
     .mru-footer-bottom {
         border-top: 1px solid rgba(255,255,255,.05);
-        padding: .7rem 0;
+        padding: .8rem 0;
         display: flex; justify-content: space-between;
-        align-items: center; flex-wrap: wrap; gap: .4rem;
+        align-items: center; flex-wrap: wrap; gap: .5rem;
         font-size: .65rem; color: rgba(255,255,255,.25);
-        a { color: rgba(255,255,255,.4); text-decoration: none; transition: var(--mru-t); &:hover { color: rgba(255,255,255,.7); } }
-        .footer-links { display: flex; gap: 1rem; }
+        a {
+            color: rgba(255,255,255,.4); text-decoration: none;
+            transition: var(--mru-t); &:hover { color: rgba(255,255,255,.7); }
+        }
+        .footer-cookie-notice {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: rgba(255,255,255,.4);
+            font-size: .65rem;
+            font-family: inherit;
+            transition: var(--mru-t);
+            &:hover { color: rgba(255,255,255,.7); }
+        }
+        .footer-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
         .footer-login-info { color: rgba(255,255,255,.25); }
+        @media (max-width: 575.98px) {
+            flex-direction: column;
+            text-align: center;
+            .footer-links { justify-content: center; }
+        }
     }
 }
 
@@ -1388,6 +2837,25 @@ h4 { font-size: .88rem; }
 // ═════════════════════════════════════════════════════════════════════════════
 @media (max-width: 767.98px) {
     .navbar.fixed-top .navbar-brand .mru-brand-text .mru-brand-sub { display: none; }
+    .navbar.fixed-top .container { gap: .25rem; }
+    .navbar.fixed-top #usernavigation {
+        gap: .15rem;
+        .divider { display: none; }
+        .usermenu-container .usermenu .dropdown-toggle .usertext { display: none; }
+        .editmode-switch-form .form-check-label { display: none; }
+        // Full-width dropdowns on mobile
+        .popover-region .popover-region-container {
+            width: calc(100vw - 1rem) !important;
+            right: .5rem !important;
+            left: .5rem !important;
+        }
+        .usermenu-container .dropdown-menu {
+            width: calc(100vw - 1rem) !important;
+            right: .5rem !important;
+            left: .5rem !important;
+            min-width: auto;
+        }
+    }
     #region-main { padding: .6rem; }
     .mru-hero { padding: 2rem 0 1.5rem; }
     .mru-hero h1 { font-size: 1.35rem; }

@@ -1,0 +1,48 @@
+{{!
+    @template local_mru/register_step1
+    Step 1: Introduction — explains registration process and requirements.
+}}
+<div class="wizard-panel" data-step="1">
+    <div class="wizard-header">
+        <h1 class="login-heading">Create Your Account</h1>
+        <p class="login-subheading">Welcome to MRU ODEL registration. Please read before proceeding.</p>
+    </div>
+
+    <div class="wizard-body">
+        <div class="reg-info-card">
+            <h3><i class="fa fa-info-circle" aria-hidden="true"></i> What you'll need</h3>
+            <ul>
+                <li><i class="fa fa-envelope" aria-hidden="true"></i> Your MRU email address <strong>(@mru.ac.ug)</strong></li>
+                <li><i class="fa fa-clock-o" aria-hidden="true"></i> About 5 minutes to complete</li>
+                <li><i class="fa fa-lock" aria-hidden="true"></i> A password you'll remember</li>
+            </ul>
+        </div>
+
+        <div class="reg-info-card reg-info-steps">
+            <h3><i class="fa fa-list-ol" aria-hidden="true"></i> Registration steps</h3>
+            <ol>
+                <li><strong>Email Verification</strong> — We'll send a 6-digit code to your MRU email</li>
+                <li><strong>Identity Confirmation</strong> — Your details will be fetched from the university system</li>
+                <li><strong>Account Setup</strong> — Choose your password and create your account</li>
+            </ol>
+        </div>
+
+        <div class="reg-info-note">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            Only valid Muteesa I Royal University email addresses are accepted. If you don't have one, contact the university registrar.
+        </div>
+    </div>
+
+    <form method="post" action="{{{wwwroot}}}/local/mru/register.php">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="startverify">
+        <div class="wizard-footer">
+            <a href="{{{wwwroot}}}/login/index.php" class="btn-wizard-back">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Login
+            </a>
+            <button type="submit" class="btn-wizard-next">
+                Begin Registration <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+    </form>
+</div>

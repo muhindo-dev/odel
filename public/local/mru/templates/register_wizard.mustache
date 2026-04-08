@@ -1,0 +1,36 @@
+{{!
+    @template local_mru/register_wizard
+    MRU ODEL Registration Wizard — shell with step indicator + delegated step content.
+    Each step's markup lives in its own register_step{N}.mustache partial.
+
+    Example context (json):
+    {
+        "wwwroot": "",
+        "sesskey": "",
+        "step": 1,
+        "steps": [],
+        "step_content": "<div>...</div>"
+    }
+}}
+
+{{! ── Step indicator ── }}
+<div class="wizard-steps" aria-label="Registration progress">
+    {{#steps}}
+    <div class="wizard-step {{#active}}is-active{{/active}} {{#done}}is-done{{/done}} {{#upcoming}}is-upcoming{{/upcoming}}">
+        <div class="step-circle">
+            {{#done}}<i class="fa fa-check" aria-hidden="true"></i>{{/done}}
+            {{^done}}{{num}}{{/done}}
+        </div>
+        <span class="step-label d-none d-md-inline">{{name}}</span>
+    </div>
+    {{/steps}}
+</div>
+
+{{! ── Step content (pre-rendered by PHP from register_step{N}.mustache) ── }}
+{{{step_content}}}
+
+{{#js}}
+require(['local_mru/register'], function(Register) {
+    Register.init();
+});
+{{/js}}

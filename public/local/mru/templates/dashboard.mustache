@@ -1,0 +1,168 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_mru/dashboard
+
+    MRU Integration admin dashboard.
+
+    Context variables required:
+    * total_users_mapped - int
+    * verified_students - int
+    * unverified_students - int
+    * mapped_courses - int
+    * pending_syncs - int
+    * failed_syncs - int
+    * has_last_sync - bool
+    * last_sync_time - string
+    * last_sync_status - string
+    * sync_url - string
+    * settings_url - string
+    * sync_enabled - bool
+    * logs - array
+    * has_logs - bool
+
+    @package local_mru
+    @copyright 2026 Mutesa I Royal University
+    @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+<div class="local-mru-dashboard">
+
+    {{^sync_enabled}}
+    <div class="alert alert-warning">
+        {{#str}}dashboard:sync_disabled, local_mru{{/str}}
+        <a href="{{{settings_url}}}" class="alert-link">{{#str}}dashboard:configure, local_mru{{/str}}</a>
+    </div>
+    {{/sync_enabled}}
+
+    {{! Status Cards }}
+    <div class="row mb-4">
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">{{total_users_mapped}}</h5>
+                    <p class="card-text small">{{#str}}dashboard:users_mapped, local_mru{{/str}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-success">{{verified_students}}</h5>
+                    <p class="card-text small">{{#str}}dashboard:verified, local_mru{{/str}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">{{unverified_students}}</h5>
+                    <p class="card-text small">{{#str}}dashboard:unverified, local_mru{{/str}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-info">{{mapped_courses}}</h5>
+                    <p class="card-text small">{{#str}}dashboard:courses_mapped, local_mru{{/str}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-secondary">{{pending_syncs}}</h5>
+                    <p class="card-text small">{{#str}}dashboard:pending, local_mru{{/str}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">{{failed_syncs}}</h5>
+                    <p class="card-text small">{{#str}}dashboard:failed, local_mru{{/str}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{! Actions }}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            {{#has_last_sync}}
+            <p class="text-muted">
+                {{#str}}dashboard:last_sync, local_mru{{/str}}: {{last_sync_time}}
+                ({{last_sync_status}})
+            </p>
+            {{/has_last_sync}}
+        </div>
+        <div class="col-md-6 text-right">
+            {{#sync_enabled}}
+            <a href="{{{sync_url}}}" class="btn btn-primary">
+                {{#str}}dashboard:run_sync, local_mru{{/str}}
+            </a>
+            {{/sync_enabled}}
+            <a href="{{{settings_url}}}" class="btn btn-outline-secondary ml-2">
+                {{#str}}dashboard:settings, local_mru{{/str}}
+            </a>
+        </div>
+    </div>
+
+    {{! Sync History }}
+    {{#has_logs}}
+    <h4>{{#str}}dashboard:recent_syncs, local_mru{{/str}}</h4>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>{{#str}}dashboard:col_type, local_mru{{/str}}</th>
+                    <th>{{#str}}dashboard:col_direction, local_mru{{/str}}</th>
+                    <th>{{#str}}dashboard:col_status, local_mru{{/str}}</th>
+                    <th>{{#str}}dashboard:col_processed, local_mru{{/str}}</th>
+                    <th>{{#str}}dashboard:col_success, local_mru{{/str}}</th>
+                    <th>{{#str}}dashboard:col_failed, local_mru{{/str}}</th>
+                    <th>{{#str}}dashboard:col_time, local_mru{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#logs}}
+                <tr>
+                    <td>{{sync_type}}</td>
+                    <td>{{direction}}</td>
+                    <td>
+                        {{#is_completed}}<span class="badge badge-success">{{status}}</span>{{/is_completed}}
+                        {{#is_failed}}<span class="badge badge-danger">{{status}}</span>{{/is_failed}}
+                        {{^is_completed}}{{^is_failed}}<span class="badge badge-secondary">{{status}}</span>{{/is_failed}}{{/is_completed}}
+                    </td>
+                    <td>{{processed}}</td>
+                    <td>{{success}}</td>
+                    <td>{{failed}}</td>
+                    <td>{{time}}</td>
+                </tr>
+                {{/logs}}
+            </tbody>
+        </table>
+    </div>
+    {{/has_logs}}
+
+    {{^has_logs}}
+    <div class="alert alert-info">
+        {{#str}}dashboard:no_logs, local_mru{{/str}}
+    </div>
+    {{/has_logs}}
+</div>

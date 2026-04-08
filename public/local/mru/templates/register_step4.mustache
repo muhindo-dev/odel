@@ -1,0 +1,94 @@
+{{!
+    @template local_mru/register_step4
+    Step 4: Account creation — name fields, password with strength meter, create account.
+}}
+<div class="wizard-panel" data-step="4">
+    <div class="wizard-header">
+        <h1 class="login-heading">Create Your Account</h1>
+        <p class="login-subheading">Almost done! Fill in your details and choose a password.</p>
+    </div>
+
+    <div class="wizard-body mru-form">
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php" id="create-account-form">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="createaccount">
+
+            <div class="reg-account-email">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <span>{{email}}</span>
+                <span class="verified-badge"><i class="fa fa-check-circle" aria-hidden="true"></i> Verified</span>
+            </div>
+
+            <div class="mru-field-row">
+                <div class="mru-field-group">
+                    <label for="reg-firstname">First Name</label>
+                    <input type="text"
+                           id="reg-firstname"
+                           name="firstname"
+                           class="form-control"
+                           value="{{firstname}}"
+                           placeholder="Enter your first name"
+                           required
+                           autocomplete="given-name">
+                </div>
+                <div class="mru-field-group">
+                    <label for="reg-lastname">Last Name</label>
+                    <input type="text"
+                           id="reg-lastname"
+                           name="lastname"
+                           class="form-control"
+                           value="{{lastname}}"
+                           placeholder="Enter your last name"
+                           required
+                           autocomplete="family-name">
+                </div>
+            </div>
+
+            <div class="mru-field-group">
+                <label for="reg-password">Password</label>
+                <div class="mru-input-icon">
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                    <input type="password"
+                           id="reg-password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Minimum 6 characters"
+                           required
+                           autocomplete="new-password"
+                           minlength="6">
+                    <button type="button" class="pwd-toggle" aria-label="Toggle password visibility">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="pwd-strength" id="pwd-strength">
+                    <div class="pwd-bar"><span></span></div>
+                    <div class="pwd-reqs">
+                        <span class="pwd-req" data-req="length"><i class="fa fa-circle"></i> 6+ characters</span>
+                        <span class="pwd-req" data-req="upper"><i class="fa fa-circle"></i> Uppercase</span>
+                        <span class="pwd-req" data-req="lower"><i class="fa fa-circle"></i> Lowercase</span>
+                        <span class="pwd-req" data-req="number"><i class="fa fa-circle"></i> Number</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mru-field-group">
+                <label for="reg-password-confirm">Confirm Password</label>
+                <div class="mru-input-icon">
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                    <input type="password"
+                           id="reg-password-confirm"
+                           name="password_confirm"
+                           class="form-control"
+                           placeholder="Re-enter your password"
+                           required
+                           autocomplete="new-password">
+                </div>
+                <div class="pwd-match-msg" id="pwd-match-msg"></div>
+            </div>
+
+            <button type="submit" class="btn-wizard-primary" id="btn-create-account">
+                <i class="fa fa-user-plus" aria-hidden="true"></i> Create Account &amp; Sign In
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+{{!
+    @template local_mru/status
+
+    Student MRU verification status page.
+
+    @package local_mru
+    @copyright 2026 Mutesa I Royal University
+    @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+<div class="local-mru-status">
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">{{#str}}status:heading, local_mru{{/str}}</h5>
+        </div>
+        <div class="card-body">
+            <p class="lead">{{fullname}}</p>
+
+            {{#has_mapping}}
+            <dl class="row">
+                <dt class="col-sm-4">{{#str}}status:mru_id, local_mru{{/str}}</dt>
+                <dd class="col-sm-8"><strong>{{mru_id}}</strong></dd>
+
+                <dt class="col-sm-4">{{#str}}status:user_type, local_mru{{/str}}</dt>
+                <dd class="col-sm-8">{{user_type}}</dd>
+
+                <dt class="col-sm-4">{{#str}}status:verification, local_mru{{/str}}</dt>
+                <dd class="col-sm-8">
+                    {{#verified}}
+                    <span class="badge badge-success">{{#str}}status:verified, local_mru{{/str}}</span>
+                    {{#verified_at}}
+                    <small class="text-muted ml-2">{{verified_at}}</small>
+                    {{/verified_at}}
+                    {{/verified}}
+                    {{^verified}}
+                    <span class="badge badge-warning">{{#str}}status:not_verified, local_mru{{/str}}</span>
+                    {{/verified}}
+                </dd>
+            </dl>
+            {{/has_mapping}}
+
+            {{^has_mapping}}
+            <div class="alert alert-info mb-0">
+                {{#str}}status:no_mapping, local_mru{{/str}}
+            </div>
+            {{/has_mapping}}
+        </div>
+    </div>
+</div>

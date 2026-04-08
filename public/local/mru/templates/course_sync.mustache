@@ -1,0 +1,88 @@
+{{!
+    @template local_mru/course_sync
+
+    Course marks sync page.
+
+    @package local_mru
+    @copyright 2026 Mutesa I Royal University
+    @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+<div class="local-mru-course-sync">
+
+    {{#has_mapping}}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">{{#str}}coursesync:mapping, local_mru{{/str}}</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">{{#str}}coursesync:course_code, local_mru{{/str}}</dt>
+                <dd class="col-sm-9"><strong>{{mru_course_code}}</strong></dd>
+
+                {{#mru_programme}}
+                <dt class="col-sm-3">{{#str}}coursesync:programme, local_mru{{/str}}</dt>
+                <dd class="col-sm-9">{{mru_programme}}</dd>
+                {{/mru_programme}}
+
+                {{#credit_units}}
+                <dt class="col-sm-3">{{#str}}coursesync:credits, local_mru{{/str}}</dt>
+                <dd class="col-sm-9">{{credit_units}}</dd>
+                {{/credit_units}}
+
+                {{#semester}}
+                <dt class="col-sm-3">{{#str}}coursesync:semester, local_mru{{/str}}</dt>
+                <dd class="col-sm-9">{{semester}}</dd>
+                {{/semester}}
+
+                {{#academic_year}}
+                <dt class="col-sm-3">{{#str}}coursesync:academic_year, local_mru{{/str}}</dt>
+                <dd class="col-sm-9">{{academic_year}}</dd>
+                {{/academic_year}}
+            </dl>
+        </div>
+        <div class="card-footer">
+            <a href="{{{sync_url}}}" class="btn btn-primary">
+                {{#str}}coursesync:sync_now, local_mru{{/str}}
+            </a>
+        </div>
+    </div>
+    {{/has_mapping}}
+
+    {{^has_mapping}}
+    <div class="alert alert-warning">
+        {{#str}}coursesync:not_mapped, local_mru{{/str}}
+    </div>
+    {{/has_mapping}}
+
+    {{! Sync History }}
+    {{#has_history}}
+    <h4>{{#str}}coursesync:history, local_mru{{/str}}</h4>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>{{#str}}coursesync:col_student, local_mru{{/str}}</th>
+                    <th>{{#str}}coursesync:col_grade, local_mru{{/str}}</th>
+                    <th>{{#str}}coursesync:col_status, local_mru{{/str}}</th>
+                    <th>{{#str}}coursesync:col_time, local_mru{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#history}}
+                <tr>
+                    <td>{{mru_id}}</td>
+                    <td>{{grade}}</td>
+                    <td>
+                        {{#is_synced}}<span class="badge badge-success">{{status}}</span>{{/is_synced}}
+                        {{#is_pending}}<span class="badge badge-warning">{{status}}</span>{{/is_pending}}
+                        {{#is_failed}}<span class="badge badge-danger">{{status}}</span>{{/is_failed}}
+                    </td>
+                    <td>{{time}}</td>
+                </tr>
+                {{/history}}
+            </tbody>
+        </table>
+    </div>
+    {{/has_history}}
+</div>

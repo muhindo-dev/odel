@@ -95,6 +95,11 @@ $THEME->layouts = [
         'regions' => [],
         'options' => ['langmenu' => true],
     ],
+    'authpage' => [
+        'file' => 'authpage.php',
+        'regions' => [],
+        'options' => ['langmenu' => true, 'nonavbar' => true],
+    ],
     'popup' => [
         'file' => 'columns1.php',
         'regions' => [],

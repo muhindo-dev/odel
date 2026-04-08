@@ -1,0 +1,22 @@
+{{!
+    @template local_mru/verification_result
+
+    AJAX verification result fragment.
+
+    @package local_mru
+    @copyright 2026 Mutesa I Royal University
+    @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+<div class="local-mru-verification-result">
+    {{#verified}}
+    <div class="alert alert-success">
+        <i class="fa fa-check-circle"></i> {{message}}
+    </div>
+    {{/verified}}
+    {{^verified}}
+    <div class="alert alert-danger">
+        <i class="fa fa-times-circle"></i> {{message}}
+    </div>
+    {{/verified}}
+</div>

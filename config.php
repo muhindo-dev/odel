@@ -44,4 +44,26 @@ $CFG->admin = 'admin';
 // Whether the Moodle router is fully configured.
 $CFG->routerconfigured = false;
 
+//=========================================================================
+// 6. ENVIRONMENT OVERRIDES (Development)
+//=========================================================================
+// Allow MySQL 5.7 (MAMP) — bypass strict version check.
+$CFG->upgraderunning = false;
+// Suppress HTTPS warning for local development.
+$CFG->sslproxy = false;
+$CFG->loginhttps = false;
+// Skip password policy for development.
+$CFG->passwordpolicy = false;
+// Disable update notifications and plugin check screens.
+$CFG->disableupdatenotifications = true;
+$CFG->disableupdateautodeploy = true;
+// Auto-proceed with upgrades — skip confirmation pages.
+$CFG->upgradekey = '';
+$CFG->auto_update_plugin_types = '';
+// Enable developer debug mode for local development.
+@error_reporting(E_ALL | E_STRICT);
+@ini_set('display_errors', '1');
+$CFG->debug = (E_ALL | E_STRICT);
+$CFG->debugdisplay = 1;
+
 require_once(__DIR__ . '/lib/setup.php');

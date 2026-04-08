@@ -1,0 +1,33 @@
+{{!
+    @template local_mru/register_step3
+    Step 3: Personal info sync — placeholder until API is integrated.
+}}
+<div class="wizard-panel" data-step="3">
+    <div class="wizard-header">
+        <h1 class="login-heading">Identity Confirmation</h1>
+        <p class="login-subheading">We're looking up your details from the university system.</p>
+    </div>
+
+    <div class="wizard-body">
+        {{! Placeholder — API not yet connected }}
+        <div class="reg-info-card reg-sync-status">
+            <div class="sync-icon">
+                <i class="fa fa-database" aria-hidden="true"></i>
+            </div>
+            <h3>Portal Lookup Pending</h3>
+            <p>The connection to the university portal will be configured shortly. For now, you can proceed to set up your account manually.</p>
+            <p class="sync-note"><i class="fa fa-info-circle" aria-hidden="true"></i> Your details can be updated later once the portal integration is active.</p>
+        </div>
+    </div>
+
+    <form method="post" action="{{{wwwroot}}}/local/mru/register.php">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="confirminfo">
+        <div class="wizard-footer">
+            <span></span>
+            <button type="submit" class="btn-wizard-next">
+                Continue to Account Setup <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+    </form>
+</div>

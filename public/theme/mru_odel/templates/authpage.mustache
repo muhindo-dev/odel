@@ -1,14 +1,13 @@
 {{!
-    @template theme_mru_odel/login
-    MRU ODEL Login — split layout with photo panel + form panel.
+    @template theme_mru_odel/authpage
+    MRU ODEL Auth page layout — branded split layout with generic content area.
+    Used for registration, password reset, and other auth-related pages.
 
     Example context (json):
     {
         "sitename": "MRU ODEL",
         "output": {},
         "bodyattributes": "",
-        "loginheading": "Welcome Back",
-        "loginsubheading": "Sign in to your learning portal",
         "siteyear": "2026",
         "wwwroot": ""
     }
@@ -32,8 +31,8 @@
         </div>
 
         <div class="brand-center">
-            <h2 class="brand-tagline">Your Learning,<br>Anywhere, Anytime</h2>
-            <p class="brand-desc">Access your courses, assignments and resources through the Open &amp; Distance E-Learning portal.</p>
+            <h2 class="brand-tagline">Join MRU ODEL</h2>
+            <p class="brand-desc">Create your account to access courses, assignments and resources through the Open &amp; Distance E-Learning portal.</p>
             <div class="login-badges">
                 <span class="login-badge"><i class="fa fa-shield" aria-hidden="true"></i> Chartered 2024</span>
                 <span class="login-badge"><i class="fa fa-certificate" aria-hidden="true"></i> NCHE Licensed</span>
@@ -52,17 +51,15 @@
         </div>
     </div>
 
-    {{! ── Right: Form panel ── }}
+    {{! ── Right: Content panel ── }}
     <div class="mru-login-form">
         <div class="login-form-scroll">
-            <div class="login-form-inner">
+            <div class="login-form-inner mru-register-wizard">
 
                 {{! Mobile-only top bar }}
                 <div class="login-mobile-header d-lg-none">
                     <div class="login-mobile-bar">
-                        <div class="login-mobile-icon">
-                            <span>M</span>
-                        </div>
+                        <div class="login-mobile-icon"><span>M</span></div>
                         <div class="login-mobile-text">
                             <a href="{{{wwwroot}}}" class="login-mobile-brand">MRU<span class="accent">ODEL</span></a>
                             <div class="login-mobile-uni">Muteesa I Royal University</div>
@@ -70,28 +67,13 @@
                     </div>
                 </div>
 
-                {{! Heading }}
-                <div class="login-form-header">
-                    <h1 class="login-heading">{{loginheading}}</h1>
-                    <p class="login-subheading">{{loginsubheading}}</p>
-                </div>
-
-                {{! Moodle login form (renders core/loginform) }}
-                <div id="page-content" class="mru-form">
+                {{! Main content injected by Moodle }}
+                <div id="page-content">
                     <div id="region-main-box">
                         <div id="region-main">
                             {{{ output.main_content }}}
                         </div>
                     </div>
-                </div>
-
-                {{! Registration link }}
-                <div class="login-divider">or</div>
-                <div class="login-register-link">
-                    <p>Don't have an account?</p>
-                    <a href="{{{wwwroot}}}/local/mru/register.php" class="btn-register">
-                        <i class="fa fa-user-plus" aria-hidden="true"></i> Create Account
-                    </a>
                 </div>
 
                 {{! Footer }}
@@ -114,7 +96,6 @@
 {{#js}}
 M.util.js_pending('theme_boost/loader');
 require(['theme_boost/loader', 'theme_mru_odel/theme'], function(Loader, MRUTheme) {
-    MRUTheme.initLogin();
     M.util.js_complete('theme_boost/loader');
 });
 {{/js}}

@@ -1,0 +1,83 @@
+{{!
+    @template local_mru/register_step2
+    Step 2: Email verification — send OTP, enter code, verify.
+}}
+<div class="wizard-panel" data-step="2">
+    <div class="wizard-header">
+        <h1 class="login-heading">Verify Your Email</h1>
+        <p class="login-subheading">Enter your MRU email to receive a verification code.</p>
+    </div>
+
+    <div class="wizard-body mru-form">
+        {{! Email input + Send OTP (show if email not yet verified) }}
+        {{^email_verified}}
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php" class="reg-email-form">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="sendotp">
+
+            <div class="mru-field-group">
+                <label for="reg-email">MRU Email Address</label>
+                <div class="mru-input-icon">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <input type="email"
+                           id="reg-email"
+                           name="email"
+                           class="form-control"
+                           value="{{email}}"
+                           placeholder="yourname@mru.ac.ug"
+                           required
+                           autocomplete="email"
+                           pattern=".+@mru\.ac\.ug$">
+                </div>
+                <div class="mru-field-hint">Must end with <strong>@mru.ac.ug</strong></div>
+            </div>
+
+            <button type="submit" class="btn-wizard-primary">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                {{#otp_sent}}Resend Code{{/otp_sent}}
+                {{^otp_sent}}Send Verification Code{{/otp_sent}}
+            </button>
+        </form>
+
+        {{! OTP verification (show if OTP has been sent) }}
+        {{#otp_sent}}
+        <div class="reg-divider"><span>Enter the 6-digit code sent to your email</span></div>
+
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php" class="reg-otp-form">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="verifyotp">
+
+            <div class="mru-field-group">
+                <label for="reg-otp">Verification Code</label>
+                <div class="mru-input-icon">
+                    <i class="fa fa-key" aria-hidden="true"></i>
+                    <input type="text"
+                           id="reg-otp"
+                           name="otp"
+                           class="form-control otp-single"
+                           maxlength="6"
+                           inputmode="numeric"
+                           pattern="[0-9]{6}"
+                           placeholder="Enter 6-digit code"
+                           required
+                           autocomplete="one-time-code">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-wizard-primary">
+                <i class="fa fa-check-circle" aria-hidden="true"></i> Verify Code
+            </button>
+        </form>
+
+        <div class="reg-resend-row">
+            <span>Didn't receive the code?</span>
+            <form method="post" action="{{{wwwroot}}}/local/mru/register.php" style="display:inline;">
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <input type="hidden" name="action" value="resendotp">
+                <button type="submit" class="btn-link-subtle">Resend Code</button>
+            </form>
+        </div>
+        {{/otp_sent}}
+        {{/email_verified}}
+    </div>
+</div>

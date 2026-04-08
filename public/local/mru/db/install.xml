@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/mru/db" VERSION="20260407" COMMENT="MRU Integration plugin tables"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+
+    <!-- Maps Moodle users to MRU core system student/staff records -->
+    <TABLE NAME="local_mru_user_map" COMMENT="Maps Moodle users to MRU core system identifiers">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Moodle user ID"/>
+        <FIELD NAME="mru_id" TYPE="char" LENGTH="50" NOTNULL="true" COMMENT="MRU core system ID (student/staff number)"/>
+        <FIELD NAME="user_type" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="student" COMMENT="student or staff"/>
+        <FIELD NAME="verified" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="Whether verified against core system"/>
+        <FIELD NAME="verified_at" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="Timestamp of last verification"/>
+        <FIELD NAME="core_data" TYPE="text" NOTNULL="false" COMMENT="JSON cached data from core system"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ix_mru_id" UNIQUE="true" FIELDS="mru_id"/>
+        <INDEX NAME="ix_userid" UNIQUE="true" FIELDS="userid"/>
+        <INDEX NAME="ix_user_type" UNIQUE="false" FIELDS="user_type"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- Tracks marks/grades synced between Moodle and core system -->
+    <TABLE NAME="local_mru_marks_sync" COMMENT="Tracks marks synchronisation between Moodle and MRU core system">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Moodle course ID"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Moodle user ID"/>
+        <FIELD NAME="mru_id" TYPE="char" LENGTH="50" NOTNULL="true" COMMENT="MRU student number"/>
+        <FIELD NAME="mru_course_code" TYPE="char" LENGTH="50" NOTNULL="true" COMMENT="Course code in MRU system"/>
+        <FIELD NAME="grade_item_id" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="Moodle grade item ID"/>
+        <FIELD NAME="moodle_grade" TYPE="number" LENGTH="10" DECIMALS="5" NOTNULL="false" COMMENT="Grade value from Moodle"/>
+        <FIELD NAME="core_grade" TYPE="number" LENGTH="10" DECIMALS="5" NOTNULL="false" COMMENT="Grade value from core system"/>
+        <FIELD NAME="sync_direction" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="to_core" COMMENT="to_core or from_core"/>
+        <FIELD NAME="sync_status" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="pending" COMMENT="pending, synced, failed, conflict"/>
+        <FIELD NAME="error_message" TYPE="text" NOTNULL="false" COMMENT="Error details if sync failed"/>
+        <FIELD NAME="academic_year" TYPE="char" LENGTH="20" NOTNULL="false" COMMENT="Academic year e.g. 2025/2026"/>
+        <FIELD NAME="semester" TYPE="int" LENGTH="2" NOTNULL="false" COMMENT="Semester number"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timesynced" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="Timestamp of last successful sync"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="fk_userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ix_sync_status" UNIQUE="false" FIELDS="sync_status"/>
+        <INDEX NAME="ix_course_user" UNIQUE="false" FIELDS="courseid, userid"/>
+        <INDEX NAME="ix_mru_course" UNIQUE="false" FIELDS="mru_course_code, mru_id"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- Course mapping between Moodle courses and MRU core system -->
+    <TABLE NAME="local_mru_course_map" COMMENT="Maps Moodle courses to MRU core system course codes">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Moodle course ID"/>
+        <FIELD NAME="mru_course_code" TYPE="char" LENGTH="50" NOTNULL="true" COMMENT="MRU course code"/>
+        <FIELD NAME="mru_programme_code" TYPE="char" LENGTH="50" NOTNULL="false" COMMENT="MRU programme code"/>
+        <FIELD NAME="credit_units" TYPE="int" LENGTH="3" NOTNULL="false" COMMENT="Credit units for this course"/>
+        <FIELD NAME="semester" TYPE="int" LENGTH="2" NOTNULL="false"/>
+        <FIELD NAME="academic_year" TYPE="char" LENGTH="20" NOTNULL="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ix_mru_course_code" UNIQUE="false" FIELDS="mru_course_code"/>
+        <INDEX NAME="ix_courseid" UNIQUE="true" FIELDS="courseid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- Sync log for auditing all sync operations -->
+    <TABLE NAME="local_mru_sync_log" COMMENT="Audit log for all MRU sync operations">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="sync_type" TYPE="char" LENGTH="30" NOTNULL="true" COMMENT="students, marks, courses, verification"/>
+        <FIELD NAME="direction" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="to_core" COMMENT="to_core, from_core, bidirectional"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="started" COMMENT="started, completed, failed"/>
+        <FIELD NAME="records_processed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="records_success" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="records_failed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="error_summary" TYPE="text" NOTNULL="false"/>
+        <FIELD NAME="initiated_by" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="User ID who initiated the sync, null for scheduled"/>
+        <FIELD NAME="timestarted" TYPE="int" LENGTH="10" NOTNULL="true"/>
+        <FIELD NAME="timefinished" TYPE="int" LENGTH="10" NOTNULL="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ix_sync_type" UNIQUE="false" FIELDS="sync_type"/>
+        <INDEX NAME="ix_status" UNIQUE="false" FIELDS="status"/>
+        <INDEX NAME="ix_timestarted" UNIQUE="false" FIELDS="timestarted"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- Registration wizard sessions (OTP + step tracking) -->
+    <TABLE NAME="local_mru_registrations" COMMENT="Tracks multi-step registration wizard sessions">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="session_token" TYPE="char" LENGTH="64" NOTNULL="true" COMMENT="Unique token for this registration session"/>
+        <FIELD NAME="email" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="MRU email address"/>
+        <FIELD NAME="otp_hash" TYPE="char" LENGTH="255" NOTNULL="false" COMMENT="Hashed OTP code"/>
+        <FIELD NAME="otp_expires" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="OTP expiry timestamp"/>
+        <FIELD NAME="otp_attempts" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" COMMENT="OTP verification attempts"/>
+        <FIELD NAME="email_verified" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="current_step" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" COMMENT="Current wizard step 1-5"/>
+        <FIELD NAME="user_type" TYPE="char" LENGTH="20" NOTNULL="false" COMMENT="student or staff (from API)"/>
+        <FIELD NAME="core_data" TYPE="text" NOTNULL="false" COMMENT="JSON data from core system API"/>
+        <FIELD NAME="firstname" TYPE="char" LENGTH="100" NOTNULL="false"/>
+        <FIELD NAME="lastname" TYPE="char" LENGTH="100" NOTNULL="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="Created Moodle user ID"/>
+        <FIELD NAME="completed" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="ip_address" TYPE="char" LENGTH="45" NOTNULL="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ix_session_token" UNIQUE="true" FIELDS="session_token"/>
+        <INDEX NAME="ix_email" UNIQUE="false" FIELDS="email"/>
+        <INDEX NAME="ix_completed" UNIQUE="false" FIELDS="completed"/>
+      </INDEXES>
+    </TABLE>
+
+  </TABLES>
+</XMLDB>

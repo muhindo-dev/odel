@@ -4911,11 +4911,11 @@
       </FEEDBACK>
     </UNICODE>
     <DATABASE level="required">
-      <VENDOR name="mariadb" version="10.11.0" />
-      <VENDOR name="mysql" version="8.0" />
-      <VENDOR name="postgres" version="15" />
+      <VENDOR name="mariadb" version="10.6.0" />
+      <VENDOR name="mysql" version="5.7" />
+      <VENDOR name="postgres" version="13" />
       <VENDOR name="mssql" version="14.0" />
-      <VENDOR name="auroramysql" version="8.0" />
+      <VENDOR name="auroramysql" version="5.7" />
     </DATABASE>
     <PHP version="8.2.0" level="required">
     </PHP>

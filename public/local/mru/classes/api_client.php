@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Core API client for communicating with the MRU core system.
+ * Campus Dynamics API v2.2 client for the MRU core system.
  *
- * Handles HTTP requests, authentication, and response parsing for
- * all interactions with the external MRU management system.
+ * Base URL: https://eadmin.mru.ac.ug/API/v2/{endpoint}.aspx?action={action}
+ * Auth: username/password → token passed as ?token= query parameter.
  *
  * @package    local_mru
  * @copyright  2026 Mutesa I Royal University
@@ -34,19 +34,16 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
 
-/**
- * HTTP client for the MRU core system REST API.
- */
 class api_client {
 
-    /** @var string Base URL of the core system API. */
+    /** @var string Base URL (e.g. https://eadmin.mru.ac.ug/API/v2). */
     private string $baseurl;
 
-    /** @var string API key for authentication. */
-    private string $apikey;
+    /** @var string Staff username for system-level API access. */
+    private string $username;
 
-    /** @var string API secret for authentication. */
-    private string $apisecret;
+    /** @var string Staff password. */
+    private string $password;
 
     /** @var int Request timeout in seconds. */
     private int $timeout;
@@ -54,173 +51,28 @@ class api_client {
     /** @var string|null Cached auth token. */
     private ?string $token = null;
 
-    /**
-     * Constructor. Reads settings from plugin config.
-     *
-     * @param string|null $baseurl Override base URL (for testing).
-     * @param string|null $apikey Override API key (for testing).
-     * @param string|null $apisecret Override API secret (for testing).
-     */
-    public function __construct(?string $baseurl = null, ?string $apikey = null, ?string $apisecret = null) {
-        $this->baseurl   = $baseurl   ?? get_config('local_mru', 'api_base_url');
-        $this->apikey    = $apikey    ?? get_config('local_mru', 'api_key');
-        $this->apisecret = $apisecret ?? get_config('local_mru', 'api_secret');
-        $this->timeout   = (int) (get_config('local_mru', 'api_timeout') ?: 30);
+    /** @var string|null Token expiry timestamp. */
+    private ?string $tokenexpires = null;
+
+    public function __construct(?string $baseurl = null, ?string $username = null, ?string $password = null) {
+        $this->baseurl  = rtrim($baseurl  ?? get_config('local_mru', 'api_base_url'), '/');
+        $this->username = $username ?? get_config('local_mru', 'api_username');
+        $this->password = $password ?? get_config('local_mru', 'api_password');
+        $this->timeout  = (int) (get_config('local_mru', 'api_timeout') ?: 30);
     }
 
-    /**
-     * Check if the API client is configured.
-     *
-     * @return bool
-     */
     public function is_configured(): bool {
-        return !empty($this->baseurl) && !empty($this->apikey) && !empty($this->apisecret);
+        return !empty($this->baseurl) && !empty($this->username) && !empty($this->password);
     }
 
-    /**
-     * Authenticate with the core system and obtain a token.
-     *
-     * @return string Bearer token.
-     * @throws moodle_exception If authentication fails.
-     */
+    // ─── Authentication ───
+
     public function authenticate(): string {
         if ($this->token !== null) {
             return $this->token;
         }
 
-        $response = $this->request('POST', '/auth/token', [
-            'api_key'    => $this->apikey,
-            'api_secret' => $this->apisecret,
-        ], false);
-
-        if (empty($response['token'])) {
-            throw new moodle_exception('error:auth_failed', 'local_mru');
-        }
-
-        $this->token = $response['token'];
-        return $this->token;
-    }
-
-    /**
-     * Verify a student against the core system.
-     *
-     * @param string $mruid MRU student number.
-     * @return array Student data from core system.
-     * @throws moodle_exception
-     */
-    public function verify_student(string $mruid): array {
-        return $this->request('GET', '/students/' . urlencode($mruid) . '/verify');
-    }
-
-    /**
-     * Get student details from core system.
-     *
-     * @param string $mruid MRU student number.
-     * @return array Student record.
-     * @throws moodle_exception
-     */
-    public function get_student(string $mruid): array {
-        return $this->request('GET', '/students/' . urlencode($mruid));
-    }
-
-    /**
-     * Get multiple students by programme.
-     *
-     * @param string $programmecode MRU programme code.
-     * @param string|null $academicyear Academic year filter.
-     * @return array List of student records.
-     * @throws moodle_exception
-     */
-    public function get_students_by_programme(string $programmecode, ?string $academicyear = null): array {
-        $params = [];
-        if ($academicyear !== null) {
-            $params['academic_year'] = $academicyear;
-        }
-        return $this->request('GET', '/programmes/' . urlencode($programmecode) . '/students', $params);
-    }
-
-    /**
-     * Submit marks/grades to the core system.
-     *
-     * @param array $marks Array of mark records with keys: student_id, course_code, mark, academic_year, semester.
-     * @return array Response from core system.
-     * @throws moodle_exception
-     */
-    public function submit_marks(array $marks): array {
-        return $this->request('POST', '/marks/submit', ['marks' => $marks]);
-    }
-
-    /**
-     * Get marks from the core system for a course.
-     *
-     * @param string $coursecode MRU course code.
-     * @param string|null $academicyear Optional academic year filter.
-     * @param int|null $semester Optional semester filter.
-     * @return array List of mark records.
-     * @throws moodle_exception
-     */
-    public function get_marks(string $coursecode, ?string $academicyear = null, ?int $semester = null): array {
-        $params = [];
-        if ($academicyear !== null) {
-            $params['academic_year'] = $academicyear;
-        }
-        if ($semester !== null) {
-            $params['semester'] = $semester;
-        }
-        return $this->request('GET', '/marks/' . urlencode($coursecode), $params);
-    }
-
-    /**
-     * Get course details from core system.
-     *
-     * @param string $coursecode MRU course code.
-     * @return array Course data.
-     * @throws moodle_exception
-     */
-    public function get_course(string $coursecode): array {
-        return $this->request('GET', '/courses/' . urlencode($coursecode));
-    }
-
-    /**
-     * Get all programmes from core system.
-     *
-     * @return array List of programmes.
-     * @throws moodle_exception
-     */
-    public function get_programmes(): array {
-        return $this->request('GET', '/programmes');
-    }
-
-    /**
-     * Ping the core system to check connectivity.
-     *
-     * @return bool True if reachable.
-     */
-    public function ping(): bool {
-        try {
-            $this->request('GET', '/ping', [], false);
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Make an HTTP request to the core system API.
-     *
-     * @param string $method HTTP method (GET, POST, PUT, DELETE).
-     * @param string $endpoint API endpoint path.
-     * @param array $data Request data (query params for GET, body for POST).
-     * @param bool $authenticated Whether to include auth token.
-     * @return array Decoded JSON response.
-     * @throws moodle_exception On failure.
-     */
-    private function request(string $method, string $endpoint, array $data = [], bool $authenticated = true): array {
-        if (!$this->is_configured()) {
-            throw new moodle_exception('error:not_configured', 'local_mru');
-        }
-
-        $url = rtrim($this->baseurl, '/') . $endpoint;
+        $url = $this->baseurl . '/auth.aspx?action=login';
 
         $curl = new curl();
         $curl->setopt([
@@ -228,52 +80,375 @@ class api_client {
             'CURLOPT_CONNECTTIMEOUT' => 10,
             'CURLOPT_RETURNTRANSFER' => true,
         ]);
+        $curl->setHeader(['Accept: application/json', 'Content-Type: application/x-www-form-urlencoded']);
 
-        $headers = ['Accept: application/json'];
+        $postdata = 'username=' . urlencode($this->username) . '&password=' . urlencode($this->password);
+        $response = $curl->post($url, $postdata);
+
+        $decoded = json_decode($response, true);
+        if (empty($decoded['success']) || empty($decoded['data']['token'])) {
+            $msg = $decoded['message'] ?? 'Authentication failed';
+            throw new moodle_exception('error:auth_failed', 'local_mru', '', $msg);
+        }
+
+        $this->token = $decoded['data']['token'];
+        $this->tokenexpires = $decoded['data']['expires'] ?? null;
+        return $this->token;
+    }
+
+    public function validate_token(): bool {
+        if ($this->token === null) {
+            return false;
+        }
+        try {
+            $result = $this->request('auth.aspx', 'validate', [], false);
+            return !empty($result);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function ping(): bool {
+        try {
+            $url = $this->baseurl . '/auth.aspx?action=ping';
+            $curl = new curl();
+            $curl->setopt(['CURLOPT_TIMEOUT' => 10, 'CURLOPT_CONNECTTIMEOUT' => 5]);
+            $response = $curl->get($url);
+            $decoded = json_decode($response, true);
+            return !empty($decoded['success']) || (!empty($decoded['data']['status']) && $decoded['data']['status'] === 'ok');
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    // ─── ODEL Identity & Lookup ───
+
+    public function lookup_person(string $email): array {
+        return $this->request('student.aspx', 'lookup', ['email' => $email]);
+    }
+
+    public function verify_student(string $id): array {
+        return $this->request('student.aspx', 'verify', ['id' => $id]);
+    }
+
+    public function search_students(string $query, string $type = 'any', int $limit = 50): array {
+        return $this->request('student.aspx', 'search', ['q' => $query, 'type' => $type, 'limit' => $limit]);
+    }
+
+    public function get_students_by_programme(string $progcode, ?string $status = null,
+            ?string $acadyear = null, int $page = 1, int $perpage = 100): array {
+        $params = ['progcode' => $progcode, 'page' => $page, 'per_page' => $perpage];
+        if ($status !== null) {
+            $params['status'] = $status;
+        }
+        if ($acadyear !== null) {
+            $params['acad_year'] = $acadyear;
+        }
+        return $this->request('student.aspx', 'by_programme', $params);
+    }
+
+    // ─── Student Profile ───
+
+    public function get_student_profile(string $token = null): array {
+        return $this->request('student.aspx', 'profile', [], true, $token);
+    }
+
+    public function get_student_summary(string $token = null): array {
+        return $this->request('student.aspx', 'summary', [], true, $token);
+    }
+
+    public function get_student_lock_status(string $token = null): array {
+        return $this->request('student.aspx', 'lock_status', [], true, $token);
+    }
+
+    // ─── Staff ───
+
+    public function get_staff_profile(string $token = null): array {
+        return $this->request('staff.aspx', 'profile', [], true, $token);
+    }
+
+    public function get_staff_courses(string $acadyear, int $semester, string $token = null): array {
+        return $this->request('staff.aspx', 'my_courses', [
+            'acad_year' => $acadyear, 'semester' => $semester,
+        ], true, $token);
+    }
+
+    public function get_class_list(string $courseid, string $acadyear, int $semester): array {
+        return $this->request('staff.aspx', 'class_list', [
+            'course_id' => $courseid, 'acad_year' => $acadyear, 'semester' => $semester,
+        ]);
+    }
+
+    // ─── Marks & Grading ───
+
+    public function get_marks(string $courseid, string $acadyear, int $semester): array {
+        return $this->request('staff.aspx', 'marks', [
+            'course_id' => $courseid, 'acad_year' => $acadyear, 'semester' => $semester,
+        ]);
+    }
+
+    public function submit_marks(array $marks): array {
+        return $this->request('staff.aspx', 'submit_marks', $marks, true, null, 'POST');
+    }
+
+    public function get_mark_sheet(string $courseid, string $progid, string $acadyear,
+            int $semester = 1, int $studyyear = 1): array {
+        return $this->request('staff.aspx', 'mark_sheet', [
+            'course_id' => $courseid, 'progid' => $progid, 'acad_year' => $acadyear,
+            'semester' => $semester, 'study_year' => $studyyear,
+        ]);
+    }
+
+    public function save_entry_marks(array $marks): array {
+        return $this->request('staff.aspx', 'save_entry_marks', $marks, true, null, 'POST');
+    }
+
+    public function submit_for_approval(string $courseid, string $progid,
+            string $acadyear, int $semester = 1): array {
+        return $this->request('staff.aspx', 'submit_for_approval', [
+            'course_id' => $courseid, 'progid' => $progid,
+            'acad_year' => $acadyear, 'semester' => $semester,
+        ], true, null, 'POST');
+    }
+
+    public function get_sheet_status(string $courseid, string $progid, string $acadyear): array {
+        return $this->request('staff.aspx', 'sheet_status', [
+            'course_id' => $courseid, 'progid' => $progid, 'acad_year' => $acadyear,
+        ]);
+    }
+
+    public function get_deadlines(string $acadyear, int $semester): array {
+        return $this->request('staff.aspx', 'deadlines', [
+            'acad_year' => $acadyear, 'semester' => $semester,
+        ]);
+    }
+
+    // ─── Academic ───
+
+    public function get_results(string $token = null, ?string $acadyear = null, ?int $semester = null): array {
+        $params = [];
+        if ($acadyear !== null) {
+            $params['acad_year'] = $acadyear;
+        }
+        if ($semester !== null) {
+            $params['semester'] = $semester;
+        }
+        return $this->request('academic.aspx', 'results', $params, true, $token);
+    }
+
+    public function get_transcript(string $token = null): array {
+        return $this->request('academic.aspx', 'transcript', [], true, $token);
+    }
+
+    public function get_registered_courses(string $acadyear, int $semester, string $token = null): array {
+        return $this->request('academic.aspx', 'registered_courses', [
+            'acad_year' => $acadyear, 'semester' => $semester,
+        ], true, $token);
+    }
+
+    public function get_available_courses(string $acadyear, int $semester, string $token = null): array {
+        return $this->request('academic.aspx', 'available_courses', [
+            'acad_year' => $acadyear, 'semester' => $semester,
+        ], true, $token);
+    }
+
+    public function get_course_details(string $coursecode): array {
+        return $this->request('academic.aspx', 'course_details', ['course_code' => $coursecode]);
+    }
+
+    public function get_course_enrollments(string $coursecode, string $acadyear, int $semester): array {
+        return $this->request('academic.aspx', 'course_enrollments', [
+            'course_code' => $coursecode, 'acad_year' => $acadyear, 'semester' => $semester,
+        ]);
+    }
+
+    public function get_programme_curriculum(string $progcode): array {
+        return $this->request('academic.aspx', 'programme_curriculum', ['progcode' => $progcode]);
+    }
+
+    public function get_grading_scheme(): array {
+        $url = $this->baseurl . '/academic.aspx?action=grading_scheme';
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    public function get_enrollment_status(string $token = null, ?string $acadyear = null): array {
+        $params = [];
+        if ($acadyear !== null) {
+            $params['acad_year'] = $acadyear;
+        }
+        return $this->request('academic.aspx', 'enrollment_status', $params, true, $token);
+    }
+
+    public function get_registration_history(string $token = null): array {
+        return $this->request('academic.aspx', 'registration_history', [], true, $token);
+    }
+
+    // ─── Finance ───
+
+    public function get_fee_status(?string $regno = null, ?string $acadyear = null, ?int $semester = null): array {
+        $params = [];
+        if ($regno !== null) {
+            $params['regno'] = $regno;
+        }
+        if ($acadyear !== null) {
+            $params['acad_year'] = $acadyear;
+        }
+        if ($semester !== null) {
+            $params['semester'] = $semester;
+        }
+        return $this->request('finance.aspx', 'fee_status', $params);
+    }
+
+    public function bulk_fee_check(array $students, ?string $acadyear = null): array {
+        $params = ['students' => $students];
+        if ($acadyear !== null) {
+            $params['acad_year'] = $acadyear;
+        }
+        return $this->request('finance.aspx', 'bulk_fee_check', $params, true, null, 'POST');
+    }
+
+    public function get_ledger(string $token = null): array {
+        return $this->request('finance.aspx', 'ledger', [], true, $token);
+    }
+
+    public function get_balance(string $token = null): array {
+        return $this->request('finance.aspx', 'balance', [], true, $token);
+    }
+
+    public function get_billing_summary(string $token = null): array {
+        return $this->request('finance.aspx', 'billing_summary', [], true, $token);
+    }
+
+    // ─── Campus Info (mostly no-auth) ───
+
+    public function get_current_semester(): array {
+        $url = $this->baseurl . '/campus.aspx?action=current_semester';
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    public function get_academic_years(): array {
+        $url = $this->baseurl . '/campus.aspx?action=academic_years';
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    public function get_academic_calendar(?string $acadyear = null): array {
+        $url = $this->baseurl . '/campus.aspx?action=academic_calendar';
+        if ($acadyear !== null) {
+            $url .= '&acad_year=' . urlencode($acadyear);
+        }
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    public function get_campuses(): array {
+        $url = $this->baseurl . '/campus.aspx?action=campuses';
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    public function get_faculties(): array {
+        $url = $this->baseurl . '/campus.aspx?action=faculties';
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    public function get_programmes(?string $facultycode = null, ?string $level = null): array {
+        $url = $this->baseurl . '/campus.aspx?action=programmes';
+        if ($facultycode !== null) {
+            $url .= '&faculty_code=' . urlencode($facultycode);
+        }
+        if ($level !== null) {
+            $url .= '&level=' . urlencode($level);
+        }
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    public function get_departments(?string $facultycode = null): array {
+        $url = $this->baseurl . '/campus.aspx?action=departments';
+        if ($facultycode !== null) {
+            $url .= '&faculty_code=' . urlencode($facultycode);
+        }
+        $curl = new curl();
+        $curl->setopt(['CURLOPT_TIMEOUT' => $this->timeout]);
+        $response = $curl->get($url);
+        $decoded = json_decode($response, true);
+        return $decoded['data'] ?? [];
+    }
+
+    // ─── Core Request Method ───
+
+    /**
+     * Make an authenticated request to the Campus Dynamics API.
+     *
+     * @param string $endpoint Filename (e.g. 'student.aspx')
+     * @param string $action Action parameter
+     * @param array $params Extra query/body parameters
+     * @param bool $authenticated Whether to include token
+     * @param string|null $overridetoken Use a specific token instead of the system one
+     * @param string $method HTTP method (GET or POST)
+     * @return array The 'data' portion of the JSON response
+     * @throws moodle_exception On failure
+     */
+    private function request(string $endpoint, string $action, array $params = [],
+            bool $authenticated = true, ?string $overridetoken = null, string $method = 'GET'): array {
+
+        $url = $this->baseurl . '/' . $endpoint . '?action=' . urlencode($action);
 
         if ($authenticated) {
-            $token = $this->authenticate();
-            $headers[] = 'Authorization: Bearer ' . $token;
+            $token = $overridetoken ?? $this->authenticate();
+            $url .= '&token=' . urlencode($token);
         }
 
-        if (in_array($method, ['POST', 'PUT'])) {
-            $headers[] = 'Content-Type: application/json';
-        }
+        $curl = new curl();
+        $curl->setopt([
+            'CURLOPT_TIMEOUT'        => $this->timeout,
+            'CURLOPT_CONNECTTIMEOUT' => 10,
+            'CURLOPT_RETURNTRANSFER' => true,
+        ]);
+        $curl->setHeader(['Accept: application/json']);
 
-        $curl->setHeader($headers);
-
-        switch ($method) {
-            case 'GET':
-                if (!empty($data)) {
-                    $url .= '?' . http_build_query($data);
-                }
-                $response = $curl->get($url);
-                break;
-            case 'POST':
-                $response = $curl->post($url, json_encode($data));
-                break;
-            case 'PUT':
-                $response = $curl->put($url, json_encode($data));
-                break;
-            case 'DELETE':
-                $response = $curl->delete($url);
-                break;
-            default:
-                throw new moodle_exception('error:invalid_method', 'local_mru', '', $method);
+        if ($method === 'POST') {
+            $curl->setHeader(['Accept: application/json', 'Content-Type: application/json']);
+            $response = $curl->post($url, json_encode($params));
+        } else {
+            // Append params as query string.
+            foreach ($params as $key => $value) {
+                $url .= '&' . urlencode($key) . '=' . urlencode($value);
+            }
+            $response = $curl->get($url);
         }
 
         $httpcode = $curl->get_info()['http_code'] ?? 0;
 
-        if ($httpcode === 401 && $authenticated && $this->token !== null) {
-            // Token expired — retry once with fresh token.
+        // Token expired — retry once.
+        if ($httpcode === 401 && $authenticated && $overridetoken === null && $this->token !== null) {
             $this->token = null;
-            return $this->request($method, $endpoint, $data, true);
-        }
-
-        if ($httpcode < 200 || $httpcode >= 300) {
-            $decoded = json_decode($response, true);
-            $msg = $decoded['message'] ?? "HTTP {$httpcode}: {$endpoint}";
-            throw new moodle_exception('error:api_request_failed', 'local_mru', '', $msg);
+            return $this->request($endpoint, $action, $params, true, null, $method);
         }
 
         $decoded = json_decode($response, true);
@@ -281,6 +456,13 @@ class api_client {
             throw new moodle_exception('error:invalid_response', 'local_mru');
         }
 
-        return $decoded ?? [];
+        // Check API-level success flag.
+        if (isset($decoded['success']) && $decoded['success'] === false) {
+            $msg = $decoded['message'] ?? 'Unknown API error';
+            $code = $decoded['error_code'] ?? 'UNKNOWN';
+            throw new moodle_exception('error:api_request_failed', 'local_mru', '', "{$code}: {$msg}");
+        }
+
+        return $decoded['data'] ?? $decoded ?? [];
     }
 }

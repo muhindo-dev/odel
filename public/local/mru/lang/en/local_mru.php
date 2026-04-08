@@ -28,14 +28,14 @@ defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = 'MRU Integration';
 
 // Settings - API.
-$string['settings:api_heading'] = 'Core System API';
-$string['settings:api_heading_desc'] = 'Configure the connection to the MRU core management system REST API.';
+$string['settings:api_heading'] = 'Campus Dynamics API';
+$string['settings:api_heading_desc'] = 'Configure the connection to the MRU Campus Dynamics API v2 (eadmin.mru.ac.ug).';
 $string['settings:api_base_url'] = 'API base URL';
-$string['settings:api_base_url_desc'] = 'The base URL of the MRU core system API (e.g. https://core.mru.ac.ug/api/v1).';
-$string['settings:api_key'] = 'API key';
-$string['settings:api_key_desc'] = 'The API key provided by the MRU core system.';
-$string['settings:api_secret'] = 'API secret';
-$string['settings:api_secret_desc'] = 'The API secret for authentication with the core system.';
+$string['settings:api_base_url_desc'] = 'The base URL of the Campus Dynamics API (e.g. https://eadmin.mru.ac.ug/API/v2).';
+$string['settings:api_username'] = 'API username';
+$string['settings:api_username_desc'] = 'Staff username for system-level API access (used by Moodle to authenticate with the portal).';
+$string['settings:api_password'] = 'API password';
+$string['settings:api_password_desc'] = 'Password for the API staff account.';
 $string['settings:api_timeout'] = 'Request timeout (seconds)';
 $string['settings:api_timeout_desc'] = 'Maximum time to wait for API responses.';
 

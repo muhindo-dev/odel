@@ -28,7 +28,7 @@ if ($hassiteconfig) {
 
     $settings = new admin_settingpage('local_mru', get_string('pluginname', 'local_mru'));
 
-    // --- Core System API Settings ---
+    // --- Campus Dynamics API Settings ---
     $settings->add(new admin_setting_heading(
         'local_mru/api_heading',
         get_string('settings:api_heading', 'local_mru'),
@@ -39,22 +39,22 @@ if ($hassiteconfig) {
         'local_mru/api_base_url',
         get_string('settings:api_base_url', 'local_mru'),
         get_string('settings:api_base_url_desc', 'local_mru'),
-        '',
+        'https://eadmin.mru.ac.ug/API/v2',
         PARAM_URL
     ));
 
     $settings->add(new admin_setting_configtext(
-        'local_mru/api_key',
-        get_string('settings:api_key', 'local_mru'),
-        get_string('settings:api_key_desc', 'local_mru'),
+        'local_mru/api_username',
+        get_string('settings:api_username', 'local_mru'),
+        get_string('settings:api_username_desc', 'local_mru'),
         '',
         PARAM_RAW
     ));
 
     $settings->add(new admin_setting_configpasswordunmask(
-        'local_mru/api_secret',
-        get_string('settings:api_secret', 'local_mru'),
-        get_string('settings:api_secret_desc', 'local_mru'),
+        'local_mru/api_password',
+        get_string('settings:api_password', 'local_mru'),
+        get_string('settings:api_password_desc', 'local_mru'),
         ''
     ));
 

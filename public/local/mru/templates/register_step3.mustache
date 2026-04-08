@@ -1,33 +1,170 @@
 {{!
     @template local_mru/register_step3
-    Step 3: Personal info sync — placeholder until API is integrated.
+    Step 3: Identity confirmation — shows data from MRU Campus Dynamics API.
 }}
 <div class="wizard-panel" data-step="3">
     <div class="wizard-header">
         <h1 class="login-heading">Identity Confirmation</h1>
-        <p class="login-subheading">We're looking up your details from the university system.</p>
+        <p class="login-subheading">We looked up your details from the university system.</p>
     </div>
 
     <div class="wizard-body">
-        {{! Placeholder — API not yet connected }}
-        <div class="reg-info-card reg-sync-status">
-            <div class="sync-icon">
-                <i class="fa fa-database" aria-hidden="true"></i>
+        {{#info_found}}
+        {{! ── Person found in portal ── }}
+        <div class="reg-info-card reg-identity-found">
+            <div class="identity-header">
+                <div class="identity-icon identity-icon-success">
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <h3 class="mb-0">Record Found</h3>
+                    <span class="badge badge-{{#is_student}}primary{{/is_student}}{{#is_staff}}success{{/is_staff}} text-uppercase">{{info_person_type}}</span>
+                    {{#info_status}}
+                    <span class="badge badge-{{#info_active}}success{{/info_active}}{{^info_active}}warning{{/info_active}} text-uppercase ml-1">{{info_status}}</span>
+                    {{/info_status}}
+                </div>
             </div>
-            <h3>Portal Lookup Pending</h3>
-            <p>The connection to the university portal will be configured shortly. For now, you can proceed to set up your account manually.</p>
-            <p class="sync-note"><i class="fa fa-info-circle" aria-hidden="true"></i> Your details can be updated later once the portal integration is active.</p>
-        </div>
-    </div>
 
-    <form method="post" action="{{{wwwroot}}}/local/mru/register.php">
-        <input type="hidden" name="sesskey" value="{{sesskey}}">
-        <input type="hidden" name="action" value="confirminfo">
-        <div class="wizard-footer">
-            <span></span>
-            <button type="submit" class="btn-wizard-next">
-                Continue to Account Setup <i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </button>
+            <div class="identity-details mt-3">
+                <div class="row">
+                    <div class="col-sm-6 mb-2">
+                        <small class="text-muted d-block">Full Name</small>
+                        <strong>{{info_firstname}} {{info_lastname}}</strong>
+                    </div>
+                    {{#info_student_no}}
+                    <div class="col-sm-6 mb-2">
+                        <small class="text-muted d-block">{{#is_student}}Student No.{{/is_student}}{{#is_staff}}Staff ID{{/is_staff}}{{^is_student}}{{^is_staff}}ID{{/is_staff}}{{/is_student}}</small>
+                        <strong>{{info_student_no}}</strong>
+                    </div>
+                    {{/info_student_no}}
+                    {{#info_programme}}
+                    <div class="col-sm-6 mb-2">
+                        <small class="text-muted d-block">Programme</small>
+                        <strong>{{info_programme}}</strong>
+                    </div>
+                    {{/info_programme}}
+                    {{#info_gender}}
+                    <div class="col-sm-6 mb-2">
+                        <small class="text-muted d-block">Gender</small>
+                        <strong>{{info_gender}}</strong>
+                    </div>
+                    {{/info_gender}}
+                    {{#info_campus}}
+                    <div class="col-sm-6 mb-2">
+                        <small class="text-muted d-block">Campus</small>
+                        <strong>{{info_campus}}</strong>
+                    </div>
+                    {{/info_campus}}
+                    {{#info_email}}
+                    <div class="col-sm-6 mb-2">
+                        <small class="text-muted d-block">Email</small>
+                        <strong>{{info_email}}</strong>
+                    </div>
+                    {{/info_email}}
+                </div>
+            </div>
+
+            <div class="identity-confirm-note mt-3">
+                <i class="fa fa-info-circle text-primary" aria-hidden="true"></i>
+                If these details are correct, click <strong>Confirm &amp; Continue</strong>. Your name will be pre-filled on the next step.
+            </div>
         </div>
-    </form>
+
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="confirminfo">
+            <input type="hidden" name="person_type" value="{{info_person_type}}">
+            <input type="hidden" name="mru_id" value="{{info_mru_id}}">
+            <input type="hidden" name="info_firstname" value="{{info_firstname}}">
+            <input type="hidden" name="info_lastname" value="{{info_lastname}}">
+            <input type="hidden" name="info_programme" value="{{info_programme}}">
+            <div class="wizard-footer">
+                <span></span>
+                <button type="submit" class="btn-wizard-next">
+                    Confirm &amp; Continue <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </form>
+        {{/info_found}}
+
+        {{^info_found}}
+        {{! ── Person NOT found or API error ── }}
+        <div class="reg-info-card reg-sync-status">
+            {{#api_not_configured}}
+            <div class="sync-icon">
+                <i class="fa fa-cog" aria-hidden="true"></i>
+            </div>
+            <h3>Portal Connection Not Configured</h3>
+            <p>The connection to the university portal is not yet set up. You can proceed to create your account manually.</p>
+            <p class="sync-note"><i class="fa fa-info-circle" aria-hidden="true"></i> Your details can be updated later once the integration is active.</p>
+            {{/api_not_configured}}
+
+            {{#api_error}}
+            <div class="sync-icon">
+                <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+            </div>
+            <h3>Portal Lookup Temporarily Unavailable</h3>
+            <p>We couldn't reach the university portal right now. You can still proceed to create your account.</p>
+            <p class="sync-note text-muted"><small>Error: {{api_error_message}}</small></p>
+            {{/api_error}}
+
+            {{^api_not_configured}}{{^api_error}}
+            {{#show_manual_lookup}}
+            <div class="sync-icon">
+                <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+            <h3>Enter Your Student / Staff Number</h3>
+            <p>We couldn't automatically match <strong>{{email}}</strong> to a university record. If you are already registered in the MRU portal, enter your student or staff number below.</p>
+
+            {{#manual_lookup_failed}}
+            <div class="alert alert-warning mt-2 mb-3">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                No record found for <strong>{{manual_lookup_id}}</strong>. Please check the number and try again, or skip this step.
+            </div>
+            {{/manual_lookup_failed}}
+
+            <form method="post" action="{{{wwwroot}}}/local/mru/register.php" class="mt-3">
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <input type="hidden" name="action" value="manuallookup">
+                <div class="form-group">
+                    <label for="id_number" class="sr-only">Student / Staff Number</label>
+                    <div class="input-group">
+                        <input type="text" id="id_number" name="id_number" class="form-control"
+                               placeholder="e.g. MRU2027000002" value="{{manual_lookup_id}}"
+                               autocomplete="off" autofocus>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-search" aria-hidden="true"></i> Look Up
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <p class="sync-note mt-2"><i class="fa fa-info-circle" aria-hidden="true"></i> Don't have a student number? You can skip this step and create your account. Your profile can be linked to the portal later.</p>
+            {{/show_manual_lookup}}
+
+            {{^show_manual_lookup}}
+            <div class="sync-icon">
+                <i class="fa fa-user-times" aria-hidden="true"></i>
+            </div>
+            <h3>No Record Found</h3>
+            <p>We could not find a student or staff record matching <strong>{{email}}</strong> in the university system.</p>
+            <p class="sync-note"><i class="fa fa-info-circle" aria-hidden="true"></i> This may happen if your email hasn't been registered in the portal yet. You can still create an account and your profile can be linked later.</p>
+            {{/show_manual_lookup}}
+            {{/api_error}}{{/api_not_configured}}
+        </div>
+
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="confirminfo">
+            <div class="wizard-footer">
+                <span></span>
+                <button type="submit" class="btn-wizard-next">
+                    {{#show_manual_lookup}}Skip &amp; Continue{{/show_manual_lookup}}{{^show_manual_lookup}}Continue to Account Setup{{/show_manual_lookup}} <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </form>
+        {{/info_found}}
+    </div>
 </div>

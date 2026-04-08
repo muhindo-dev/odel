@@ -1,0 +1,12 @@
+# Credentials - never commit
+.vps-credentials
+*.credentials
+.env
+.env.*
+
+# Local config
+config.php
+
+# OS files
+.DS_Store
+Thumbs.db

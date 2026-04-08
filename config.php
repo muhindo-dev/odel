@@ -61,9 +61,9 @@ $CFG->disableupdateautodeploy = true;
 $CFG->upgradekey = '';
 $CFG->auto_update_plugin_types = '';
 // Enable developer debug mode for local development.
-@error_reporting(E_ALL | E_STRICT);
+@error_reporting(E_ALL);
 @ini_set('display_errors', '1');
-$CFG->debug = (E_ALL | E_STRICT);
+$CFG->debug = E_ALL;
 $CFG->debugdisplay = 1;
 
 require_once(__DIR__ . '/lib/setup.php');

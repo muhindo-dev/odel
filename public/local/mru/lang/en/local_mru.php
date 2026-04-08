@@ -212,3 +212,17 @@ $string['reg:otp_email_body_html'] = '<p>Your MRU ODEL verification code is:</p>
 $string['reg:privacy_registrations'] = 'Stores registration session data including email addresses and OTP hashes during the registration process.';
 $string['reg:privacy_registrations_email'] = 'The email address provided during registration.';
 $string['reg:privacy_registrations_ip'] = 'The IP address recorded at registration time.';
+
+// ── Migrations ──
+$string['migrations:title'] = 'Database Migrations';
+$string['migrations:run_pending'] = 'Run {$a} pending migration(s)';
+$string['migrations:rollback_last'] = 'Rollback last batch';
+$string['migrations:none_found'] = 'No migration files found. Create one with: php local/mru/cli/migrate.php --action=create --name=your_migration';
+$string['migrations:col_migration'] = 'Migration';
+$string['migrations:col_status'] = 'Status';
+$string['migrations:col_batch'] = 'Batch';
+$string['migrations:col_time'] = 'Duration';
+$string['migrations:col_applied'] = 'Applied';
+$string['migrations:col_description'] = 'Description';
+$string['migrations:cli_hint_title'] = 'CLI Commands (recommended for production):';
+$string['event:migration_executed'] = 'Migration action executed';

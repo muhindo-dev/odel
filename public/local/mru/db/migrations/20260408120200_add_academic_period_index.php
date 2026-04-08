@@ -15,17 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for MRU Integration plugin.
+ * Migration: Add composite index on marks_sync for academic year queries.
+ *
+ * Improves query performance for reports filtering by academic year + semester.
  *
  * @package    local_mru
  * @copyright  2026 Mutesa I Royal University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_mru\migration;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_mru';
-$plugin->version   = 2026040801;        // YYYYMMDDXX format.
-$plugin->requires  = 2025100600;        // Moodle 5.1.
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '1.1.0';
+class _20260408120200_add_academic_period_index extends base_migration {
+
+    public function description(): string {
+        return 'Add composite index on marks_sync (academic_year, semester) for faster period queries';
+    }
+
+    public function up(): void {
+        $this->add_index('local_mru_marks_sync', 'ix_academic_period', false, ['academic_year', 'semester']);
+    }
+
+    public function down(): void {
+        $this->drop_index('local_mru_marks_sync', 'ix_academic_period', ['academic_year', 'semester']);
+    }
+}

@@ -139,5 +139,29 @@
       </INDEXES>
     </TABLE>
 
+    <!-- Migration tracking (Laravel-style migration system for local_mru) -->
+    <TABLE NAME="local_mru_migrations" COMMENT="Tracks applied database migrations for local_mru">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="migration" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Migration filename (without .php)"/>
+        <FIELD NAME="batch" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Batch number (groups of migrations run together)"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="applied" COMMENT="applied, failed, rolled_back"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" COMMENT="Human-readable description"/>
+        <FIELD NAME="executed_by" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="User ID who ran the migration (0=CLI)"/>
+        <FIELD NAME="execution_time_ms" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="Execution duration in milliseconds"/>
+        <FIELD NAME="error_message" TYPE="text" NOTNULL="false" COMMENT="Error details if migration failed"/>
+        <FIELD NAME="checksum" TYPE="char" LENGTH="64" NOTNULL="false" COMMENT="SHA-256 hash of migration file at apply time"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="ix_migration" UNIQUE="true" FIELDS="migration"/>
+        <INDEX NAME="ix_batch" UNIQUE="false" FIELDS="batch"/>
+        <INDEX NAME="ix_status" UNIQUE="false" FIELDS="status"/>
+      </INDEXES>
+    </TABLE>
+
   </TABLES>
 </XMLDB>

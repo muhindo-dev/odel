@@ -15,17 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for MRU Integration plugin.
+ * Migration: Add phone column to registrations table.
+ *
+ * Adds a phone number field to track student phone during registration.
  *
  * @package    local_mru
  * @copyright  2026 Mutesa I Royal University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_mru\migration;
+
+use xmldb_field;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_mru';
-$plugin->version   = 2026040801;        // YYYYMMDDXX format.
-$plugin->requires  = 2025100600;        // Moodle 5.1.
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '1.1.0';
+class _20260408120100_add_phone_to_registrations extends base_migration {
+
+    public function description(): string {
+        return 'Add phone column to local_mru_registrations for student contact number';
+    }
+
+    public function up(): void {
+        $field = new xmldb_field('phone', XMLDB_TYPE_CHAR, '20', null, null, null, null, 'lastname');
+        $this->add_field('local_mru_registrations', $field);
+    }
+
+    public function down(): void {
+        $this->drop_field('local_mru_registrations', 'phone');
+    }
+}

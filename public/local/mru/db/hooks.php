@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Event observers for local_mru.
+ * Hook callbacks registration for local_mru.
  *
  * @package    local_mru
  * @copyright  2026 Mutesa I Royal University
@@ -24,28 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = [
-
-    // When a user logs in, check verification status if configured.
+$callbacks = [
     [
-        'eventname' => '\core\event\user_loggedin',
-        'callback'  => 'local_mru\event\observer::user_loggedin',
+        'hook' => \core\hook\output\before_standard_head_html_generation::class,
+        'callback' => [\local_mru\hook_callbacks::class, 'before_standard_head_html_generation'],
     ],
-
-    // When a user is enrolled in a course, verify if configured.
-    [
-        'eventname' => '\core\event\user_enrolment_created',
-        'callback'  => 'local_mru\event\observer::user_enrolled',
-    ],
-
-    // When grades are updated, flag for sync.
-    [
-        'eventname' => '\core\event\user_graded',
-        'callback'  => 'local_mru\event\observer::user_graded',
-    ],
-        // After profile updates, enforce locked verified email for mapped users.
-        [
-            'eventname' => '\core\event\user_updated',
-            'callback'  => 'local_mru\event\observer::user_updated',
-        ],
 ];

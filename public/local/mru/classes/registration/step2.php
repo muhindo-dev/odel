@@ -54,6 +54,13 @@ class step2 extends base_step {
             case 'resendotp':
                 $this->handle_resend_otp();
                 break;
+            case 'proceed':
+                // User pressed "Continue" after arriving at step 2 via Back from step 3.
+                if (!empty($this->session->email_verified)) {
+                    $this->regmanager->advance_step($this->session, 3);
+                    $this->redirect_to_wizard();
+                }
+                break;
         }
     }
 

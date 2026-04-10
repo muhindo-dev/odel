@@ -16,6 +16,7 @@ define([], function() {
             this.initPasswordToggle();
             this.initPasswordMatch();
             this.initFormValidation();
+            this.initCancelConfirm();
         },
 
         /**
@@ -51,48 +52,26 @@ define([], function() {
             }
 
             var bar = meter.querySelector('.pwd-bar span');
-            var reqs = {
-                length: meter.querySelector('[data-req="length"]'),
-                upper: meter.querySelector('[data-req="upper"]'),
-                lower: meter.querySelector('[data-req="lower"]'),
-                number: meter.querySelector('[data-req="number"]')
-            };
+            var reqLength = meter.querySelector('[data-req="length"]');
 
             input.addEventListener('input', function() {
                 var val = input.value;
-                var score = 0;
-                var checks = {
-                    length: val.length >= 6,
-                    upper: /[A-Z]/.test(val),
-                    lower: /[a-z]/.test(val),
-                    number: /[0-9]/.test(val)
-                };
+                var met = val.length >= 4;
 
-                Object.keys(checks).forEach(function(key) {
-                    if (checks[key]) {
-                        score++;
-                        if (reqs[key]) {
-                            reqs[key].classList.add('met');
-                            reqs[key].classList.remove('unmet');
-                        }
-                    } else {
-                        if (reqs[key]) {
-                            reqs[key].classList.remove('met');
-                            reqs[key].classList.add('unmet');
-                        }
-                    }
-                });
+                if (reqLength) {
+                    reqLength.classList.toggle('met', met);
+                    reqLength.classList.toggle('unmet', !met && val.length > 0);
+                }
 
-                // Bonus for length > 8 and special chars.
-                if (val.length >= 10) { score += 0.5; }
-                if (/[^A-Za-z0-9]/.test(val)) { score += 0.5; }
-
-                // Map score to percentage and color.
-                var pct = Math.min((score / 5) * 100, 100);
-                var color = '#dc3545'; // red
-                if (pct >= 80) { color = '#198754'; }      // green
-                else if (pct >= 60) { color = '#CB9C2C'; } // gold
-                else if (pct >= 40) { color = '#fd7e14'; }  // orange
+                // Simple bar: red below 4, green at 4+, brighter green for longer.
+                var pct = 0;
+                var color = '#dc3545';
+                if (val.length >= 4) {
+                    pct = Math.min(40 + (val.length - 4) * 7, 100);
+                    color = pct >= 80 ? '#198754' : '#CB9C2C';
+                } else if (val.length > 0) {
+                    pct = (val.length / 4) * 38;
+                }
 
                 if (bar) {
                     bar.style.width = pct + '%';
@@ -171,17 +150,8 @@ define([], function() {
                 if (lastname && lastname.value.trim() === '') {
                     errors.push('Last name is required.');
                 }
-                if (pass && pass.value.length < 6) {
-                    errors.push('Password must be at least 6 characters.');
-                }
-                if (pass && !/[A-Z]/.test(pass.value)) {
-                    errors.push('Password needs an uppercase letter.');
-                }
-                if (pass && !/[a-z]/.test(pass.value)) {
-                    errors.push('Password needs a lowercase letter.');
-                }
-                if (pass && !/[0-9]/.test(pass.value)) {
-                    errors.push('Password needs a number.');
+                if (pass && pass.value.length < 4) {
+                    errors.push('Password must be at least 4 characters.');
                 }
                 if (pass && confirm && pass.value !== confirm.value) {
                     errors.push('Passwords do not match.');
@@ -197,6 +167,20 @@ define([], function() {
                     div.textContent = errors.join(' ');
                     form.insertBefore(div, form.firstChild);
                     div.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }
+            });
+        },
+
+        /**
+         * Cancel registration — ask the user to confirm before submitting.
+         */
+        initCancelConfirm: function() {
+            var btn = document.querySelector('.btn-wizard-cancel');
+            if (!btn) { return; }
+
+            btn.addEventListener('click', function(e) {
+                if (!window.confirm('Cancel registration?\n\nYour progress will be lost and you will be returned to the login page.')) {
+                    e.preventDefault();
                 }
             });
         }

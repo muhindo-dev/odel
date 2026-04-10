@@ -63,6 +63,20 @@ $handler = new $stepclass($regmanager, $session);
 $action = optional_param('action', '', PARAM_ALPHA);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_sesskey();
+
+    // Global: cancel destroys the session and returns to login.
+    if ($action === 'cancel') {
+        $regmanager->destroy_session();
+        redirect(new moodle_url('/login/index.php'));
+    }
+
+    // Global: back goes to the previous step (floors at step 1).
+    if ($action === 'back') {
+        $prevstep = max(1, $step - 1);
+        $regmanager->advance_step($session, $prevstep);
+        redirect(new moodle_url('/local/mru/register.php'));
+    }
+
     $handler->handle_action($action);
 }
 
@@ -92,12 +106,15 @@ foreach ($stepnames as $num => $name) {
 
 // Merge shared data with step-specific data.
 $data = array_merge([
-    'wwwroot'    => $CFG->wwwroot,
-    'sesskey'    => sesskey(),
-    'step'       => $step,
-    'steps'      => $steps,
-    'totalsteps' => \local_mru\registration_manager::TOTAL_STEPS,
-    'siteyear'   => date('Y'),
+    'wwwroot'          => $CFG->wwwroot,
+    'sesskey'          => sesskey(),
+    'step'             => $step,
+    'steps'            => $steps,
+    'totalsteps'       => \local_mru\registration_manager::TOTAL_STEPS,
+    'active_step_name' => $stepnames[$step] ?? '',
+    'progress_pct'     => (int) round(($step / \local_mru\registration_manager::TOTAL_STEPS) * 100),
+    'show_cancel'      => ($step >= 2 && $step < 5),
+    'siteyear'         => date('Y'),
     'step_content' => $OUTPUT->render_from_template($handler->get_template(), array_merge([
         'wwwroot' => $CFG->wwwroot,
         'sesskey' => sesskey(),

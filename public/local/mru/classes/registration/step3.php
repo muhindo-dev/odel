@@ -62,7 +62,7 @@ class step3 extends base_step {
                 $this->session->lastname = $lastname;
             }
 
-            $this->regmanager->save_session($this->session);
+            $this->regmanager->update_session($this->session);
             $this->regmanager->advance_step($this->session, 4);
             $this->redirect_to_wizard();
 
@@ -80,7 +80,7 @@ class step3 extends base_step {
             $coredata = !empty($this->session->core_data) ? json_decode($this->session->core_data, true) : [];
             $coredata['manual_lookup_id'] = $idnumber;
             $this->session->core_data = json_encode($coredata);
-            $this->regmanager->save_session($this->session);
+            $this->regmanager->update_session($this->session);
             $this->redirect_to_wizard();
         }
     }
@@ -153,7 +153,7 @@ class step3 extends base_step {
             }
             // If lookup failed, keep the ID so the form can show it again.
             $this->session->core_data = json_encode($coredata);
-            $this->regmanager->save_session($this->session);
+            $this->regmanager->update_session($this->session);
 
             return $data;
         }

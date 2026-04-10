@@ -36,6 +36,9 @@ defined('MOODLE_INTERNAL') || die();
  */
 class observer {
 
+    /** @var bool Prevent recursion while restoring locked email. */
+    private static bool $restoringlockedemail = false;
+
     /**
      * Called when a user logs in.
      *
@@ -139,5 +142,49 @@ class observer {
             $record->timecreated = time();
             $DB->insert_record('local_mru_marks_sync', $record);
         }
+    }
+
+    /**
+     * Called when a user profile is updated.
+     *
+     * If the user has a verified MRU mapping, keep the verified email immutable.
+     *
+     * @param \core\event\user_updated $event
+     */
+    public static function user_updated(\core\event\user_updated $event): void {
+        global $DB;
+
+        if (self::$restoringlockedemail) {
+            return;
+        }
+
+        $userid = (int) $event->objectid;
+        if ($userid <= 0) {
+            return;
+        }
+
+        $mapping = $DB->get_record('local_mru_user_map', ['userid' => $userid, 'verified' => 1]);
+        if (!$mapping) {
+            return;
+        }
+
+        $lockedemail = \local_mru_get_locked_verified_email($mapping, $userid);
+        if (empty($lockedemail)) {
+            return;
+        }
+
+        $user = $DB->get_record('user', ['id' => $userid], 'id, email');
+        if (!$user) {
+            return;
+        }
+
+        $current = strtolower(trim((string)$user->email));
+        if ($current === $lockedemail) {
+            return;
+        }
+
+        self::$restoringlockedemail = true;
+        $DB->set_field('user', 'email', $lockedemail, ['id' => $userid]);
+        self::$restoringlockedemail = false;
     }
 }

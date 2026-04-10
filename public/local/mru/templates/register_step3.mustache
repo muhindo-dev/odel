@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <form method="post" action="{{{wwwroot}}}/local/mru/register.php">
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php" id="form-confirminfo-s3">
             <input type="hidden" name="sesskey" value="{{sesskey}}">
             <input type="hidden" name="action" value="confirminfo">
             <input type="hidden" name="person_type" value="{{info_person_type}}">
@@ -78,13 +78,19 @@
             <input type="hidden" name="info_firstname" value="{{info_firstname}}">
             <input type="hidden" name="info_lastname" value="{{info_lastname}}">
             <input type="hidden" name="info_programme" value="{{info_programme}}">
-            <div class="wizard-footer">
-                <span></span>
-                <button type="submit" class="btn-wizard-next">
-                    Confirm &amp; Continue <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                </button>
-            </div>
         </form>
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php" id="form-back-s3-found" style="display:none">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="back">
+        </form>
+        <div class="wizard-footer">
+            <button type="submit" form="form-back-s3-found" class="btn-wizard-back">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+            </button>
+            <button type="submit" form="form-confirminfo-s3" class="btn-wizard-next">
+                Confirm &amp; Continue <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
         {{/info_found}}
 
         {{^info_found}}
@@ -155,16 +161,22 @@
             {{/api_error}}{{/api_not_configured}}
         </div>
 
-        <form method="post" action="{{{wwwroot}}}/local/mru/register.php">
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php" id="form-skip-s3">
             <input type="hidden" name="sesskey" value="{{sesskey}}">
             <input type="hidden" name="action" value="confirminfo">
-            <div class="wizard-footer">
-                <span></span>
-                <button type="submit" class="btn-wizard-next">
-                    {{#show_manual_lookup}}Skip &amp; Continue{{/show_manual_lookup}}{{^show_manual_lookup}}Continue to Account Setup{{/show_manual_lookup}} <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                </button>
-            </div>
         </form>
+        <form method="post" action="{{{wwwroot}}}/local/mru/register.php" id="form-back-s3-skip" style="display:none">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="back">
+        </form>
+        <div class="wizard-footer">
+            <button type="submit" form="form-back-s3-skip" class="btn-wizard-back">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+            </button>
+            <button type="submit" form="form-skip-s3" class="btn-wizard-next">
+                {{#show_manual_lookup}}Skip &amp; Continue{{/show_manual_lookup}}{{^show_manual_lookup}}Continue to Account Setup{{/show_manual_lookup}} <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
         {{/info_found}}
     </div>
 </div>

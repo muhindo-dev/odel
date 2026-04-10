@@ -35,6 +35,11 @@ redirect_if_major_upgrade_required();
 
 require_login();
 
+// Use custom MRU courses page if the plugin is installed.
+if (file_exists($CFG->dirroot . '/local/mru/mycourses.php')) {
+    redirect(new moodle_url('/local/mru/mycourses.php', $_GET));
+}
+
 $hassiteconfig = has_capability('moodle/site:config', context_system::instance());
 if ($hassiteconfig && moodle_needs_upgrading()) {
     redirect(new moodle_url('/admin/index.php'));

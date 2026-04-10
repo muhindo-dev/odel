@@ -1,0 +1,173 @@
+{{!
+    @template local_mru/mycourses
+
+    MRU ODEL custom My Courses page.
+    Shows enrolled courses with codes, progress, and a browse/enrol tab.
+}}
+
+<div class="mru-mycourses">
+
+    {{! ── Tab Navigation ──────────────────────────────────────────── }}
+    <div class="mru-mc-tabs">
+        <a href="{{mycourses_url}}" class="mru-mc-tab {{#tab_mycourses}}active{{/tab_mycourses}}">
+            <i class="fa fa-book"></i>
+            My Courses
+            <span class="mru-mc-badge">{{totalenrolled}}</span>
+        </a>
+        <a href="{{browse_url}}" class="mru-mc-tab {{#tab_browse}}active{{/tab_browse}}">
+            <i class="fa fa-search"></i>
+            Browse &amp; Enrol
+        </a>
+    </div>
+
+    {{! ════════════════════════════════════════════════════════════════ }}
+    {{! ── MY COURSES TAB ─────────────────────────────────────────── }}
+    {{! ════════════════════════════════════════════════════════════════ }}
+    {{#tab_mycourses}}
+
+        {{#hascourses}}
+            {{! ── Stats Row ───────────────────────────────────────── }}
+            <div class="mru-mc-stats">
+                <div class="mru-mc-stat">
+                    <span class="mru-mc-stat-num">{{totalenrolled}}</span>
+                    <span class="mru-mc-stat-label">Total</span>
+                </div>
+                <div class="mru-mc-stat stat-inprogress">
+                    <span class="mru-mc-stat-num">{{countinprogress}}</span>
+                    <span class="mru-mc-stat-label">In Progress</span>
+                </div>
+                <div class="mru-mc-stat stat-completed">
+                    <span class="mru-mc-stat-num">{{countcompleted}}</span>
+                    <span class="mru-mc-stat-label">Completed</span>
+                </div>
+                <div class="mru-mc-stat stat-upcoming">
+                    <span class="mru-mc-stat-num">{{countupcoming}}</span>
+                    <span class="mru-mc-stat-label">Upcoming</span>
+                </div>
+            </div>
+
+            {{! ── Course Grid ─────────────────────────────────────── }}
+            <div class="mru-mc-grid">
+                {{#courses}}
+                    <a href="{{viewurl}}" class="mru-mc-card">
+                        <div class="mru-mc-card-img" {{#courseimage}}style="background-image:url('{{courseimage}}')"{{/courseimage}}>
+                            {{^courseimage}}
+                                <div class="mru-mc-card-placeholder">
+                                    <i class="fa fa-graduation-cap"></i>
+                                </div>
+                            {{/courseimage}}
+                            <span class="mru-mc-status-pill status-{{status}}">{{statuslabel}}</span>
+                        </div>
+                        <div class="mru-mc-card-body">
+                            <span class="mru-mc-code">{{shortname}}</span>
+                            <h4 class="mru-mc-title">{{fullname}}</h4>
+                            {{#hasprogress}}
+                                <div class="mru-mc-progress">
+                                    <div class="mru-mc-progress-bar" style="width:{{progress}}%"></div>
+                                </div>
+                                <span class="mru-mc-progress-text">{{progress}}% complete</span>
+                            {{/hasprogress}}
+                        </div>
+                    </a>
+                {{/courses}}
+            </div>
+        {{/hascourses}}
+
+        {{^hascourses}}
+            {{! ── Empty State ─────────────────────────────────────── }}
+            <div class="mru-mc-empty">
+                <div class="mru-mc-empty-icon">
+                    <i class="fa fa-folder-open-o"></i>
+                </div>
+                <h3>No courses yet</h3>
+                <p>You are not enrolled in any courses. Browse available courses and enrol to get started.</p>
+                <a href="{{browse_enrol_url}}" class="btn mru-btn-primary">
+                    <i class="fa fa-search"></i> Browse &amp; Enrol
+                </a>
+            </div>
+        {{/hascourses}}
+
+    {{/tab_mycourses}}
+
+    {{! ════════════════════════════════════════════════════════════════ }}
+    {{! ── BROWSE & ENROL TAB ─────────────────────────────────────── }}
+    {{! ════════════════════════════════════════════════════════════════ }}
+    {{#tab_browse}}
+
+        {{! ── Search & Filter Bar ─────────────────────────────────── }}
+        <form class="mru-mc-search-bar" method="get" action="{{searchurl}}">
+            <input type="hidden" name="tab" value="browse">
+            <div class="mru-mc-search-row">
+                <div class="mru-mc-search-input-wrap">
+                    <i class="fa fa-search"></i>
+                    <input type="text" name="search" value="{{search}}" placeholder="Search courses by name or code..." class="mru-mc-search-input" autocomplete="off">
+                </div>
+                {{#hascategories}}
+                    <select name="categoryid" class="mru-mc-cat-select">
+                        <option value="0">All Categories</option>
+                        {{#categories}}
+                            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/categories}}
+                    </select>
+                {{/hascategories}}
+                <button type="submit" class="btn mru-btn-primary mru-mc-search-btn">
+                    <i class="fa fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        {{#hasavailable}}
+            <div class="mru-mc-browse-grid">
+                {{#available_courses}}
+                    <div class="mru-mc-browse-card">
+                        <div class="mru-mc-browse-img" {{#courseimage}}style="background-image:url('{{courseimage}}')"{{/courseimage}}>
+                            {{^courseimage}}
+                                <div class="mru-mc-card-placeholder">
+                                    <i class="fa fa-book"></i>
+                                </div>
+                            {{/courseimage}}
+                        </div>
+                        <div class="mru-mc-browse-body">
+                            <span class="mru-mc-code">{{shortname}}</span>
+                            <h4 class="mru-mc-browse-title">{{fullname}}</h4>
+                            {{#categoryname}}
+                                <span class="mru-mc-cat-label"><i class="fa fa-folder-o"></i> {{categoryname}}</span>
+                            {{/categoryname}}
+                        </div>
+                        <div class="mru-mc-browse-footer">
+                            {{#isenrolled}}
+                                <a href="{{viewurl}}" class="btn mru-btn-outline-primary btn-sm w-100">
+                                    <i class="fa fa-arrow-right"></i> Go to Course
+                                </a>
+                            {{/isenrolled}}
+                            {{^isenrolled}}
+                                {{#canenrol}}
+                                    <a href="{{enrolurl}}" class="btn mru-btn-primary btn-sm w-100">
+                                        <i class="fa fa-plus-circle"></i> Enrol Now
+                                    </a>
+                                {{/canenrol}}
+                                {{^canenrol}}
+                                    <span class="mru-mc-restricted">
+                                        <i class="fa fa-lock"></i> Restricted
+                                    </span>
+                                {{/canenrol}}
+                            {{/isenrolled}}
+                        </div>
+                    </div>
+                {{/available_courses}}
+            </div>
+        {{/hasavailable}}
+
+        {{^hasavailable}}
+            <div class="mru-mc-empty">
+                <div class="mru-mc-empty-icon">
+                    <i class="fa fa-search"></i>
+                </div>
+                <h3>No courses found</h3>
+                <p>No available courses match your search. Try different keywords or remove filters.</p>
+            </div>
+        {{/hasavailable}}
+
+    {{/tab_browse}}
+
+</div>

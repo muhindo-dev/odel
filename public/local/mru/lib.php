@@ -108,3 +108,60 @@ function local_mru_output_fragment_verify_student(array $args): string {
 
     return $OUTPUT->render_from_template('local_mru/verification_result', $data);
 }
+
+/**
+ * Resolve the locked verified email for a mapped user.
+ *
+ * The value is sourced from mapping core_data when available. If missing,
+ * the current user email is used as baseline and persisted to core_data.
+ *
+ * @param stdClass $mapping Mapping row from local_mru_user_map.
+ * @param int $userid Moodle user ID.
+ * @return string Locked email (lowercase) or empty string if unavailable.
+ */
+function local_mru_get_locked_verified_email(stdClass $mapping, int $userid): string {
+    global $DB;
+
+    $coredata = [];
+    if (!empty($mapping->core_data)) {
+        $decoded = json_decode($mapping->core_data, true);
+        if (is_array($decoded)) {
+            $coredata = $decoded;
+        }
+    }
+
+    $candidates = [
+        $coredata['verified_email'] ?? '',
+        $coredata['email'] ?? '',
+        $coredata['studemail'] ?? '',
+        $coredata['institutional_email'] ?? '',
+    ];
+
+    $lockedemail = '';
+    foreach ($candidates as $candidate) {
+        $candidate = trim((string)$candidate);
+        if (!empty($candidate) && validate_email($candidate)) {
+            $lockedemail = strtolower($candidate);
+            break;
+        }
+    }
+
+    // Fall back to the current Moodle user email.
+    if (empty($lockedemail)) {
+        $user = $DB->get_record('user', ['id' => $userid], 'id, email');
+        if ($user && !empty($user->email) && validate_email($user->email)) {
+            $lockedemail = strtolower(trim($user->email));
+        }
+    }
+
+    // Persist baseline so server-side observers can always enforce immutability.
+    if (!empty($lockedemail) && (($coredata['verified_email'] ?? '') !== $lockedemail)) {
+        $coredata['verified_email'] = $lockedemail;
+        $mapping->core_data = json_encode($coredata);
+        $mapping->timemodified = time();
+        $DB->update_record('local_mru_user_map', $mapping);
+    }
+
+    return $lockedemail;
+}
+

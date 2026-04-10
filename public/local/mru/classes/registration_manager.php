@@ -222,17 +222,8 @@ class registration_manager {
     public function validate_password(string $password): array {
         $errors = [];
 
-        if (strlen($password) < 6) {
+        if (strlen($password) < 4) {
             $errors[] = get_string('reg:pwd_min_length', 'local_mru');
-        }
-        if (!preg_match('/[A-Z]/', $password)) {
-            $errors[] = get_string('reg:pwd_uppercase', 'local_mru');
-        }
-        if (!preg_match('/[a-z]/', $password)) {
-            $errors[] = get_string('reg:pwd_lowercase', 'local_mru');
-        }
-        if (!preg_match('/[0-9]/', $password)) {
-            $errors[] = get_string('reg:pwd_number', 'local_mru');
         }
 
         return $errors;

@@ -1562,6 +1562,52 @@ body.pagelayout-frontpage .drawer-toggles {
     // Allow form inner to be wider for wizard
     .login-form-inner { max-width: 480px; }
 
+    // ── Step header (always-visible "Step X of Y — Name") ──
+    .wizard-step-header {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: .85rem;
+        flex-wrap: wrap;
+    }
+
+    .wizard-step-counter {
+        display: inline-block;
+        font-size: .65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        color: var(--mru-primary);
+        background: rgba(23,77,164,.08);
+        padding: .22rem .55rem;
+        border-radius: 20px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .wizard-step-title {
+        font-size: .88rem;
+        font-weight: 700;
+        color: var(--mru-dark);
+        line-height: 1.3;
+    }
+
+    // ── Progress bar ──
+    .wizard-progress {
+        height: 3px;
+        background: #edf0f4;
+        border-radius: 4px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .wizard-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--mru-primary), #4a90d9);
+        border-radius: 4px;
+        transition: width .5s cubic-bezier(.4, 0, .2, 1);
+    }
+
     // ── Step indicator ──
     .wizard-steps {
         display: flex;
@@ -1589,7 +1635,7 @@ body.pagelayout-frontpage .drawer-toggles {
         }
 
         &.is-done:not(:last-child)::after {
-            background: var(--mru-primary);
+            background: #198754;
         }
     }
 
@@ -1611,14 +1657,16 @@ body.pagelayout-frontpage .drawer-toggles {
         .is-active & {
             background: var(--mru-primary);
             color: #fff;
-            border-color: var(--mru-primary);
-            box-shadow: 0 2px 8px rgba(23,77,164,.25);
+            border-color: rgba(255,255,255,.45);
+            box-shadow: 0 0 0 4px rgba(23,77,164,.22), 0 2px 8px rgba(23,77,164,.25);
+            transform: scale(1.15);
         }
 
         .is-done & {
-            background: var(--mru-primary);
+            background: #198754;
             color: #fff;
-            border-color: var(--mru-primary);
+            border-color: #146c43;
+            box-shadow: 0 0 0 3px rgba(25,135,84,.18);
 
             i { font-size: .6rem; }
         }
@@ -1631,7 +1679,10 @@ body.pagelayout-frontpage .drawer-toggles {
         letter-spacing: .01em;
         white-space: nowrap;
 
-        .is-active & { color: var(--mru-primary); }
+        .is-active & {
+            color: var(--mru-primary);
+            font-weight: 700;
+        }
         .is-done & { color: var(--mru-dark); }
     }
 
@@ -2236,12 +2287,55 @@ body.pagelayout-frontpage .drawer-toggles {
         margin-bottom: 1rem;
     }
 
+    // ── Cancel registration link — pinned to bottom ──
+    .wizard-cancel-row {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid #edf0f4;
+    }
+
+    .btn-wizard-cancel {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: .62rem;
+        font-weight: 500;
+        color: #dc3545;
+        cursor: pointer;
+        text-decoration: none;
+        opacity: .6;
+        letter-spacing: .01em;
+        transition: opacity .2s;
+
+        &:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+    }
+
+    // ── Standalone back row (step 4 — one button, no sibling) ──
+    .wizard-back-row {
+        display: flex;
+        align-items: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #edf0f4;
+    }
+
     // ── Responsive ──
     @media (max-width: 575.98px) {
+        .wizard-step-header { gap: .4rem; }
+        .wizard-step-counter { font-size: .6rem; }
+        .wizard-step-title { font-size: .8rem; }
+
         .wizard-steps { gap: .1rem; }
         .step-circle { width: 26px; height: 26px; font-size: .62rem; }
         .wizard-step:not(:last-child)::after { width: 16px; }
-        .step-label { display: none !important; }
+
+        // Hide non-active labels on xs — the step-header covers orientation
+        .wizard-step:not(.is-active) .step-label { display: none; }
+        .is-active .step-label { font-size: .58rem; }
 
         .otp-digit { width: 40px; height: 46px; font-size: 1.05rem; }
         .otp-input-row { gap: .35rem; }
@@ -2882,3 +2976,568 @@ body.pagelayout-frontpage .drawer-toggles {
 // ═════════════════════════════════════════════════════════════════════════════
 #page-wrapper { animation: pageFade .2s ease; }
 @keyframes pageFade { from { opacity: 0; } to { opacity: 1; } }
+
+
+// ═════════════════════════════════════════════════════════════════════════════
+// MRU MY COURSES CUSTOM PAGE
+// ═════════════════════════════════════════════════════════════════════════════
+.mru-mycourses {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 .5rem;
+}
+
+// ── Tab Navigation ──────────────────────────────────────────────
+.mru-mc-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid $mru-border;
+    margin-bottom: 1.5rem;
+}
+.mru-mc-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .7rem 1.25rem;
+    font-size: .84rem;
+    font-weight: 600;
+    color: $mru-text;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all .15s;
+    i { font-size: .9rem; }
+    &:hover { color: $mru-primary; text-decoration: none; }
+    &.active {
+        color: $mru-primary;
+        border-bottom-color: $mru-primary;
+    }
+}
+.mru-mc-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    font-size: .7rem;
+    font-weight: 700;
+    color: #fff;
+    background: $mru-primary;
+    border-radius: 10px;
+}
+
+// ── Stats Row ───────────────────────────────────────────────────
+.mru-mc-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+}
+.mru-mc-stat {
+    background: #fff;
+    border: 1px solid $mru-border;
+    padding: .85rem 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+}
+.mru-mc-stat-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $mru-dark;
+    line-height: 1.2;
+}
+.mru-mc-stat-label {
+    font-size: .72rem;
+    color: $mru-text;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight: 600;
+}
+.mru-mc-stat.stat-inprogress .mru-mc-stat-num { color: $mru-primary; }
+.mru-mc-stat.stat-completed .mru-mc-stat-num { color: #198754; }
+.mru-mc-stat.stat-upcoming .mru-mc-stat-num { color: $mru-secondary; }
+
+// ── Course Card Grid ────────────────────────────────────────────
+.mru-mc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.mru-mc-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid $mru-border;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: box-shadow .15s, border-color .15s;
+    &:hover {
+        text-decoration: none;
+        color: inherit;
+        border-color: darken($mru-border, 8%);
+        box-shadow: 0 4px 16px rgba(0,0,0,.07);
+    }
+}
+.mru-mc-card-img {
+    position: relative;
+    height: 130px;
+    background: linear-gradient(135deg, $mru-dark 0%, $mru-primary 100%);
+    background-size: cover;
+    background-position: center;
+}
+.mru-mc-card-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: rgba(255,255,255,.35);
+    font-size: 2.5rem;
+}
+.mru-mc-status-pill {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    padding: .2rem .55rem;
+    font-size: .65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: #fff;
+    &.status-inprogress { background: $mru-primary; }
+    &.status-completed  { background: #198754; }
+    &.status-upcoming   { background: $mru-secondary; }
+}
+.mru-mc-card-body {
+    padding: .85rem 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.mru-mc-code {
+    display: inline-block;
+    font-size: .68rem;
+    font-weight: 700;
+    color: $mru-primary;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .3rem;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+.mru-mc-title {
+    font-size: .84rem;
+    font-weight: 600;
+    color: $mru-dark;
+    margin: 0 0 auto;
+    line-height: 1.35;
+}
+.mru-mc-progress {
+    height: 4px;
+    background: #e9ecef;
+    margin-top: .75rem;
+    overflow: hidden;
+}
+.mru-mc-progress-bar {
+    height: 100%;
+    background: $mru-primary;
+    transition: width .3s;
+}
+.mru-mc-progress-text {
+    font-size: .68rem;
+    color: $mru-text;
+    margin-top: .25rem;
+}
+
+// ── Empty State ─────────────────────────────────────────────────
+.mru-mc-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    h3 { font-size: 1.1rem; font-weight: 700; color: $mru-dark; margin-bottom: .5rem; }
+    p  { font-size: .84rem; color: $mru-text; max-width: 380px; margin: 0 auto 1.25rem; }
+}
+.mru-mc-empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $mru-light;
+    border: 1px solid $mru-border;
+    border-radius: 50%;
+    i { font-size: 1.5rem; color: $mru-text; }
+}
+
+// ── Browse Tab: Search Bar ──────────────────────────────────────
+.mru-mc-search-bar {
+    margin-bottom: 1.5rem;
+}
+.mru-mc-search-row {
+    display: flex;
+    gap: .5rem;
+    align-items: stretch;
+}
+.mru-mc-search-input-wrap {
+    flex: 1;
+    position: relative;
+    > i {
+        position: absolute;
+        left: .75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: .85rem;
+    }
+    input {
+        width: 100%;
+        height: 100%;
+        padding: .55rem .75rem .55rem 2.2rem;
+        border: 1px solid $mru-border;
+        font-size: .84rem;
+        background: #fff;
+        &:focus { outline: none; border-color: $mru-primary; }
+    }
+}
+.mru-mc-cat-select {
+    min-width: 180px;
+    padding: .55rem .75rem;
+    border: 1px solid $mru-border;
+    font-size: .82rem;
+    background: #fff;
+    color: $mru-dark;
+    cursor: pointer;
+    &:focus { outline: none; border-color: $mru-primary; }
+}
+.mru-mc-search-btn {
+    white-space: nowrap;
+    padding: .55rem 1rem;
+    i { margin-right: .3rem; }
+}
+
+// ── Browse Tab: Course Grid ─────────────────────────────────────
+.mru-mc-browse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.mru-mc-browse-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid $mru-border;
+    overflow: hidden;
+    transition: box-shadow .15s, border-color .15s;
+    &:hover {
+        border-color: darken($mru-border, 8%);
+        box-shadow: 0 4px 16px rgba(0,0,0,.07);
+    }
+}
+.mru-mc-browse-img {
+    height: 110px;
+    background: linear-gradient(135deg, lighten($mru-primary, 5%) 0%, $mru-dark 100%);
+    background-size: cover;
+    background-position: center;
+}
+.mru-mc-browse-body {
+    padding: .85rem 1rem;
+    flex: 1;
+}
+.mru-mc-browse-title {
+    font-size: .82rem;
+    font-weight: 600;
+    color: $mru-dark;
+    margin: 0;
+    line-height: 1.35;
+}
+.mru-mc-cat-label {
+    display: block;
+    font-size: .7rem;
+    color: $mru-text;
+    margin-top: .35rem;
+    i { font-size: .65rem; margin-right: .2rem; }
+}
+.mru-mc-browse-footer {
+    padding: .65rem 1rem;
+    border-top: 1px solid $mru-border;
+}
+.mru-mc-restricted {
+    display: block;
+    text-align: center;
+    font-size: .75rem;
+    color: #94a3b8;
+    i { margin-right: .25rem; }
+}
+
+// ── Buttons ─────────────────────────────────────────────────────
+.mru-btn-primary {
+    background: $mru-primary;
+    color: #fff;
+    border: none;
+    font-size: .82rem;
+    font-weight: 600;
+    padding: .5rem 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    transition: background .15s;
+    &:hover { background: darken($mru-primary, 8%); color: #fff; text-decoration: none; }
+}
+.mru-btn-outline-primary {
+    background: transparent;
+    color: $mru-primary;
+    border: 1px solid $mru-primary;
+    font-size: .82rem;
+    font-weight: 600;
+    padding: .45rem 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .35rem;
+    transition: all .15s;
+    &:hover { background: $mru-primary; color: #fff; text-decoration: none; }
+}
+
+// ── Responsive ──────────────────────────────────────────────────
+@media (max-width: 991px) {
+    .mru-mc-grid,
+    .mru-mc-browse-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 767px) {
+    .mru-mc-stats { grid-template-columns: repeat(2, 1fr); }
+    .mru-mc-search-row {
+        flex-direction: column;
+    }
+    .mru-mc-cat-select { min-width: auto; }
+}
+@media (max-width: 575px) {
+    .mru-mc-grid,
+    .mru-mc-browse-grid { grid-template-columns: 1fr; }
+    .mru-mc-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .mru-mc-tab { white-space: nowrap; padding: .6rem .85rem; }
+}
+
+
+// ═════════════════════════════════════════════════════════════════════════════
+// MRU ENROLMENT PAGE
+// ═════════════════════════════════════════════════════════════════════════════
+.mru-enrol-wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+// ── Hero ────────────────────────────────────────────────────────
+.mru-enrol-hero {
+    position: relative;
+    height: 200px;
+    background: linear-gradient(135deg, $mru-dark 0%, $mru-primary 100%);
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 1.5rem;
+}
+.mru-enrol-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7,26,62,.55) 0%, rgba(7,26,62,.85) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem 2rem;
+}
+.mru-enrol-hero-content {
+    color: #fff;
+}
+.mru-enrol-code {
+    display: inline-block;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,.15);
+    padding: .2rem .6rem;
+    margin-bottom: .5rem;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+.mru-enrol-course-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 .35rem;
+    line-height: 1.3;
+}
+.mru-enrol-cat {
+    font-size: .78rem;
+    opacity: .8;
+    i { margin-right: .25rem; }
+}
+
+// ── Body: Two-column layout ─────────────────────────────────────
+.mru-enrol-body {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+// ── Left: Details ───────────────────────────────────────────────
+.mru-enrol-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+}
+.mru-enrol-stat {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    background: #fff;
+    border: 1px solid $mru-border;
+    padding: .75rem 1rem;
+    > i {
+        font-size: 1.15rem;
+        color: $mru-primary;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba($mru-primary, .08);
+    }
+    div {
+        display: flex;
+        flex-direction: column;
+        strong { font-size: 1.1rem; font-weight: 700; color: $mru-dark; line-height: 1.2; }
+        span { font-size: .7rem; color: $mru-text; text-transform: uppercase; letter-spacing: .03em; font-weight: 600; }
+    }
+}
+.mru-enrol-section {
+    background: #fff;
+    border: 1px solid $mru-border;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    h3 {
+        font-size: .88rem;
+        font-weight: 700;
+        color: $mru-dark;
+        margin: 0 0 .85rem;
+        padding-bottom: .6rem;
+        border-bottom: 1px solid $mru-border;
+        i { color: $mru-primary; margin-right: .4rem; font-size: .85rem; }
+    }
+}
+.mru-enrol-summary {
+    font-size: .82rem;
+    color: $mru-text;
+    line-height: 1.65;
+    p { margin-bottom: .5rem; }
+    p:last-child { margin-bottom: 0; }
+}
+.mru-enrol-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    tr { border-bottom: 1px solid lighten($mru-border, 3%); }
+    tr:last-child { border-bottom: none; }
+    td { padding: .55rem 0; font-size: .82rem; vertical-align: top; }
+}
+.mru-enrol-info-label {
+    color: $mru-text;
+    width: 140px;
+    font-weight: 600;
+}
+.mru-enrol-info-value {
+    color: $mru-dark;
+}
+
+// ── Right: Action Card ──────────────────────────────────────────
+.mru-enrol-action-card {
+    background: #fff;
+    border: 1px solid $mru-border;
+    border-top: 3px solid $mru-primary;
+    padding: 1.5rem;
+    position: sticky;
+    top: 70px;
+    h3 {
+        font-size: .9rem;
+        font-weight: 700;
+        color: $mru-dark;
+        margin: 0 0 .75rem;
+        i { color: $mru-primary; margin-right: .35rem; }
+    }
+}
+.mru-enrol-action-hint {
+    font-size: .8rem;
+    color: $mru-text;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+.mru-enrol-widget {
+    margin-bottom: .75rem;
+    // Clean up Moodle's default enrol form styling.
+    .generalbox { border: none; padding: 0; margin: 0; background: none; box-shadow: none; }
+    .box { border: none; padding: 0; margin: 0; background: none; }
+    h2, h3, h4 { font-size: .85rem; font-weight: 600; color: $mru-dark; margin-bottom: .5rem; }
+    p { font-size: .8rem; color: $mru-text; }
+    .form-group { margin-bottom: .5rem; }
+    label { font-size: .8rem; font-weight: 600; }
+    input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: .5rem .75rem;
+        border: 1px solid $mru-border;
+        font-size: .82rem;
+        &:focus { border-color: $mru-primary; outline: none; }
+    }
+    input[type="submit"], button[type="submit"] {
+        width: 100%;
+        padding: .6rem 1rem;
+        background: $mru-primary;
+        color: #fff;
+        border: none;
+        font-size: .85rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: .5rem;
+        transition: background .15s;
+        &:hover { background: darken($mru-primary, 8%); }
+    }
+}
+.mru-enrol-no-methods {
+    text-align: center;
+    padding: 1.5rem .5rem;
+    i { font-size: 1.5rem; color: #94a3b8; margin-bottom: .75rem; display: block; }
+    p { font-size: .82rem; color: $mru-text; margin: 0; line-height: 1.55; }
+}
+.mru-enrol-back-link {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid $mru-border;
+    a {
+        font-size: .8rem;
+        color: $mru-primary;
+        text-decoration: none;
+        font-weight: 600;
+        i { margin-right: .3rem; }
+        &:hover { text-decoration: underline; }
+    }
+}
+
+// ── Responsive ──────────────────────────────────────────────────
+@media (max-width: 991px) {
+    .mru-enrol-body {
+        grid-template-columns: 1fr;
+    }
+    .mru-enrol-action-card { position: static; }
+}
+@media (max-width: 575px) {
+    .mru-enrol-hero { height: 160px; }
+    .mru-enrol-hero-overlay { padding: 1rem; }
+    .mru-enrol-course-title { font-size: 1.1rem; }
+    .mru-enrol-stats-row { grid-template-columns: 1fr; }
+    .mru-enrol-info-label { width: 110px; }
+}

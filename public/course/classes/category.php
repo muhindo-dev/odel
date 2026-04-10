@@ -3222,44 +3222,31 @@ class core_course_category implements renderable, cacheable_object, IteratorAggr
 
         // Paths under the given parent context path.
         $parentpath = $parentcat->get_context()->path . '/%';
-        $likeparent = $DB->sql_like('path', ':parentpath', false);
+        $likeparent = $DB->sql_like('ctx.path', ':parentpath', false);
 
         // Join predicate for descendant-or-equal between ctx.path and uc.upath.
         $eqpaths = $DB->sql_compare_text('ctx.path') . ' = ' . $DB->sql_compare_text('uc.upath');
         $likechild = "ctx.path LIKE " . $DB->sql_concat('uc.upath', "'/%'");
 
-        // NOTE: This query intentionally uses a CTE (WITH clause).
-        // CTEs are supported by PostgreSQL, MySQL 8+, and SQL Server, and Moodle allows
-        // pass-through SQL when needed.
-        //
-        // Moodle generally avoids using raw SQL features that are not represented in
-        // the database abstraction layer, but in this case the CTE delivers a substantial
-        // performance improvement for large datasets.
-        //
-        // IMPORTANT: This is an exception, not a precedent. The broader use of CTEs
-        // and potential abstraction-layer support will be discussed separately.
+        // Rewritten without CTEs so it works on MySQL 5.7 as well as 8.0+.
         $sql = "
-        WITH ctx AS (
-            SELECT id, instanceid, path, depth, contextlevel, locked
-              FROM {context}
-             WHERE contextlevel = :ctxlevel
-               AND $likeparent
-        ),
-        user_ctx AS (
-            SELECT DISTINCT c.path AS upath, ra.roleid
-              FROM {role_assignments} ra
-              JOIN {context} c ON c.id = ra.contextid
-             WHERE ra.userid = :userid
-        )
         SELECT DISTINCT cc." . join(', cc.', $fields) . ", $ctxselect
           FROM {course_categories} cc
-          JOIN ctx ON cc.id = ctx.instanceid
+          JOIN {context} ctx
+            ON ctx.instanceid = cc.id
+           AND ctx.contextlevel = :ctxlevel
+           AND $likeparent
      LEFT JOIN {role_assignments} ra
             ON ra.userid = :userid2
            AND ra.contextid = ctx.id
      LEFT JOIN {role_capabilities} rc
             ON rc.contextid = ctx.id
-     LEFT JOIN user_ctx uc
+     LEFT JOIN (
+            SELECT DISTINCT c.path AS upath, ra2.roleid
+              FROM {role_assignments} ra2
+              JOIN {context} c ON c.id = ra2.contextid
+             WHERE ra2.userid = :userid
+          ) uc
             ON uc.roleid = rc.roleid
            AND ( $eqpaths OR $likechild )
          WHERE (ra.id IS NOT NULL OR uc.upath IS NOT NULL)

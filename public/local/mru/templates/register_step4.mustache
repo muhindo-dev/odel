@@ -52,10 +52,10 @@
                            id="reg-password"
                            name="password"
                            class="form-control"
-                           placeholder="Minimum 6 characters"
+                           placeholder="Minimum 4 characters"
                            required
                            autocomplete="new-password"
-                           minlength="6">
+                           minlength="4">
                     <button type="button" class="pwd-toggle" aria-label="Toggle password visibility">
                         <i class="fa fa-eye" aria-hidden="true"></i>
                     </button>
@@ -63,10 +63,7 @@
                 <div class="pwd-strength" id="pwd-strength">
                     <div class="pwd-bar"><span></span></div>
                     <div class="pwd-reqs">
-                        <span class="pwd-req" data-req="length"><i class="fa fa-circle"></i> 6+ characters</span>
-                        <span class="pwd-req" data-req="upper"><i class="fa fa-circle"></i> Uppercase</span>
-                        <span class="pwd-req" data-req="lower"><i class="fa fa-circle"></i> Lowercase</span>
-                        <span class="pwd-req" data-req="number"><i class="fa fa-circle"></i> Number</span>
+                        <span class="pwd-req" data-req="length"><i class="fa fa-circle"></i> At least 4 characters</span>
                     </div>
                 </div>
             </div>
@@ -90,5 +87,15 @@
                 <i class="fa fa-user-plus" aria-hidden="true"></i> Create Account &amp; Sign In
             </button>
         </form>
+    </div>
+
+    <form method="post" action="{{{wwwroot}}}/local/mru/register.php" id="form-back-s4" style="display:none">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="back">
+    </form>
+    <div class="wizard-back-row">
+        <button type="submit" form="form-back-s4" class="btn-wizard-back">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Back to Identity
+        </button>
     </div>
 </div>

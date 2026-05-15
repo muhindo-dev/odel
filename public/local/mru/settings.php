@@ -66,6 +66,13 @@ if ($hassiteconfig) {
         PARAM_INT
     ));
 
+    $settings->add(new admin_setting_configcheckbox(
+        'local_mru/api_token_in_header',
+        get_string('settings:api_token_in_header', 'local_mru'),
+        get_string('settings:api_token_in_header_desc', 'local_mru'),
+        1
+    ));
+
     // --- MRU Database Settings ---
     $settings->add(new admin_setting_heading(
         'local_mru/db_heading',

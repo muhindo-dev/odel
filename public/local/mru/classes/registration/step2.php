@@ -90,8 +90,9 @@ class step2 extends base_step {
         $sent = $this->otpmanager->send_otp_email($email, $otp);
 
         if ($sent) {
-            $this->redirect_to_wizard(get_string('reg:otp_sent', 'local_mru'), 'success');
-        } else if ($CFG->debugdeveloper) {
+            // Pass email as $a so the lang string "…has been sent to {$a}." renders correctly.
+            $this->redirect_to_wizard(get_string('reg:otp_sent', 'local_mru', $email), 'success');
+        } else if (debugging('', DEBUG_DEVELOPER)) {
             $this->redirect_to_wizard('DEV MODE — Email failed. Your OTP code is: ' . $otp, 'warning');
         } else {
             $this->redirect_to_wizard(get_string('reg:otp_send_failed', 'local_mru'), 'error');
@@ -120,19 +121,19 @@ class step2 extends base_step {
      * Resend the OTP code.
      */
     private function handle_resend_otp(): void {
-        global $CFG;
-
         if (!$this->otpmanager->can_resend($this->session)) {
             $this->redirect_to_wizard(get_string('reg:otp_cooldown', 'local_mru'), 'warning');
         }
 
         $otp = $this->otpmanager->generate($this->session);
         $this->session = $this->regmanager->get_session();
-        $sent = $this->otpmanager->send_otp_email($this->session->email, $otp);
+        $email = $this->session->email ?? '';
+        $sent  = $this->otpmanager->send_otp_email($email, $otp);
 
         if ($sent) {
-            $this->redirect_to_wizard(get_string('reg:otp_resent', 'local_mru'), 'success');
-        } else if ($CFG->debugdeveloper) {
+            // Pass email as $a so the lang string "…has been sent to {$a}." renders correctly.
+            $this->redirect_to_wizard(get_string('reg:otp_resent', 'local_mru', $email), 'success');
+        } else if (debugging('', DEBUG_DEVELOPER)) {
             $this->redirect_to_wizard('DEV MODE — Email failed. Your OTP code is: ' . $otp, 'warning');
         } else {
             $this->redirect_to_wizard(get_string('reg:otp_send_failed', 'local_mru'), 'error');

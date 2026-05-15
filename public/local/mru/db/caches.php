@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for MRU Integration plugin.
+ * Cache definitions for local_mru.
  *
  * @package    local_mru
  * @copyright  2026 Mutesa I Royal University
@@ -24,8 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_mru';
-$plugin->version   = 2026051500;        // YYYYMMDDXX format.
-$plugin->requires  = 2025100600;        // Moodle 5.1.
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.2.0';
+$definitions = [
+    // Caches the Campus Dynamics API auth token across PHP requests.
+    // Avoids re-authenticating on every page load/cron tick.
+    // TTL is 50 minutes (tokens typically expire at 60 min).
+    'apitokens' => [
+        'mode'       => cache_store::MODE_APPLICATION,
+        'ttl'        => 3000,
+        'staticacceleration' => false,
+    ],
+];

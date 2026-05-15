@@ -27,7 +27,6 @@
 
 namespace local_mru;
 
-use moodle_exception;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -65,8 +64,6 @@ class student_manager {
      * @return stdClass Verification result with properties: verified, data, message.
      */
     public function verify_student(int $userid, string $mruid): stdClass {
-        global $DB;
-
         $result = new stdClass();
         $result->verified = false;
         $result->data = null;
@@ -262,7 +259,7 @@ class student_manager {
                 continue;
             }
 
-            // Create new Moodle user.
+            // Create new Moodle user with a cryptographically random initial password.
             try {
                 $user = new stdClass();
                 $user->username  = $username;
@@ -272,9 +269,13 @@ class student_manager {
                 $user->firstname = ucwords(strtolower(trim($student['other_names'] ?? '')));
                 $user->lastname  = ucwords(strtolower(trim($student['surname'] ?? '')));
                 $user->email     = trim($student['email'] ?? $username . '@mru.ac.ug');
-                $user->password  = hash_internal_user_password('Mru@' . $studentno . date('Y'));
+                // Use a random password and force a reset on first login.
+                $randompassword = bin2hex(random_bytes(12));
+                $user->password  = hash_internal_user_password($randompassword);
 
                 $userid = user_create_user($user, false, false);
+                // Force the student to set their own password on first login.
+                set_user_preference('auth_forcepasswordchange', 1, $userid);
                 $this->save_user_mapping($userid, $studentno, 'student', true, $student);
                 $summary['created']++;
             } catch (\Exception $e) {

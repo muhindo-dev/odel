@@ -25,7 +25,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Returns the main SCSS content for the theme.
+ * Returns the main SCSS content for the theme (the Boost preset only).
+ *
+ * Pre/post SCSS is handled exclusively by the prescsscallback and extrascsscallback
+ * registered in config.php.  Including them here as well would cause double-application
+ * of brand variables, component overrides, and login styles.
  *
  * @param theme_config $theme The theme config object.
  * @return string
@@ -33,28 +37,23 @@ defined('MOODLE_INTERNAL') || die();
 function theme_mru_odel_get_main_scss_content($theme) {
     global $CFG;
 
-    $scss = '';
     $filename = !empty($theme->settings->preset) ? $theme->settings->preset : null;
-    $fs = get_file_storage();
+    $fs       = get_file_storage();
+    $context  = context_system::instance();
 
-    $context = context_system::instance();
-    if ($filename == 'default.scss') {
-        $scss .= file_get_contents($CFG->dirroot . '/theme/boost/scss/preset/default.scss');
-    } else if ($filename == 'plain.scss') {
-        $scss .= file_get_contents($CFG->dirroot . '/theme/boost/scss/preset/plain.scss');
-    } else if ($filename && ($presetfile = $fs->get_file($context->id, 'theme_mru_odel', 'preset', 0, '/', $filename))) {
-        $scss .= $presetfile->get_content();
-    } else {
-        // Default preset.
-        $scss .= file_get_contents($CFG->dirroot . '/theme/boost/scss/preset/default.scss');
+    if ($filename === 'plain.scss') {
+        return file_get_contents($CFG->dirroot . '/theme/boost/scss/preset/plain.scss');
     }
 
-    // Pre CSS - needed before the main bootstrap/moodle CSS.
-    $pre = file_get_contents($CFG->dirroot . '/theme/mru_odel/scss/pre.scss');
-    // Post CSS - applied after everything else.
-    $post = file_get_contents($CFG->dirroot . '/theme/mru_odel/scss/post.scss');
+    if ($filename && $filename !== 'default.scss') {
+        $presetfile = $fs->get_file($context->id, 'theme_mru_odel', 'preset', 0, '/', $filename);
+        if ($presetfile) {
+            return $presetfile->get_content();
+        }
+    }
 
-    return $pre . "\n" . $scss . "\n" . $post;
+    // Default: Boost default preset.
+    return file_get_contents($CFG->dirroot . '/theme/boost/scss/preset/default.scss');
 }
 
 /**
@@ -64,8 +63,6 @@ function theme_mru_odel_get_main_scss_content($theme) {
  * @return array
  */
 function theme_mru_odel_get_pre_scss($theme) {
-    global $CFG;
-
     $scss = '';
 
     // Color override from settings.
@@ -111,17 +108,19 @@ function theme_mru_odel_get_extra_scss($theme) {
     // Background image.
     $imageurl = $theme->setting_file_url('backgroundimage', 'backgroundimage');
     if (!empty($imageurl)) {
+        $safeurl = addcslashes((string) $imageurl, "'\\");
         $content .= '@media (min-width: 768px) {';
         $content .= 'body { ';
-        $content .= "background-image: url('$imageurl'); background-size: cover;";
+        $content .= "background-image: url('" . $safeurl . "'); background-size: cover;";
         $content .= ' } }';
     }
 
     // Login background image.
     $loginbgurl = $theme->setting_file_url('loginbackgroundimage', 'loginbackgroundimage');
     if (!empty($loginbgurl)) {
+        $safeloginurl = addcslashes((string) $loginbgurl, "'\\");
         $content .= '.path-login #page { ';
-        $content .= "background-image: url('$loginbgurl'); background-size: cover; background-position: center;";
+        $content .= "background-image: url('" . $safeloginurl . "'); background-size: cover; background-position: center;";
         $content .= ' }';
     }
 
@@ -154,13 +153,13 @@ function theme_mru_odel_get_precompiled_css() {
  * @param bool $forcedownload
  * @param array $options
  * @return bool
+ * @noinspection PhpUnusedParameterInspection
  */
 function theme_mru_odel_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
-    if ($context->contextlevel == CONTEXT_SYSTEM && ($filearea === 'logo' || $filearea === 'backgroundimage' || $filearea === 'loginbackgroundimage')) {
-        $theme = theme_config::load('mru_odel');
-        if (!array_key_exists($filearea, $theme->setting_file_areas())) {
-            send_file_not_found();
-        }
+    unset($course, $cm); // Required by callback signature.
+
+    $allowedareas = ['logo', 'backgroundimage', 'loginbackgroundimage'];
+    if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $allowedareas)) {
         $filename = array_pop($args);
         if (!$file = get_file_storage()->get_file(
             $context->id, "theme_mru_odel", $filearea, 0, "/", $filename

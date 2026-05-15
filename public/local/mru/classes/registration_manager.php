@@ -214,7 +214,7 @@ class registration_manager {
     /**
      * Validate password meets MRU requirements.
      *
-     * Min 6 chars, at least 1 uppercase, 1 lowercase, 1 number.
+     * Min 8 chars, at least 1 uppercase, 1 lowercase, 1 number.
      *
      * @param string $password The password to validate.
      * @return array Array of error strings (empty = valid).
@@ -222,8 +222,17 @@ class registration_manager {
     public function validate_password(string $password): array {
         $errors = [];
 
-        if (strlen($password) < 4) {
+        if (strlen($password) < 8) {
             $errors[] = get_string('reg:pwd_min_length', 'local_mru');
+        }
+        if (!preg_match('/[A-Z]/', $password)) {
+            $errors[] = get_string('reg:pwd_uppercase', 'local_mru');
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            $errors[] = get_string('reg:pwd_lowercase', 'local_mru');
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            $errors[] = get_string('reg:pwd_number', 'local_mru');
         }
 
         return $errors;
@@ -248,7 +257,8 @@ class registration_manager {
         setcookie(self::COOKIE_NAME, '', [
             'expires'  => time() - 3600,
             'path'     => '/',
-            'httponly'  => true,
+            'httponly' => true,
+            'secure'   => is_https(),
             'samesite' => 'Lax',
         ]);
     }
@@ -284,7 +294,8 @@ class registration_manager {
         setcookie(self::COOKIE_NAME, $token, [
             'expires'  => time() + self::COOKIE_LIFETIME,
             'path'     => '/',
-            'httponly'  => true,
+            'httponly' => true,
+            'secure'   => is_https(),
             'samesite' => 'Lax',
         ]);
     }

@@ -98,5 +98,19 @@ function xmldb_local_mru_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026040801, 'local', 'mru');
     }
 
+    if ($oldversion < 2026051500) {
+        // Add composite index on local_mru_marks_sync to support the upsert
+        // lookup keyed on (courseid, userid, academic_year, semester).
+        $table = new xmldb_table('local_mru_marks_sync');
+        $index = new xmldb_index('ix_upsert_key', XMLDB_INDEX_NOTUNIQUE,
+            ['courseid', 'userid', 'academic_year', 'semester']);
+
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        upgrade_plugin_savepoint(true, 2026051500, 'local', 'mru');
+    }
+
     return true;
 }

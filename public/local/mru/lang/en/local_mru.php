@@ -38,6 +38,8 @@ $string['settings:api_password'] = 'API password';
 $string['settings:api_password_desc'] = 'Password for the API staff account.';
 $string['settings:api_timeout'] = 'Request timeout (seconds)';
 $string['settings:api_timeout_desc'] = 'Maximum time to wait for API responses.';
+$string['settings:api_token_in_header'] = 'Send token in Authorization header';
+$string['settings:api_token_in_header_desc'] = 'When enabled (recommended), the API authentication token is sent as an Authorization: Bearer header instead of a URL query parameter. This prevents the token appearing in server access logs. Disable only if the upstream API does not support bearer-header authentication.';
 
 // Settings - Database.
 $string['settings:db_heading'] = 'MRU Database';
@@ -196,7 +198,7 @@ $string['reg:otp_not_sent'] = 'Please request a verification code first.';
 $string['reg:otp_cooldown'] = 'Please wait {$a} seconds before requesting a new code.';
 $string['reg:otp_resent'] = 'A new verification code has been sent to {$a}.';
 $string['reg:email_verified'] = 'Your email has been verified. You can continue.';
-$string['reg:pwd_min_length'] = 'Password must be at least 4 characters long.';
+$string['reg:pwd_min_length'] = 'Password must be at least 8 characters long.';
 $string['reg:pwd_uppercase'] = 'Password must contain at least one uppercase letter.';
 $string['reg:pwd_lowercase'] = 'Password must contain at least one lowercase letter.';
 $string['reg:pwd_number'] = 'Password must contain at least one number.';
@@ -209,6 +211,7 @@ $string['reg:otp_email_body'] = 'Your MRU ODEL verification code is: {$a->otp}
 
 This code expires in 3 hours. If you did not request this, please ignore this email.';
 $string['reg:otp_email_body_html'] = '<p>Your MRU ODEL verification code is:</p><p style="font-size:24px;font-weight:bold;letter-spacing:4px;">{$a->otp}</p><p>This code expires in 3 hours. If you did not request this, please ignore this email.</p>';
+$string['reg:api_lookup_failed'] = 'Could not retrieve your details from the MRU portal. Please enter your student or staff number below.';
 $string['reg:privacy_registrations'] = 'Stores registration session data including email addresses and OTP hashes during the registration process.';
 $string['reg:privacy_registrations_email'] = 'The email address provided during registration.';
 $string['reg:privacy_registrations_ip'] = 'The IP address recorded at registration time.';

@@ -26,26 +26,27 @@ defined('MOODLE_INTERNAL') || die();
 
 $observers = [
 
-    // When a user logs in, check verification status if configured.
+    // Re-verify student status on login when verify_on_login is enabled.
     [
         'eventname' => '\core\event\user_loggedin',
         'callback'  => 'local_mru\event\observer::user_loggedin',
     ],
 
-    // When a user is enrolled in a course, verify if configured.
+    // Verify student status on course enrolment when verify_on_enrol is enabled.
     [
         'eventname' => '\core\event\user_enrolment_created',
         'callback'  => 'local_mru\event\observer::user_enrolled',
     ],
 
-    // When grades are updated, flag for sync.
+    // Flag grade for sync when a student is graded.
     [
         'eventname' => '\core\event\user_graded',
         'callback'  => 'local_mru\event\observer::user_graded',
     ],
-        // After profile updates, enforce locked verified email for mapped users.
-        [
-            'eventname' => '\core\event\user_updated',
-            'callback'  => 'local_mru\event\observer::user_updated',
-        ],
+
+    // Enforce verified email immutability after any profile update.
+    [
+        'eventname' => '\core\event\user_updated',
+        'callback'  => 'local_mru\event\observer::user_updated',
+    ],
 ];

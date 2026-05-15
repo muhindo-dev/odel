@@ -72,7 +72,7 @@ class otp_manager {
     public function verify(\stdClass $session, string $code): array {
         global $DB;
 
-        // Check attempts.
+        // Check attempts before doing anything else.
         if ($session->otp_attempts >= self::MAX_ATTEMPTS) {
             return [
                 'valid' => false,
@@ -80,18 +80,18 @@ class otp_manager {
             ];
         }
 
-        // Increment attempts.
-        $session->otp_attempts++;
-        $session->timemodified = time();
-        $DB->update_record(registration_manager::TABLE, $session);
-
-        // Check expiry.
+        // Check expiry before burning an attempt — expired OTPs should not consume tries.
         if (empty($session->otp_expires) || time() > $session->otp_expires) {
             return [
                 'valid' => false,
                 'error' => get_string('reg:otp_expired', 'local_mru'),
             ];
         }
+
+        // Now increment the attempt counter.
+        $session->otp_attempts++;
+        $session->timemodified = time();
+        $DB->update_record(registration_manager::TABLE, $session);
 
         // Check hash is set.
         if (empty($session->otp_hash)) {
@@ -141,8 +141,6 @@ class otp_manager {
      * @return bool True if email was sent.
      */
     public function send_otp_email(string $email, string $otp): bool {
-        global $CFG;
-
         $noreplyuser = \core_user::get_noreply_user();
 
         // Create a temporary user object for email_to_user.

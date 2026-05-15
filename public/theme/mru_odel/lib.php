@@ -63,11 +63,14 @@ function theme_mru_odel_get_main_scss_content($theme) {
  * @return array
  */
 function theme_mru_odel_get_pre_scss($theme) {
+    global $CFG;
+
     $scss = '';
 
-    // Color override from settings.
+    // Admin brand-color overrides take highest priority (applied before pre.scss
+    // so they win over the file's defaults when an admin has set them).
     $configurable = [
-        'brandcolor' => ['primary'],
+        'brandcolor'    => ['primary'],
         'secondarycolor' => ['secondary'],
     ];
 
@@ -81,12 +84,13 @@ function theme_mru_odel_get_pre_scss($theme) {
         }, (array) $targets);
     }
 
-    // MRU brand colors as defaults.
-    $scss .= '$mru-primary: #174DA4;' . "\n";
-    $scss .= '$mru-secondary: #CB9C2C;' . "\n";
-    $scss .= '$mru-dark: #0d2d62;' . "\n";
-    $scss .= '$mru-light: #f4f7fb;' . "\n";
-    $scss .= '$mru-white: #ffffff;' . "\n";
+    // Load the MRU design-system variables: brand palette + Bootstrap overrides
+    // ($primary, $body-bg, $border-radius, $font-family-sans-serif, etc.).
+    // These must be available before the Boost preset is compiled.
+    $prefile = $CFG->dirroot . '/theme/mru_odel/scss/pre.scss';
+    if (file_exists($prefile)) {
+        $scss .= file_get_contents($prefile) . "\n";
+    }
 
     // Additional pre SCSS from settings.
     if (!empty($theme->settings->scsspre)) {
@@ -103,7 +107,12 @@ function theme_mru_odel_get_pre_scss($theme) {
  * @return string
  */
 function theme_mru_odel_get_extra_scss($theme) {
-    $content = '';
+    global $CFG;
+
+    // Load MRU custom stylesheet: component overrides, navbar, hero, cards, etc.
+    // This runs after the Boost preset so our rules take precedence.
+    $postfile = $CFG->dirroot . '/theme/mru_odel/scss/post.scss';
+    $content = file_exists($postfile) ? file_get_contents($postfile) . "\n" : '';
 
     // Background image.
     $imageurl = $theme->setting_file_url('backgroundimage', 'backgroundimage');
